@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/defaultLayout}">
+<head>
+<meta charset="UTF-8" />
+<title>Brew Master | Usuários</title>
+
+
+<link rel="stylesheet" type="text/css"
+	th:href="@{/styles/vendors/bootstrap-switch.min.css}" />
+</head>
+
+<body>
+
+	<section layout:fragment="conteudo">
+
+
+		<div class="page-header">
+			<div class="container-fluid">
+				<h1>Cadastro de Usuários</h1>
+			</div>
+		</div>
+
+		<div class="container-fluid">
+
+			<!-- 				<div class="alert  alert-danger  alert-dismissible" role="alert"> -->
+			<!-- 					<button type="button" class="close" data-dismiss="alert" -->
+			<!-- 						aria-label="Close"> -->
+			<!-- 						<span aria-hidden="true">&times;</span> -->
+			<!-- 					</button> -->
+			<!-- 					<i class="fa  fa-exclamation-circle"></i> Já existe um produto com -->
+			<!-- 					o nome informado. -->
+			<!-- 				</div> -->
+
+			<form action="/usuarios" method="post" th:object="${usuario}"
+				class="form-vertical  js-form-loading">
+
+
+				<div class="row">
+					<div class="col-lg-9  form-group">
+
+						<label for="preco">Nome</label> <input id="preco" type="text"
+							class="form-control" />
+
+					</div>
+
+				</div>
+
+
+				<div class="row">
+					<div class="col-lg-6  form-group">
+
+						<label for="comissao">E-mail</label> <input id="comissao"
+							type="text" class="form-control" />
+
+					</div>
+					<div class="col-lg-3  form-group">
+
+						<label for="estoque">Data Nascimento</label> <input id="estoque"
+							type="text" class="form-control" />
+
+					</div>
+
+				</div>
+
+				<div class="row">
+
+					<div class="col-lg-3  form-group">
+
+						<label for="input-produto-estoque">Senha</label> <input
+							id="teorAlcoolico" type="password" class="form-control" />
+					</div>
+
+					<div class="col-md-3 form-group">
+
+						<label for="estilo">Cofirmar Senha</label> <input id="estoque"
+							type="password" class="form-control" />
+					</div>
+
+					<div class="col-sm-3">
+
+						<label class="control-label">Status</label>
+						<div>
+							<input type="checkbox" class="switch" data-size="small"
+								data-off-color="danger" data-off-text="Inativo"
+								data-on-text="Ativo" />
+						</div>
+
+					</div>
+
+				</div>
+
+				<div class="row">
+
+					<div class="col-sm-3  form-group">
+
+						<label for="input-produto-estoque">Grupos</label>
+						<div class="user-checkbox">
+							<div class="checkbox-inline">
+								<label> <input id="teorAlcoolico" type="checkbox" />
+									Admin
+								</label>
+							</div>
+
+							<div class="checkbox-inline">
+								<label> <input id="teorAlcoolico" type="checkbox" />
+									Vendedor
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<button class="btn  btn-primary" type="submit">Salvar</button>
+				</div>
+
+			</form>
+		</div>
+
+
+		<div th:replace="estilo/styleFastRegister :: modal "></div>
+
+	</section>
+
+	<th:block layout:fragment="javascript-extra">
+		<script th:src="@{/javascripts/vendors/bootstrap-switch.min.js}"></script>
+		<script>
+			$('.switch').bootstrapSwitch();
+		</script>
+	</th:block>
+</body>
+</html>

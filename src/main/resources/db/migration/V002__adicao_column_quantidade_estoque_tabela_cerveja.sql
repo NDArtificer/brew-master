@@ -1,0 +1,1 @@
+alter table cerveja add column quantidade_estoque smallint(6) not null;

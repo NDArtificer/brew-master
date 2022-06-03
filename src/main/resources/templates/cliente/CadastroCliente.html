@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/defaultLayout}">
+<head>
+<meta charset="UTF-8" />
+<title>Brew Master | Clientes</title>
+</head>
+
+<body>
+
+	<section layout:fragment="conteudo">
+
+
+		<div class="page-header">
+			<div class="container-fluid">
+				<h1>Cadastro de Cliente</h1>
+			</div>
+		</div>
+
+		<div class="container-fluid">
+
+			<!-- 				<div class="alert  alert-danger  alert-dismissible" role="alert"> -->
+			<!-- 					<button type="button" class="close" data-dismiss="alert" -->
+			<!-- 						aria-label="Close"> -->
+			<!-- 						<span aria-hidden="true">&times;</span> -->
+			<!-- 					</button> -->
+			<!-- 					<i class="fa  fa-exclamation-circle"></i> Já existe um produto com -->
+			<!-- 					o nome informado. -->
+			<!-- 				</div> -->
+
+			<form action="/clientes" method="post" th:object="${cliente}"
+				class="form-vertical  js-form-loading">
+
+				<div class="row">
+					<div class="form-group col-md-12">
+						<div class="alert alert-danger" role="alert"
+							th:if="${#fields.hasErrors('nome')}">
+							<label th:errors="*{nome}" class="validation-message"></label>
+						</div>
+						<label>Nome</label> <input type="text" class="form-control"
+							th:field="*{nome}"> <br>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-lg-4 col-sm-6 form-group">
+
+						<label for="input-produto-estoque">Tipo Pessoa</label>
+						<div>
+							<div class="radio radio-inline">
+								<input type="radio" name="origem" /> <label>Física</label>
+							</div>
+							<div class="radio radio-inline">
+								<input type="radio" name="origem" /> <label>Juridica</label>
+							</div>
+						</div>
+					</div>
+					<div class="form-group col-md-8">
+						<div class="alert alert-danger" role="alert"
+							th:if="${#fields.hasErrors('cpfCnpj')}">
+							<label th:errors="*{cpfCnpj}" class="validation-message"></label>
+						</div>
+						<label>CPF/CNPJ </label> <input type="text" class="form-control"
+							th:field="*{cpfCnpj}"> <br>
+					</div>
+
+				</div>
+
+				<div class="row">
+					<div class="form-group col-md-4">
+						<div class="alert alert-danger" role="alert"
+							th:if="${#fields.hasErrors('telefone')}">
+							<label th:errors="*{telefone}" class="validation-message"></label>
+						</div>
+						<label>Telefone </label> <input type="text" class="form-control"
+							th:field="*{telefone}"> <br>
+					</div>
+
+					<div class="form-group col-md-8">
+						<div class="alert alert-danger" role="alert"
+							th:if="${#fields.hasErrors('email')}">
+							<label th:errors="*{email}" class="validation-message"></label>
+						</div>
+						<label>E-mail </label> <input type="text" class="form-control"
+							th:field="*{email}"> <br>
+					</div>
+
+				</div>
+
+				<div class="row">
+					<div class="col-lg-4  form-group">
+
+						<label for="preco">Logradouro</label> <input id="preco"
+							type="text" class="form-control js-decimal" />
+
+					</div>
+					<div class="col-lg-4  form-group">
+
+						<label for="comissao">Número</label> <input id="comissao"
+							type="text" class="form-control js-decimal" />
+
+					</div>
+					<div class="col-lg-4  form-group">
+
+						<label for="estoque">Complemento</label> <input id="estoque"
+							type="text" class="form-control js-plain" />
+
+					</div>
+
+				</div>
+
+				<div class="row">
+
+					<div class="col-lg-4  form-group">
+
+						<label for="input-produto-estoque">CEP</label> <input
+							id="teorAlcoolico" type="text" class="form-control" />
+					</div>
+
+					<div class="col-md-4 form-group">
+
+						<label for="estilo">Estado</label>
+						<div class="bw-field-action">
+							<select id="estilo" class="form-control">
+								<option value="">Selecione o Estado</option>
+							</select>
+
+						</div>
+					</div>
+
+					<div class="col-md-4 form-group">
+
+						<label for="input-produto-estoque">Cidade</label> <select
+							id="sabor" class="form-control">
+							<option value="">Selecione a Cidade</option>
+						</select>
+
+					</div>
+
+				</div>
+
+				<div class="form-group">
+					<button class="btn  btn-primary" type="submit">Salvar</button>
+				</div>
+
+			</form>
+		</div>
+
+
+		<div th:replace="estilo/styleFastRegister :: modal "></div>
+
+	</section>
+
+</body>
+</html>
