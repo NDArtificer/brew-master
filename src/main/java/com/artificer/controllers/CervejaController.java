@@ -5,6 +5,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -29,13 +30,12 @@ public class CervejaController {
 	private EstiloRepository estiloRepository;
 
 	@GetMapping("/cerveja/cadastro")
-	public ModelAndView home() {
+	public ModelAndView cadastro(Cerveja cerveja) {
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("cerveja/CadastroCerveja");
 		mv.addObject("sabores", Sabor.values());
 		mv.addObject("origens", Origem.values());
 		mv.addObject("estilos", estiloRepository.findAll());
-		mv.addObject("cerveja", new Cerveja());
 
 		return mv;
 	}
@@ -45,7 +45,7 @@ public class CervejaController {
 
 		if (result.hasErrors()) {
 			log.info("Tem Erros no Elemento!");
-			return new ModelAndView("redirect:/cerveja/cadastro");
+			return cadastro(cerveja);
 		} else {
 
 			log.info("Cadastro de nova cerveja");
@@ -65,7 +65,6 @@ public class CervejaController {
 			atributes.addFlashAttribute("message", "Cerveja salva com sucesso!");
 			return new ModelAndView("redirect:/cerveja/cadastro");
 		}
-
 	}
 
 }

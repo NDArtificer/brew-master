@@ -1,5 +1,7 @@
 package com.artificer.services;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +14,7 @@ public class CadastroCervejaService {
 	@Autowired
 	private CervejasRepository repository;
 
+	@Transactional
 	public void save(Cerveja cerveja) {
 		repository.save(cerveja);
 	}

@@ -12,7 +12,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
+import com.artificer.model.annotations.Sku;
 import com.artificer.model.enums.Origem;
 import com.artificer.model.enums.Sabor;
 
@@ -28,6 +30,7 @@ public class Cerveja {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@Sku
 	@NotBlank(message = "SKU é Obrigatório")
 	@Column
 	private String sku;
