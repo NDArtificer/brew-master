@@ -8,6 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -16,12 +18,14 @@ import lombok.Setter;
 @Setter
 @Entity
 public class Estilo {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@NotBlank(message = "Estilo é Obrgatório!")
 	@Column
+	@Size(max = 30, message = "O tamanho do nome do estilo não pode ser maior que {max} caracteres")
 	private String nome;
 
 	@OneToMany(mappedBy = "estilo")

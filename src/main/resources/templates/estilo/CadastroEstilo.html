@@ -1,14 +1,13 @@
 <!DOCTYPE html>
-<html lang="pt-br" xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{layouts/defaultLayout}">
+
 <head>
-<meta charset="UTF-8" />
-<title>Brew Master | Estilos</title>
+	<meta charset="UTF-8" />
+	<title>Brew Master | Estilos</title>
 
 
-<link rel="stylesheet" type="text/css"
-	th:href="@{/styles/vendors/bootstrap-switch.min.css}" />
+	<link rel="stylesheet" type="text/css" th:href="@{/styles/vendors/bootstrap-switch.min.css}" />
 </head>
 
 <body>
@@ -24,6 +23,8 @@
 
 		<div class="container-fluid">
 
+
+			<th:block th:include="fragments/mensagemSucesso"></th:block>
 			<!-- 				<div class="alert  alert-danger  alert-dismissible" role="alert"> -->
 			<!-- 					<button type="button" class="close" data-dismiss="alert" -->
 			<!-- 						aria-label="Close"> -->
@@ -33,21 +34,24 @@
 			<!-- 					o nome informado. -->
 			<!-- 				</div> -->
 
-			<form action="/estilos" method="post" th:object="${estilos}"
-				class="form-vertical  js-form-loading">
+			<form method="post" th:object="${estilo}" class="form-vertical  js-form-loading">
 
+				<th:block th:include="fragments/mensagemErroValidacao">
+				</th:block>
 				<div class="row">
-					<div class="col-lg-12  form-group">
-
-						<label for="estoque">Nome</label> <input id="estoque" type="text"
-							class="form-control" />
+					<div class=" col-lg-12 form-group" th:classappend="${#fields.hasErrors('nome')} ? has-error">
+						<!--						<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('nome')}">-->
+						<!--							<label th:errors="*{nome}" class="validation-message"></label>-->
+						<!--						</div>-->
+						<label for="nome" class="control-label">Nome</label> <input id="nome" type="text"
+							class="form-control" th:field="*{nome}" />
 
 					</div>
 
 				</div>
 
 
-				<div class="form-group">
+				<div class=" form-group">
 					<button class="btn  btn-primary" type="submit">Salvar</button>
 				</div>
 
@@ -60,4 +64,5 @@
 	</section>
 
 </body>
+
 </html>
