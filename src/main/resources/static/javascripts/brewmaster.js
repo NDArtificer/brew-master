@@ -2,12 +2,14 @@ var Brewer = Brewer || {};
 
 Brewer.MaskMoney = (function() {
 
-	function MaskMoney() {
-		this.decimal = $('.js-decimal');
+	class MaskMoney {
+		constructor() {
+			this.decimal = $('.js-decimal');
 
-	}
-	MaskMoney.prototype.enable = function() {
-		this.decimal.maskMoney({ decimal: ',', thousands: '.' });
+		}
+		enable() {
+			this.decimal.maskMoney({ decimal: ',', thousands: '.' });
+		}
 	}
 
 	return MaskMoney;

@@ -2,12 +2,14 @@ var Brewer = Brewer || {};
 
 Brewer.PrecisionZero = (function() {
 
-	function PrecisionZero() {
-		this.plain = $('.js-plain');
+	class PrecisionZero {
+		constructor() {
+			this.plain = $('.js-plain');
 
-	}
-	PrecisionZero.prototype.enable = function() {
-		this.plain.maskMoney({ precision: 0, thousands: '.' });
+		}
+		enable() {
+			this.plain.maskMoney({ precision: 0, thousands: '.' });
+		}
 	}
 	return PrecisionZero;
 

@@ -3,22 +3,24 @@ var Brewer = Brewer || {};
 Brewer.EstiloCadastroRapido = (function() {
 
 
-	function EstiloCadastroRapido() {
+	class EstiloCadastroRapido {
+		constructor() {
 
-		this.modal = $('#modalStyleFastRegister');
-		this.btnSalvar = this.modal.find('.js-modal-cadastro-estilo-salvar-btn');
-		this.form = this.modal.find('form');
-		this.url = this.form.attr('action');
-		this.containerMensagemErro = $('.js-mensagem-cadastro-rapido-estilo');
-		this.inputNomeEstilo = $('#nomeEstilo');
+			this.modal = $('#modalStyleFastRegister');
+			this.btnSalvar = this.modal.find('.js-modal-cadastro-estilo-salvar-btn');
+			this.form = this.modal.find('form');
+			this.url = this.form.attr('action');
+			this.containerMensagemErro = $('.js-mensagem-cadastro-rapido-estilo');
+			this.inputNomeEstilo = $('#nomeEstilo');
+		}
+		iniciar() {
+			this.form.on('submit', function(event) { event.preventDefault(); });
+			this.modal.on('show.bs.modal', onModalShow.bind(this));
+			this.modal.on('hide.bs.modal', onModalClose.bind(this));
+			this.btnSalvar.on('click', onBtnSalvarClick.bind(this));
+		}
 	}
 
-	EstiloCadastroRapido.prototype.iniciar = function() {
-		this.form.on('submit', function(event) { event.preventDefault() });
-		this.modal.on('show.bs.modal', onModalShow.bind(this));
-		this.modal.on('hide.bs.modal', onModalClose.bind(this));
-		this.btnSalvar.on('click', onBtnSalvarClick.bind(this));
-	}
 
 
 	function onModalShow() {
