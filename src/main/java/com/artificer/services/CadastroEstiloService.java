@@ -25,12 +25,12 @@ public class CadastroEstiloService {
 	}
 
 	@Transactional
-	public void save(Estilo estilo) {
+	public Estilo save(Estilo estilo) {
 		Optional<Estilo> estiloExistente = estiloRepository.findByNome(estilo.getNome());
 		if (estiloExistente.isPresent()) {
 			throw new NomeEstiloJaCadastradoException("Já existe um estilo cadastrado com esse nome!");
 		}
-		estiloRepository.save(estilo);
+		return estiloRepository.saveAndFlush(estilo);
 	}
 
 }

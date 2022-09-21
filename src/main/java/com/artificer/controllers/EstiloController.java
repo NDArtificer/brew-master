@@ -3,10 +3,14 @@ package com.artificer.controllers;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -25,6 +29,7 @@ public class EstiloController {
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("estilo/CadastroEstilo");
 		return mv;
+
 	}
 
 	@PostMapping("/estilos/cadastro")
@@ -34,6 +39,7 @@ public class EstiloController {
 
 		if (result.hasErrors()) {
 			return cadastro(estilo);
+
 		}
 		System.out.println("Cadastro de novo estilo");
 		try {
@@ -46,6 +52,21 @@ public class EstiloController {
 		atributes.addFlashAttribute("message", "Estilo salvo com sucesso!");
 		return new ModelAndView("redirect:/estilos/cadastro");
 
+	}
+
+	@PostMapping(value = "/estilos", consumes = { MediaType.APPLICATION_JSON_VALUE })
+	private @ResponseBody ResponseEntity<?> salvar(@RequestBody @Valid Estilo estilo, BindingResult result) {
+		if (result.hasErrors()) {
+			return ResponseEntity.badRequest().body(result.getFieldError("nome").getDefaultMessage());
+		}
+
+		try {
+			estilo = cadastroEstiloService.save(estilo);
+		} catch (NomeEstiloJaCadastradoException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+
+		return ResponseEntity.ok(estilo);
 	}
 
 }
