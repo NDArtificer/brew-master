@@ -17,6 +17,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.resource.PathResourceResolver;
 
 import com.artificer.converters.EstiloConverter;
+import com.artificer.thymeleaf.BrewerDialect;
 
 @Configuration
 @EnableWebMvc
@@ -24,8 +25,11 @@ public class WebConfig implements WebMvcConfigurer {
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/**").addResourceLocations("classpath:/static/").setCachePeriod(3600)
-				.resourceChain(true).addResolver(new PathResourceResolver());
+		registry.addResourceHandler("/**")
+				.addResourceLocations("classpath:/static/")
+				.setCachePeriod(3600)
+				.resourceChain(true)
+				.addResolver(new PathResourceResolver());
 	}
 
 	@Bean
@@ -38,5 +42,10 @@ public class WebConfig implements WebMvcConfigurer {
 		NumberStyleFormatter integerFormatter = new NumberStyleFormatter("#,##0");
 		conversionService.addFormatterForFieldType(Integer.class, integerFormatter);
 		return conversionService;
+	}
+
+	@Bean
+	public BrewerDialect brewerDialect() {
+		return new BrewerDialect();
 	}
 }
