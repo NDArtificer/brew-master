@@ -80,6 +80,12 @@ public class Cerveja {
 	@JoinColumn
 	private Estilo estilo;
 
+	@Column
+	private String foto;
+
+	@Column
+	private String contentType;
+
 	public Cerveja() {
 
 	}
@@ -89,8 +95,7 @@ public class Cerveja {
 	private void upperCaseSkuPrePersistOrUpdate() {
 		sku = sku.toUpperCase();
 	}
-	
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
