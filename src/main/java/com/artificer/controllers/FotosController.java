@@ -1,6 +1,8 @@
 package com.artificer.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,15 +32,8 @@ public class FotosController {
 
 	}
 
-//	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//	private String upload(@RequestParam MultipartFile files) {
-//		
-//		FotoCervejaInput fotoCerveja = new FotoCervejaInput(files.getOriginalFilename(), files.getContentType());
-//		
-//		
-//		return "OK";
-//
-//	}
-//	
-
+	@GetMapping("/temp/{nome:.*}")
+	public byte[] recuperarFotoTemporaria(@PathVariable String nome) {
+		return storageService.recuperarFoto(nome);
+	}
 }

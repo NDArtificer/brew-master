@@ -1,6 +1,7 @@
 package com.artificer.storage.local;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -58,6 +59,16 @@ public class FotoStorageLocal implements FotoStorageService {
 		}
 		return novoNome;
 
+	}
+
+	@Override
+	public byte[] recuperarFoto(String nome) {
+
+		try {
+			return Files.readAllBytes(this.tempPath.resolve(nome));
+		} catch (IOException e) {
+			throw new RuntimeException("falha ao ler o arquivo !", e);
+		}
 	}
 
 	private String renomearArquivo(String originalFilename) {
