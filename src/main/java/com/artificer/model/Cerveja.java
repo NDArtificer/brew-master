@@ -18,6 +18,8 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import org.springframework.util.StringUtils;
+
 import com.artificer.model.annotations.Sku;
 import com.artificer.model.enums.Origem;
 import com.artificer.model.enums.Sabor;
@@ -88,6 +90,10 @@ public class Cerveja {
 
 	public Cerveja() {
 
+	}
+
+	public String getFotoOrMock() {
+		return StringUtils.hasText(foto) ? foto : "cerveja-mock.png";
 	}
 
 	@PrePersist

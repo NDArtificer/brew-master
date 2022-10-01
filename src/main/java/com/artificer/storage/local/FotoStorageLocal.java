@@ -15,6 +15,8 @@ import com.artificer.storage.StorageProperties;
 import groovy.util.logging.Log4j2;
 import lombok.Getter;
 import lombok.Setter;
+import net.coobird.thumbnailator.Thumbnails;
+import net.coobird.thumbnailator.name.Rename;
 
 @Getter
 @Setter
@@ -74,6 +76,30 @@ public class FotoStorageLocal implements FotoStorageService {
 	private String renomearArquivo(String originalFilename) {
 		var novoNome = String.format("%s_%s", UUID.randomUUID().toString(), originalFilename);
 		return novoNome;
+	}
+
+	@Override
+	public void salvar(String foto) {
+		try {
+			Files.move(this.tempPath.resolve(foto), this.path.resolve(foto));
+		} catch (IOException e) {
+			throw new RuntimeException("Falha ao mover a foto do diretorio temporário!", e);
+		}
+
+		try {
+			Thumbnails.of(this.path.resolve(foto).toString()).size(40, 68).toFiles(Rename.PREFIX_DOT_THUMBNAIL);
+		} catch (IOException e) {
+			throw new RuntimeException("Falha ao gerar a thumbnail!", e);
+		}
+	}
+
+	@Override
+	public byte[] recuperar(String nome) {
+		try {
+			return Files.readAllBytes(this.path.resolve(nome));
+		} catch (Exception e) {
+			throw new RuntimeException("Falha ao mover a foto do diretorio!", e);
+		}
 	}
 
 }

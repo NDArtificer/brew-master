@@ -39,7 +39,7 @@
 				<th:block th:include="fragments/mensagemErroValidacao">
 				</th:block>
 				<div class="row">
-					<div class=" col-lg-12 form-group" th:classappend="${#fields.hasErrors('nome')} ? has-error">
+					<div class=" col-lg-12 form-group bw-required" th:classappend="${#fields.hasErrors('nome')} ? has-error">
 						<!--						<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('nome')}">-->
 						<!--							<label th:errors="*{nome}" class="validation-message"></label>-->
 						<!--						</div>-->

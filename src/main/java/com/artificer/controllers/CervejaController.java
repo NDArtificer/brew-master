@@ -7,12 +7,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.artificer.model.Cerveja;
 import com.artificer.model.enums.Origem;
 import com.artificer.model.enums.Sabor;
+import com.artificer.repository.CervejasRepository;
 import com.artificer.repository.EstiloRepository;
 import com.artificer.services.CadastroCervejaService;
 
@@ -20,15 +22,19 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
+@RequestMapping("/cerveja")
 public class CervejaController {
 
 	@Autowired
 	private CadastroCervejaService cervejaService;
 
 	@Autowired
+	private CervejasRepository cervejaRepository;
+	
+	@Autowired
 	private EstiloRepository estiloRepository;
 
-	@GetMapping("/cerveja/cadastro")
+	@GetMapping("/cadastro")
 	public ModelAndView cadastro(Cerveja cerveja) {
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("cerveja/CadastroCerveja");
@@ -39,7 +45,7 @@ public class CervejaController {
 		return mv;
 	}
 
-	@PostMapping("/cerveja/cadastro")
+	@PostMapping("/cadastro")
 	public ModelAndView cadastrar(@Valid Cerveja cerveja, BindingResult result, RedirectAttributes atributes) {
 
 		if (result.hasErrors()) {
@@ -64,6 +70,17 @@ public class CervejaController {
 			atributes.addFlashAttribute("message", "Cerveja salva com sucesso!");
 			return new ModelAndView("redirect:/cerveja/cadastro");
 		}
+	}
+
+	@GetMapping
+	public ModelAndView pesquisar() {
+		ModelAndView mv = new ModelAndView("cerveja/PesquisaCerveja");
+		mv.addObject("sabores", Sabor.values());
+		mv.addObject("origens", Origem.values());
+		mv.addObject("estilos", estiloRepository.findAll());
+		mv.addObject("cervejas", cervejaRepository.findAll());
+
+		return mv;
 	}
 
 }

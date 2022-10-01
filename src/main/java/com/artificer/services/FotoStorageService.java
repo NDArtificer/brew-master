@@ -8,4 +8,7 @@ public interface FotoStorageService {
 
 	byte[] recuperarFoto(String nome) ;
 
+	void salvar(String foto);
+	
+	byte[] recuperar(String nome);
 }

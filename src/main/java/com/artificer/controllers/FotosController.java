@@ -17,8 +17,7 @@ import com.artificer.storage.FotoStorageRunnable;
 @RestController
 @RequestMapping("/fotos")
 public class FotosController {
-	
-	
+
 	@Autowired
 	private FotoStorageService storageService;
 
@@ -36,4 +35,10 @@ public class FotosController {
 	public byte[] recuperarFotoTemporaria(@PathVariable String nome) {
 		return storageService.recuperarFoto(nome);
 	}
+
+	@GetMapping("/{nome:.*}")
+	public byte[] recuperarFoto(@PathVariable String nome) {
+		return storageService.recuperar(nome);
+	}
+
 }
