@@ -11,23 +11,54 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.util.StringUtils;
 
 import com.artificer.model.Cerveja;
 import com.artificer.repository.filter.CervejaFilter;
+import com.artificer.repository.paginacao.Pagination;
 
 public class CervejasRepositoryImpl implements CervejasQueries {
 
 	@PersistenceContext
 	private EntityManager manager;
 
+	@Autowired
+	private Pagination pagination;
+
+	@SuppressWarnings("unchecked")
 	@Override
-	public List<Cerveja> filtrar(CervejaFilter filter) {
+	public Page<Cerveja> filtrar(CervejaFilter filter, Pageable pageable) {
 
 		CriteriaBuilder builder = manager.getCriteriaBuilder();
 		CriteriaQuery<Cerveja> criteria = builder.createQuery(Cerveja.class);
 		Root<Cerveja> root = criteria.from(Cerveja.class);
 
+		var predicate = addFilters(builder, filter, root);
+
+		criteria.where(predicate.toArray(new Predicate[predicate.size()]));
+		TypedQuery<Cerveja> query = (TypedQuery<Cerveja>) pagination.prepararOrdem(criteria, root, pageable);
+		query = (TypedQuery<Cerveja>) pagination.prepararIntervalo(query, pageable);
+
+		return new PageImpl<>(query.getResultList(), pageable, total(filter));
+	}
+
+	private Long total(CervejaFilter filter) {
+		CriteriaBuilder criteriaBuilder = manager.getCriteriaBuilder();
+		CriteriaQuery<Long> query = criteriaBuilder.createQuery(Long.class);
+		Root<Cerveja> cervejaEntity = query.from(Cerveja.class);
+
+		query.select(criteriaBuilder.count(cervejaEntity));
+		var predicates = addFilters(criteriaBuilder, filter, cervejaEntity);
+		query.where(predicates.toArray(new Predicate[predicates.size()]));
+
+		return manager.createQuery(query).getSingleResult();
+	}
+
+	private List<Predicate> addFilters(CriteriaBuilder builder, CervejaFilter filter, Root<Cerveja> root) {
 		var predicate = new ArrayList<Predicate>();
 
 		if (filter != null) {
@@ -59,10 +90,7 @@ public class CervejasRepositoryImpl implements CervejasQueries {
 				predicate.add(builder.lessThanOrEqualTo(root.get("valor"), filter.getValorAte()));
 			}
 		}
-
-		criteria.where(predicate.toArray(new Predicate[predicate.size()]));
-		TypedQuery<Cerveja> query = manager.createQuery(criteria);
-		return query.getResultList();
+		return predicate;
 	}
 
 	private boolean isEstiloPresente(CervejaFilter filtro) {
