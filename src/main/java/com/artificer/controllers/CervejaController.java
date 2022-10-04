@@ -16,6 +16,7 @@ import com.artificer.model.enums.Origem;
 import com.artificer.model.enums.Sabor;
 import com.artificer.repository.CervejasRepository;
 import com.artificer.repository.EstiloRepository;
+import com.artificer.repository.filter.CervejaFilter;
 import com.artificer.services.CadastroCervejaService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -73,12 +74,12 @@ public class CervejaController {
 	}
 
 	@GetMapping
-	public ModelAndView pesquisar() {
+	public ModelAndView pesquisar(CervejaFilter cervejaFilter, BindingResult result) {
 		ModelAndView mv = new ModelAndView("cerveja/PesquisaCerveja");
 		mv.addObject("sabores", Sabor.values());
 		mv.addObject("origens", Origem.values());
 		mv.addObject("estilos", estiloRepository.findAll());
-		mv.addObject("cervejas", cervejaRepository.findAll());
+		mv.addObject("cervejas", cervejaRepository.filtrar(cervejaFilter));
 
 		return mv;
 	}
