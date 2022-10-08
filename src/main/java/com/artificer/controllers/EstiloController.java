@@ -1,8 +1,11 @@
 package com.artificer.controllers;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -11,12 +14,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.artificer.controllers.pages.PageWrapper;
 import com.artificer.exceptions.NomeEstiloJaCadastradoException;
 import com.artificer.model.Estilo;
+import com.artificer.repository.EstiloRepository;
 import com.artificer.services.CadastroEstiloService;
 
 @Controller
@@ -26,10 +32,25 @@ public class EstiloController {
 	@Autowired
 	private CadastroEstiloService cadastroEstiloService;
 
+	@Autowired
+	private EstiloRepository estiloRepository;
+
 	@GetMapping("/cadastro")
 	public ModelAndView cadastro(Estilo estilo) {
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("estilo/CadastroEstilo");
+		return mv;
+
+	}
+
+	@GetMapping
+	public ModelAndView pesquisar(@RequestParam(value = "nomeEstilo", required = false) String nomeEstilo,
+			@PageableDefault(size = 2) Pageable pageable, HttpServletRequest httpServletRequest) {
+		ModelAndView mv = new ModelAndView("estilo/PesquisaEstilo");
+		// mv.addObject("nomeEstilo", nomeEstilo);
+		PageWrapper<Estilo> pages = new PageWrapper<>(estiloRepository.filtrar(nomeEstilo, pageable),
+				httpServletRequest);
+		mv.addObject("paginas", pages);
 		return mv;
 
 	}
@@ -62,7 +83,7 @@ public class EstiloController {
 			return ResponseEntity.badRequest().body(result.getFieldError("nome").getDefaultMessage());
 		}
 
-			estilo = cadastroEstiloService.save(estilo);
+		estilo = cadastroEstiloService.save(estilo);
 
 		return ResponseEntity.ok(estilo);
 	}

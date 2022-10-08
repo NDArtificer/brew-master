@@ -17,7 +17,21 @@
 
 		<div class="page-header">
 			<div class="container-fluid">
-				<h1>Cadastro de Estilo</h1>
+				<div class="row">
+					<diV class="col-sm-10">
+						<h1>Cadastro Estilo</h1>
+					</diV>
+
+					<diV class="col-sm-2">
+						<div class="aw-page-header-controls">
+							<a class="btn btn-default" th:href="@{/estilos}">
+								<i class="glyphicon glyphicon-plus-sign">
+									<span class="hidden-xs hidden-sm">Novo Estilo</span>
+								</i>
+							</a>
+						</div>
+					</diV>
+				</div>
 			</div>
 		</div>
 
@@ -39,7 +53,8 @@
 				<th:block th:include="fragments/mensagemErroValidacao">
 				</th:block>
 				<div class="row">
-					<div class=" col-lg-12 form-group bw-required" th:classappend="${#fields.hasErrors('nome')} ? has-error">
+					<div class=" col-lg-12 form-group bw-required"
+						th:classappend="${#fields.hasErrors('nome')} ? has-error">
 						<!--						<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('nome')}">-->
 						<!--							<label th:errors="*{nome}" class="validation-message"></label>-->
 						<!--						</div>-->

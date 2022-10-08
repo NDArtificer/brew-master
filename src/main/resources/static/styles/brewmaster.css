@@ -66,6 +66,18 @@
 .table-cervejas-col-name{
 	/* min-width: 200px;*/
 }
+.table-estilos-col-id{
+	width: 90px;
+	text-align: center;
+}
+
+.table-estilos-col-acoes{
+	width: 80px;
+}
+
+.table-estilos-col-name{
+	
+}
 .table-cervejas-col-estilo{
 	width: 120px;
 }

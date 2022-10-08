@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{layouts/defaultLayout}">
+	xmlns:brewer="http://brewer.artifcer.com" layout:decorate="~{layouts/defaultLayout}">
 
 <head>
 	<meta charset="UTF-8" />
@@ -102,11 +102,39 @@
 					<thead>
 						<tr>
 							<th class="table-cervejas-col-foto"></th>
-							<th class="table-cervejas-col-sku">SKU</th>
-							<th class="table-cervejas-col-name">Nome</th>
-							<th class="table-cervejas-col-estilo">Estilo</th>
-							<th class="table-cervejas-col-origem">Origem</th>
-							<th class="table-cervejas-col-valor">Valor</th>
+							<th class="table-cervejas-col-sku">
+								<th:block th:replace="fragments/Ordenacao :: order (${paginas}, 'sku', 'SKU')">
+								</th:block>
+								<!--								<brewer:order page="${paginas}" field="sku" text="SKU" />-->
+							</th>
+							<th class="table-cervejas-col-name">
+								<th:block th:replace="fragments/Ordenacao :: order (${paginas}, 'nome', 'Nome')">
+								</th:block>
+							</th>
+							<th class="table-cervejas-col-estilo">
+								<a th:href="${paginas.urlOrdenada('estilo')}" th:remove="${paginas.vazia} ? tag">
+									<span>Estilo </span>
+									<span class="dropup" th:remove="${paginas.descendente('estilo')} ? tag"
+										th:if="${paginas.ordenada('estilo')}">
+										<span class="caret"></span>
+									</span>
+								</a>
+							</th>
+							<th class="table-cervejas-col-origem">
+								<a th:href="${paginas.urlOrdenada('origem')}" th:remove="${paginas.vazia} ? tag">
+									<span>Origem</span>
+									<span class="dropup" th:remove="${paginas.descendente('origem')} ? tag"
+										th:if="${paginas.ordenada('origem')}"><span class="caret"></span>
+									</span>
+								</a>
+							</th>
+							<th class="table-cervejas-col-valor">
+								<a th:href="${paginas.urlOrdenada('valor')}" th:remove="${paginas.vazia} ? tag">
+									<span>Valor</span>
+									<span class="dropup" th:remove="${paginas.descendente('valor')} ? tag"
+										th:if="${paginas.ordenada('valor')}"><span class="caret"></span></span>
+								</a>
+							</th>
 							<th class="table-cervejas-col-acoes"></th>
 						</tr>
 					</thead>
