@@ -17,6 +17,31 @@ Brewer.MaskMoney = (function() {
 }());
 
 
+Brewer.MaskCepNumber = (function() {
+
+	class MaskCepNumber {
+		constructor() {
+			this.inputCepNumber = $('.js-cep-number');
+		}
+		enable() {
+			var maskBehavior = function(val) {
+				return val.replace(/\D/g, '').length === 8 ? '00.000-000' : '00.000-000';
+			};
+
+			var options = {
+				onKeyPress: function(val, e, field, options) {
+					field.mask(maskBehavior.apply({}, arguments), options);
+				}
+			};
+
+			this.inputCepNumber.mask(maskBehavior, options)
+		}
+	}
+
+	return MaskCepNumber;
+
+}());
+
 Brewer.MaskPhoneNumber = (function() {
 
 	class MaskPhoneNumber {
@@ -37,17 +62,18 @@ Brewer.MaskPhoneNumber = (function() {
 			this.inputPhoneNumber.mask(maskBehavior, options)
 
 		}
-	} 
-	
-	
-	return MaskPhoneNumber ;
+	}
+
+
+	return MaskPhoneNumber;
 }());
 
 
 $(function() {
 	var maskMoney = new Brewer.MaskMoney();
-	var maskPhone = new Brewer.MaskPhoneNumber()
+	var maskPhone = new Brewer.MaskPhoneNumber();
+	var maskCep = new Brewer.MaskCepNumber();
 	maskMoney.enable();
 	maskPhone.enable();
-
+	maskCep.enable();
 });
