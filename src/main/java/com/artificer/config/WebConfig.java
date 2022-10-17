@@ -16,6 +16,8 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;*/
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.resource.PathResourceResolver;
 
+import com.artificer.converters.CidadeConverter;
+import com.artificer.converters.EstadoConverter;
 import com.artificer.converters.EstiloConverter;
 import com.artificer.thymeleaf.BrewerDialect;
 
@@ -25,18 +27,16 @@ public class WebConfig implements WebMvcConfigurer {
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/**")
-				.addResourceLocations("classpath:/static/")
-				.setCachePeriod(3600)
-				.resourceChain(true)
-				.addResolver(new PathResourceResolver());
+		registry.addResourceHandler("/**").addResourceLocations("classpath:/static/").setCachePeriod(3600)
+				.resourceChain(true).addResolver(new PathResourceResolver());
 	}
 
 	@Bean
 	public FormattingConversionService mvcConversionService() {
 		DefaultFormattingConversionService conversionService = new DefaultFormattingConversionService();
 		conversionService.addConverter(new EstiloConverter());
-
+		conversionService.addConverter(new CidadeConverter());
+		conversionService.addConverter(new EstadoConverter());
 		NumberStyleFormatter bigDecimalFormatter = new NumberStyleFormatter("#,##0.00");
 		conversionService.addFormatterForFieldType(BigDecimal.class, bigDecimalFormatter);
 		NumberStyleFormatter integerFormatter = new NumberStyleFormatter("#,##0");

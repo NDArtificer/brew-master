@@ -18,7 +18,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.artificer.model.Cidade;
 import com.artificer.repository.CidadeRepository;
-import com.artificer.repository.EstadoRepository;
 
 @Controller
 @RequestMapping("/cidades")

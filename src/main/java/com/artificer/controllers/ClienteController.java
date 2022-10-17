@@ -18,19 +18,17 @@ import com.artificer.repository.EstadoRepository;
 @Controller
 @RequestMapping("/clientes")
 public class ClienteController {
-	
-	
+
 	@Autowired
 	private EstadoRepository estadoRepository;
 
 	@GetMapping("/cadastro")
-	public ModelAndView home() {
+	public ModelAndView home(Cliente cliente) {
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("cliente/CadastroCliente");
-		mv.addObject("cliente", new Cliente());
-		mv.addObject("tiposPessoa", TipoPessoa.values());
+		mv.addObject("tiposPessoa", TipoPessoa.values()); 
 		mv.addObject("estados", estadoRepository.findAll());
-		
+
 		return mv;
 	}
 
@@ -40,7 +38,7 @@ public class ClienteController {
 		mv.setViewName("cliente/CadastroCliente");
 		mv.addObject("tiposPessoa", TipoPessoa.values());
 		mv.addObject("estados", estadoRepository.findAll());
-		
+
 		if (result.hasErrors()) {
 			System.out.println("Tem Erros no Elemento!");
 		} else {
@@ -48,7 +46,7 @@ public class ClienteController {
 			System.out.println("Sku cerveja: " + cliente.getNome());
 			System.out.println("Sku cerveja: " + cliente.getEmail());
 			atributes.addFlashAttribute("message", "Cerveja salva com sucesso!");
-			mv.setViewName("redirect:/clientes");
+			mv.setViewName("redirect:/clientes/cadastro");
 		}
 
 		return mv;

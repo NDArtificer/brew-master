@@ -33,15 +33,24 @@ Brewer.ComboCidade = (function() {
 			this.comboEstado = comboEstado;
 			this.comboCidade = $('#cidade');
 			this.imgLoading = $('.js-img-loading');
+			this.idCidadeSelecionada = $('#idCidadeSelecionada');
 		}
 		enable() {
 			reset.call(this);
 			this.comboEstado.on('alterado', onEstadoAlterado.bind(this));
-
+			var codigoEstado = this.comboEstado.combo.val();
+			inicializarCidades.call(this, codigoEstado);
 		}
 	}
 
 	function onEstadoAlterado(event, estadoId) {
+		this.idCidadeSelecionada.val('');
+		inicializarCidades.call(this, estadoId);
+
+	}
+
+
+	function inicializarCidades(estadoId) {
 		if (estadoId) {
 			var response = $.ajax({
 				url: this.comboCidade.data('url'),
@@ -58,17 +67,22 @@ Brewer.ComboCidade = (function() {
 		} else {
 			reset.call(this)
 		}
-
 	}
+
 
 	function onBuscarCidadesCompleted(cidades) {
 		var options = [];
 		cidades.forEach(function(cidade) {
-			options.push('<option value"' + cidade.id + '">' + cidade.nome + '</option>')
+			options.push('<option value="' + cidade.id + '">' + cidade.nome + '</option>')
 		})
 
 		this.comboCidade.html(options.join(''));
 		this.comboCidade.removeAttr('disabled');
+		var idCidadeSelected = this.idCidadeSelecionada.val();
+		if (idCidadeSelected) {
+			this.comboCidade.val(idCidadeSelected);
+		}
+
 	}
 
 	function reset() {
