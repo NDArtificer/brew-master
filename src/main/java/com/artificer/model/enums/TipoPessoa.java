@@ -24,4 +24,8 @@ public enum TipoPessoa {
 
 	}
 
+	public static String removerFormatacao(String cpfCnpj) {
+		return cpfCnpj.replaceAll("[^0-9]", "");
+	}
+
 }

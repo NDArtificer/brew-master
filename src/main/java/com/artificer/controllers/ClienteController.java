@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.artificer.exceptions.CpfCnpjClienteCadastroException;
 import com.artificer.model.Cliente;
 import com.artificer.model.enums.TipoPessoa;
 import com.artificer.repository.EstadoRepository;
@@ -43,7 +44,14 @@ public class ClienteController {
 			return home(cliente);
 
 		} else {
-			clienteService.save(cliente);
+
+			try {
+
+				clienteService.save(cliente);
+			} catch (CpfCnpjClienteCadastroException e) {
+				result.rejectValue("cpfCnpj", e.getMessage(), e.getMessage());
+				return home(cliente);
+			}
 			atributes.addFlashAttribute("message", "Cliente salvo com sucesso!");
 			return new ModelAndView("redirect:/clientes/cadastro");
 		}

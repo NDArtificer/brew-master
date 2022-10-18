@@ -62,7 +62,11 @@ public class Cliente {
 	@PrePersist
 	@PreUpdate
 	private void removerFormatacaoCpfCnpj() {
-		this.cpfCnpj = this.cpfCnpj.replaceAll("[^0-9]", "");
+		this.cpfCnpj = TipoPessoa.removerFormatacao(this.cpfCnpj);
+	}
+
+	public String getCpfCnpjSemFormatacao() {
+		return TipoPessoa.removerFormatacao(this.cpfCnpj);
 	}
 
 	@Override
