@@ -1,0 +1,1 @@
+alter table cliente change cpfCnpj cpf_Cnpj varchar (30) not null;

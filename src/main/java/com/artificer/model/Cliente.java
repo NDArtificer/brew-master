@@ -10,6 +10,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
@@ -34,25 +36,34 @@ public class Cliente {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+
 	@Column
 	private String nome;
-	@Column
-	@NotBlank
 
+	@NotBlank
 	@CPF(groups = CpfGroup.class)
 	@CNPJ(groups = CnpjGroup.class)
 	private String cpfCnpj;
+
 	@Column
 	@Enumerated(EnumType.STRING)
 	private TipoPessoa tipoPessoa;
+
 	@Column
 	private String telefone;
+
 	@Column
 	@Email
 	private String email;
 
 	@Embedded
 	private Endereco endereco;
+
+	@PrePersist
+	@PreUpdate
+	private void removerFormatacaoCpfCnpj() {
+		this.cpfCnpj = this.cpfCnpj.replaceAll("[^0-9]", "");
+	}
 
 	@Override
 	public int hashCode() {

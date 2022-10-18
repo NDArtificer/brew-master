@@ -14,6 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.artificer.model.Cliente;
 import com.artificer.model.enums.TipoPessoa;
 import com.artificer.repository.EstadoRepository;
+import com.artificer.services.CadastroClienteService;
 
 @Controller
 @RequestMapping("/clientes")
@@ -22,11 +23,14 @@ public class ClienteController {
 	@Autowired
 	private EstadoRepository estadoRepository;
 
+	@Autowired
+	private CadastroClienteService clienteService;
+
 	@GetMapping("/cadastro")
 	public ModelAndView home(Cliente cliente) {
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("cliente/CadastroCliente");
-		mv.addObject("tiposPessoa", TipoPessoa.values()); 
+		mv.addObject("tiposPessoa", TipoPessoa.values());
 		mv.addObject("estados", estadoRepository.findAll());
 
 		return mv;
@@ -34,22 +38,16 @@ public class ClienteController {
 
 	@PostMapping("/cadastro")
 	public ModelAndView cadastrar(@Valid Cliente cliente, BindingResult result, RedirectAttributes atributes) {
-		ModelAndView mv = new ModelAndView();
-		mv.setViewName("cliente/CadastroCliente");
-		mv.addObject("tiposPessoa", TipoPessoa.values());
-		mv.addObject("estados", estadoRepository.findAll());
-
 		if (result.hasErrors()) {
 			System.out.println("Tem Erros no Elemento!");
+			return home(cliente);
+
 		} else {
-			System.out.println("Cadastro de nova cerveja");
-			System.out.println("Sku cerveja: " + cliente.getNome());
-			System.out.println("Sku cerveja: " + cliente.getEmail());
-			atributes.addFlashAttribute("message", "Cerveja salva com sucesso!");
-			mv.setViewName("redirect:/clientes/cadastro");
+			clienteService.save(cliente);
+			atributes.addFlashAttribute("message", "Cliente salvo com sucesso!");
+			return new ModelAndView("redirect:/clientes/cadastro");
 		}
 
-		return mv;
 	}
 
 }

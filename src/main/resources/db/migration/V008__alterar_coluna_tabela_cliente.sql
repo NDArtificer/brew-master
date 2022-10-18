@@ -1,0 +1,1 @@
+alter table cliente modify endereco_cep varchar (20);
