@@ -8,6 +8,9 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Fetch;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -17,7 +20,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.util.StringUtils;
 
+import com.artificer.model.Cidade;
 import com.artificer.model.Cliente;
+import com.artificer.model.Endereco;
+import com.artificer.model.Estado;
 import com.artificer.repository.filter.ClienteFilter;
 import com.artificer.repository.paginacao.Pagination;
 
@@ -37,6 +43,9 @@ public class ClienteRepositoryImpl implements ClientesQueries {
 		Root<Cliente> root = criteria.from(Cliente.class);
 
 		List<Predicate> predicates = addFilters(builder, filter, root);
+		Join<Cliente, Endereco> enderecoCliente = root.join("endereco");
+		Fetch<Endereco, Cidade> cidadeCliente = enderecoCliente.fetch("cidade", JoinType.LEFT);
+		Fetch<Cidade, Estado> estadoCliente = cidadeCliente.fetch("estado", JoinType.LEFT);
 
 		criteria.where(predicates.toArray(new Predicate[predicates.size()]));
 

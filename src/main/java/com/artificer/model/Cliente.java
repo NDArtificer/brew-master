@@ -10,6 +10,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.PostLoad;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.validation.constraints.Email;
@@ -63,6 +64,11 @@ public class Cliente {
 	@PreUpdate
 	private void removerFormatacaoCpfCnpj() {
 		this.cpfCnpj = TipoPessoa.removerFormatacao(this.cpfCnpj);
+	}
+
+	@PostLoad
+	private void postLoad() {
+		this.cpfCnpj = this.tipoPessoa.formatar(this.cpfCnpj);
 	}
 
 	public String getCpfCnpjSemFormatacao() {

@@ -68,8 +68,12 @@
 							<th:block th:replace="fragments/Ordenacao :: order (${paginas}, 'telefone', 'Telefone')">
 							</th:block>
 						</th>
-
-
+						<th class="table-estilos-col-name">
+							Cidade
+						</th>
+						<th class="table-estilos-col-name">
+							Estado
+						</th>
 
 						<th class="table-estilos-col-acoes"></th>
 					</tr>
@@ -80,6 +84,8 @@
 						<td th:text="${cliente.cpfCnpj}">Cacilds</td>
 						<td th:text="${cliente.tipoPessoa}">Cacilds</td>
 						<td th:text="${cliente.telefone}">Cacilds</td>
+						<td th:text="${cliente.endereco.cidade.nome}">Cacilds</td>
+						<td th:text="${cliente.endereco.cidade.estado.uf}">Cacilds</td>
 						<td class="text-center">
 							<a class="btn btn-link btn-xs js-tooltip " titile="Editar">
 								<i class="glyphicon glyphicon-pencil"></i>
