@@ -8,8 +8,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -30,10 +30,9 @@ public class Cidade {
 	@Column
 	private String nome;
 
-	@Valid
+	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
 	@NotNull
-	@JsonIgnore
 	private Estado estado;
 
 	@Override

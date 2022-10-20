@@ -1,14 +1,13 @@
 <!DOCTYPE html>
-<html lang="pt-br" xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{layouts/defaultLayout}">
+
 <head>
-<meta charset="UTF-8" />
-<title>Brew Master | Cidades</title>
+	<meta charset="UTF-8" />
+	<title>Brew Master | Cidades</title>
 
 
-<link rel="stylesheet" type="text/css"
-	th:href="@{/styles/vendors/bootstrap-switch.min.css}" />
+	<link rel="stylesheet" type="text/css" th:href="@{/styles/vendors/bootstrap-switch.min.css}" />
 </head>
 
 <body>
@@ -32,32 +31,35 @@
 			<!-- 					<i class="fa  fa-exclamation-circle"></i> Já existe um produto com -->
 			<!-- 					o nome informado. -->
 			<!-- 				</div> -->
+			<th:block th:include="fragments/mensagemSucesso"></th:block>
 
-			<form action="/cidades" method="post" th:object="${cidade}"
+			<form th:action="@{/cidades/cadastro}" method="POST" th:object="${cidade}"
 				class="form-vertical  js-form-loading">
-
+				<th:block th:include="fragments/mensagemErroValidacao"></th:block>
 				<div class="row">
 					<div class="col-lg-4  form-group">
 
-						<label for="estilo">Estado</label>
+						<label for="estado">Estado</label>
 						<div class="bw-field-action">
-							<select id="estilo" class="form-control">
+							<select id="estado" class="form-control" th:field="*{estado}">
 								<option value="">Selecione o Estado</option>
+								<option th:each="estado : ${estados}" th:value="${estado.id}" th:text="${estado.nome}">
+									Acre</option>
 							</select>
 
 						</div>
 					</div>
 					<div class="col-lg-8  form-group">
 
-						<label for="estoque">Nome</label> <input id="estoque" type="text"
-							class="form-control" />
+						<label for="nome">Nome</label>
+						<input id="nome" type="text" class="form-control" th:field="*{nome}" />
 
 					</div>
 
 				</div>
 
 
-				<div class="form-group">
+				<div class=" form-group">
 					<button class="btn  btn-primary" type="submit">Salvar</button>
 				</div>
 
@@ -70,4 +72,5 @@
 	</section>
 
 </body>
+
 </html>

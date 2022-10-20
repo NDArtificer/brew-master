@@ -16,37 +16,53 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.artificer.exceptions.CidadeJaCadastradaExeption;
 import com.artificer.model.Cidade;
 import com.artificer.repository.CidadeRepository;
+import com.artificer.repository.EstadoRepository;
+import com.artificer.services.CadastroCidadeService;
 
 @Controller
 @RequestMapping("/cidades")
 public class CidadeController {
 
 	@Autowired
+	private EstadoRepository estadoRepository;
+
+	@Autowired
 	private CidadeRepository cidadeRepository;
 
+	@Autowired
+	private CadastroCidadeService cidadeService;
+
 	@GetMapping("/cadastro")
-	public ModelAndView home() {
+	public ModelAndView home(Cidade cidade) {
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("cidade/CadastroCidade");
+		mv.addObject("estados", estadoRepository.findAll());
 		return mv;
 	}
 
 	@PostMapping("/cadastro")
 	public ModelAndView cadastrar(@Valid Cidade cidade, BindingResult result, RedirectAttributes atributes) {
-		ModelAndView mv = new ModelAndView();
-		mv.setViewName("cidade/CadastroCidade");
 
 		if (result.hasErrors()) {
 			System.out.println("Tem Erros no Elemento!");
+
+			return home(cidade);
 		} else {
-			System.out.println("Cadastro de nova cerveja");
+
+			try {
+
+				cidadeService.save(cidade);
+			} catch (CidadeJaCadastradaExeption e) {
+				result.rejectValue("nome", e.getMessage(), e.getMessage());
+				return home(cidade);
+			}
 			atributes.addFlashAttribute("message", "Cidade salva com sucesso!");
-			mv.setViewName("redirect:/cidades");
+			return new ModelAndView("redirect:/cidades/cadastro");
 		}
 
-		return mv;
 	}
 
 	@GetMapping(consumes = { MediaType.APPLICATION_JSON_VALUE })
