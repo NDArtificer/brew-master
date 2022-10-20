@@ -2,9 +2,12 @@ package com.artificer.controllers;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -16,10 +19,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.artificer.controllers.pages.PageWrapper;
 import com.artificer.exceptions.CidadeJaCadastradaExeption;
 import com.artificer.model.Cidade;
 import com.artificer.repository.CidadeRepository;
 import com.artificer.repository.EstadoRepository;
+import com.artificer.repository.filter.CidadeFilter;
 import com.artificer.services.CadastroCidadeService;
 
 @Controller
@@ -41,6 +46,21 @@ public class CidadeController {
 		mv.setViewName("cidade/CadastroCidade");
 		mv.addObject("estados", estadoRepository.findAll());
 		return mv;
+	}
+
+	@GetMapping
+	public ModelAndView pesquisar(CidadeFilter cidadefilter, BindingResult result,
+			@PageableDefault(size = 3) Pageable pageable, HttpServletRequest httpServletRequest) {
+		ModelAndView mv = new ModelAndView("cidade/PesquisaCidade");
+		mv.addObject("estados", estadoRepository.findAll());
+
+		PageWrapper<Cidade> pages = new PageWrapper<>(cidadeRepository.filtrar(cidadefilter, pageable),
+				httpServletRequest);
+
+		mv.addObject("paginas", pages);
+
+		return mv;
+
 	}
 
 	@PostMapping("/cadastro")

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:brewer="http://brewer.artifcer.com" layout:decorate="~{layouts/defaultLayout}">
+
+<head>
+	<meta charset="UTF-8" />
+	<title>Brew Master | Pequisa Cidades</title>
+
+</head>
+
+<body>
+	<section layout:fragment="conteudo">
+
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<diV class="col-sm-10">
+						<h1>Pesquisa de Cidades</h1>
+					</diV>
+
+					<diV class="col-sm-2 ">
+						<div class="aw-page-header-controls">
+							<a class="btn btn-default" th:href="@{/cidades/cadastro}">
+								<i class="glyphicon glyphicon-plus-sign ">
+									<span class="hidden-xs hidden-sm">Nova Cidade</span>
+								</i>
+							</a>
+						</div>
+					</diV>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid">
+			<form method="GET" th:object="${cidadeFilter}">
+				<div class="row">
+					<div class="form-group col-sm-7">
+						<label class="control-label" for="nome">Nome</label>
+						<input type="text" class="form-control" id="nome" th:field="*{nome}" />
+					</div>
+					<div class="form-group col-sm-5">
+						<label class="control-label" for="estado">Estado</label>
+						<select id="estado" class="form-control" th:field="*{estado}">
+							<option value="">Todos os Estados</option>
+							<option th:each="estado : ${estados}" th:text="${estado.nome}" th:value="${estado.id}">
+							</option>
+						</select>
+					</div>
+
+				</div>
+
+				<button type="submit" class="btn btn-primary">Pesquisar</button>
+
+			</form>
+		</div>
+
+		<div class="table table-responsive bw-tabela-simples">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th class="table-cidade-col-name col-sm-7">
+							<th:block th:replace="fragments/Ordenacao :: order (${paginas}, 'nome', 'Nome')">
+							</th:block>
+						</th>
+						<th class="table-cidade-col-estado col-sm-4">
+							<th:block th:replace="fragments/Ordenacao :: order (${paginas}, 'estado', 'Estado')">
+							</th:block>
+						</th>
+
+
+						<th class="table-estilos-col-acoes"></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="cidade : ${paginas.conteudo}">
+						<td th:text="${cidade.nome}">AA9999</td>
+						<td th:text="${cidade.estado.nome}">Cacilds</td>
+						<td class="text-center">
+							<a class="btn btn-link btn-xs js-tooltip " titile="Editar">
+								<i class="glyphicon glyphicon-pencil"></i>
+							</a>
+							<a class="btn btn-link btn-xs " titile="Remover">
+								<i class="glyphicon glyphicon-remove"></i></a>
+						</td>
+					</tr>
+					<tr th:if="${paginas.vazia}">
+						<td colspan="7">Nenhum estado Encontrado!</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<div class="col-sm-12 text-center" th:if="${not paginas.vazia}">
+			<nav>
+				<ul class="pagination pagination-sm" th:with="paginaAtual=${paginas.atual}">
+					<li th:class="${paginas.primeira} ? disabled"><a th:href="${paginas.urlParaPagina(paginaAtual - 1)}"
+							th:remove="${paginas.primeira} ? tag"><span>&laquo;</span></a></li>
+
+					<th:block th:each="page : ${#numbers.sequence(1, paginas.total)}"
+						th:with="numeroPagina=${page - 1}">
+						<li th:class="${paginaAtual == numeroPagina} ? active">
+							<a th:href="${paginas.urlParaPagina(numeroPagina)}">[[${page}]]</a>
+						</li>
+					</th:block>
+					<li th:class="${paginas.ultima} ? disabled"><a th:href="${paginas.urlParaPagina(paginaAtual + 1)}"
+							th:remove="${paginas.ultima} ? tag"><span>&raquo;</span></a></li>
+				</ul>
+			</nav>
+		</div>
+
+	</section>
+</body>
+
+</html>
