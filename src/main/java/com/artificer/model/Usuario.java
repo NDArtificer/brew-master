@@ -32,7 +32,7 @@ public class Usuario {
 	private String nome;
 	@Column
 
-	@NotBlank
+	@NotBlank(message = "Email é obrigatorio!")
 	@Email(message = "Email é obrigatorio!")
 	private String email;
 
@@ -43,9 +43,10 @@ public class Usuario {
 	@NotNull(message = "Data de Nascimento é obrigatorio!")
 	private LocalDate dataNascimento;
 
+	@NotNull(message = "Informe pelo menos um grupo!")
 	@ManyToMany
 	@JoinTable(name = "usuario_grupo", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "grupo_id"))
-	private Set<Grupo> grupos = new HashSet<>();
+	private Set<Grupo> grupos;
 
 	@Override
 	public int hashCode() {
