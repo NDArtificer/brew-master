@@ -6,6 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
@@ -64,16 +66,15 @@ public class CidadeController {
 	}
 
 	@PostMapping("/cadastro")
+	@CacheEvict(value = "cidades", key = "#cidade.estado.id", condition = "#cidade.estadoIsNotNull()")
 	public ModelAndView cadastrar(@Valid Cidade cidade, BindingResult result, RedirectAttributes atributes) {
 
 		if (result.hasErrors()) {
 			System.out.println("Tem Erros no Elemento!");
-
 			return home(cidade);
 		} else {
 
 			try {
-
 				cidadeService.save(cidade);
 			} catch (CidadeJaCadastradaExeption e) {
 				result.rejectValue("nome", e.getMessage(), e.getMessage());
@@ -85,6 +86,7 @@ public class CidadeController {
 
 	}
 
+	@Cacheable(value = "cidades", key = "#estadoId")
 	@GetMapping(consumes = { MediaType.APPLICATION_JSON_VALUE })
 	public @ResponseBody List<Cidade> buscarPeloIdEstado(
 			@RequestParam(name = "estado", defaultValue = "-1") Long estadoId) {

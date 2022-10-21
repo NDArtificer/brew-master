@@ -35,6 +35,10 @@ public class Cidade {
 	@NotNull
 	private Estado estado;
 
+	public boolean estadoIsNotNull() {
+		return estado != null;
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);
