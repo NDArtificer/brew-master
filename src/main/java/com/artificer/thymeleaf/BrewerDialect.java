@@ -17,7 +17,6 @@ public class BrewerDialect extends AbstractProcessorDialect {
 
 	public BrewerDialect() {
 		super("AlgaWorks Brewer", "brewer", StandardDialect.PROCESSOR_PRECEDENCE);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

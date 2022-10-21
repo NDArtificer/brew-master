@@ -18,6 +18,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import org.springframework.format.annotation.NumberFormat;
 import org.springframework.util.StringUtils;
 
 import com.artificer.model.annotations.Sku;
@@ -49,21 +50,25 @@ public class Cerveja {
 	@Column
 	private String descricao;
 
+	@NumberFormat(pattern = "#,##0.00")
 	@NotNull(message = "Valor é obrigatorio!")
 	@DecimalMax(value = "9999999.99", message = "Valor da Cerveja deve ser menor que ou igual a R$ 9.999.999,99")
 	@Column
 	private BigDecimal valor;
 
+	@NumberFormat(pattern = "##0.00")
 	@NotNull(message = "Teor Alcoolico é obrigatorio!")
 	@DecimalMax(value = "100.0", message = "Teor Alcóolico deve ser menor que ou igual a 100")
 	@Column
 	private BigDecimal teorAlcoolico;
 
+	@NumberFormat(pattern = "##0.00")
 	@NotNull(message = "Comissão é obrigatoria!")
 	@DecimalMax(value = "100.0", message = "A comissão deve ser menor que ou igual a 100")
 	@Column
 	private BigDecimal comissao;
-
+	
+	@NumberFormat(pattern = "#,##0")
 	@NotNull(message = "A quantidade de estoque é obrigatoria!")
 	@Max(value = 9999, message = "Quantidade de estoque deve ser inferior a 9.999")
 	@Column
