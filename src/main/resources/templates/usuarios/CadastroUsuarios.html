@@ -71,14 +71,15 @@
 
 					<div class="col-lg-3  form-group">
 
-						<label for="input-produto-estoque">Senha</label> <input id="teorAlcoolico" type="password"
-							class="form-control" />
+						<label for="input-senha">Senha</label> <input id="senha" type="password" class="form-control"
+							th:field="*{senha}" />
 					</div>
 
-					<div class="col-md-3 form-group">
+					<div class=" col-md-3 form-group "
+						th:classappend="${#fields.hasErrors('confirmacaoSenha')} ? has-error">
 
-						<label for="estilo">Cofirmar Senha</label> <input id="estoque" type="password"
-							class="form-control" />
+						<label for="input-confirmacaoSenha">Confirmar Senha</label> <input id="confirmacaoSenha"
+							type="password" class="form-control" th:field="*{confirmacaoSenha}" />
 					</div>
 
 					<div class="col-sm-3">

@@ -1,7 +1,6 @@
 package com.artificer.model;
 
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -12,9 +11,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.Transient;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+
+import com.artificer.model.validation.AttributeConfirmation;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -22,6 +24,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
+@AttributeConfirmation(attribute = "senha", attributeConfirm = "confirmacaoSenha", message = "As senhas informadas não conferem!")
 public class Usuario {
 
 	@javax.persistence.Id
@@ -37,6 +40,10 @@ public class Usuario {
 	private String email;
 
 	private String senha;
+
+	@Transient
+	private String confirmacaoSenha;
+
 	private Boolean ativo;
 
 	@Column
