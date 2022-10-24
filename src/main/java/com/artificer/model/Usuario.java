@@ -16,6 +16,8 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import com.artificer.model.validation.AttributeConfirmation;
 
 import lombok.Getter;
@@ -46,7 +48,8 @@ public class Usuario {
 
 	private Boolean ativo;
 
-	@Column
+	@DateTimeFormat(pattern = "dd/MM/yyyy")
+	@Column(columnDefinition = "datetime")
 	@NotNull(message = "Data de Nascimento é obrigatorio!")
 	private LocalDate dataNascimento;
 

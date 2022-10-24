@@ -8,6 +8,7 @@
 
 
 	<link rel="stylesheet" type="text/css" th:href="@{/styles/vendors/bootstrap-switch.min.css}" />
+	<link rel="stylesheet" type="text/css" th:href="@{/styles/vendors/bootstrap-datepicker.standalone.min.css}" />
 </head>
 
 <body>
@@ -58,10 +59,11 @@
 							class="form-control" th:field="*{email}" />
 
 					</div>
-					<div class="col-lg-3  form-group">
+					<div class="col-lg-3  form-group ">
 
-						<label for="estoque">Data Nascimento</label> <input id="estoque" type="text"
-							class="form-control" />
+						<label for="dataNascimento">Data Nascimento</label> <input id="dataNascimento" type="text"
+							class="form-control js-date" th:field="*{dataNascimento}" data-provide="datepicker"
+							data-date-orientation="bottom" data-date-language="pt-BR" data-date-autoClose="true" autocomplete="off"/>
 
 					</div>
 
@@ -130,6 +132,8 @@
 
 	<th:block layout:fragment="javascript-extra">
 		<script th:src="@{/javascripts/vendors/bootstrap-switch.min.js}"></script>
+		<script th:src="@{/javascripts/vendors/bootstrap-datepicker.min.js}"></script>
+		<script th:src="@{/javascripts/vendors/bootstrap-datepicker.pt-BR.min.js}"></script>
 		<script>
 			$('.switch').bootstrapSwitch();
 		</script>
