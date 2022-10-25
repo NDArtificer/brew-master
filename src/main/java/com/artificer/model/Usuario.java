@@ -53,7 +53,7 @@ public class Usuario {
 	@NotNull(message = "Data de Nascimento é obrigatorio!")
 	private LocalDate dataNascimento;
 
-	@NotNull(message = "Informe pelo menos um grupo!")
+	// @NotNull(message = "Informe pelo menos um grupo!")
 	@ManyToMany
 	@JoinTable(name = "usuario_grupo", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "grupo_id"))
 	private Set<Grupo> grupos;
