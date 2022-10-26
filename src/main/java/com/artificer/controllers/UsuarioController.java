@@ -12,7 +12,9 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.artificer.exceptions.EmailJaCadastradoException;
+import com.artificer.exceptions.SenhaNaoInformadaException;
 import com.artificer.model.Usuario;
+import com.artificer.repository.GrupoRepository;
 import com.artificer.services.CadastroUsuarioService;
 
 @Controller
@@ -22,10 +24,14 @@ public class UsuarioController {
 	@Autowired
 	private CadastroUsuarioService usuarioService;
 
+	@Autowired
+	private GrupoRepository grupoRepository;
+
 	@GetMapping("/cadastro")
 	public ModelAndView home(Usuario usuario) {
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("usuarios/CadastroUsuarios");
+		mv.addObject("grupos", grupoRepository.findAll());
 		return mv;
 	}
 
@@ -40,6 +46,9 @@ public class UsuarioController {
 				usuarioService.save(usuario);
 			} catch (EmailJaCadastradoException e) {
 				result.rejectValue("email", e.getMessage(), e.getMessage());
+				return home(usuario);
+			} catch (SenhaNaoInformadaException e) {
+				result.rejectValue("senha", e.getMessage(), e.getMessage());
 				return home(usuario);
 			}
 			atributes.addFlashAttribute("message", "Usuário salvo com sucesso!");

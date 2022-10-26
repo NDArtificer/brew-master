@@ -63,7 +63,8 @@
 
 						<label for="dataNascimento">Data Nascimento</label> <input id="dataNascimento" type="text"
 							class="form-control js-date" th:field="*{dataNascimento}" data-provide="datepicker"
-							data-date-orientation="bottom" data-date-language="pt-BR" data-date-autoClose="true" autocomplete="off"/>
+							data-date-orientation="bottom" data-date-language="pt-BR" data-date-autoClose="true"
+							autocomplete="off" />
 
 					</div>
 
@@ -71,7 +72,7 @@
 
 				<div class="row">
 
-					<div class="col-lg-3  form-group">
+					<div class="col-lg-3  form-group" th:classappend="${usuario.novo} ? bw-required">
 
 						<label for="input-senha">Senha</label> <input id="senha" type="password" class="form-control"
 							th:field="*{senha}" />
@@ -89,7 +90,7 @@
 						<label class="control-label">Status</label>
 						<div>
 							<input type="checkbox" class="switch" data-size="small" data-off-color="danger"
-								data-off-text="Inativo" data-on-text="Ativo" />
+								data-off-text="Inativo" data-on-text="Ativo" th:field="*{ativo}" />
 						</div>
 
 					</div>
@@ -101,19 +102,17 @@
 					<div class="col-sm-3  form-group  bw-required"
 						th:classappend="${#fields.hasErrors('grupos')} ? has-error">
 
-						<label for="input-produto-estoque" class="control-label">Grupos*</label>
+						<label for="grupos" class="control-label">Grupos*</label>
 						<div class="user-checkbox">
-							<div class="checkbox-inline">
-								<label><input id="Admin" type="checkbox" />
-									Admin
-								</label>
-							</div>
 
-							<div class="checkbox-inline">
-								<label> <input id="Vendedor" type="checkbox" />
-									Vendedor
-								</label>
-							</div>
+							<th:block th:each="grupo : ${grupos}">
+								<div class="checkbox-inline">
+									<input type="checkbox" th:value="${grupo.id}" th:field="*{grupos}" />
+									<label th:for="${#ids.prev('grupos')}" th:text="${grupo.nome}">
+										Administrador
+									</label>
+								</div>
+							</th:block>
 						</div>
 					</div>
 				</div>
