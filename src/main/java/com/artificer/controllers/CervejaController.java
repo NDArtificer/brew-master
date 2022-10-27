@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
-@RequestMapping("/cerveja")
+@RequestMapping("/cervejas")
 public class CervejaController {
 
 	@Autowired
