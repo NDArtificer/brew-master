@@ -41,15 +41,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-			.antMatchers("/cidades/nova").hasAuthority("CADASTRAR_CIDADES")
+			.antMatchers("/cidades/**").hasAuthority("CADASTRAR_CIDADES")
 			.antMatchers("/usuario/**").hasAuthority("CADASTRAR_USUARIOS")
+			.antMatchers("/clientes/**").hasAuthority("CADASTRAR_CLIENTE")
+			.antMatchers("/cervejas/**", "/fotos/**", "/estilos/**").hasAuthority("CADASTRAR_CERVEJA")
 		.anyRequest()
-			.authenticated()
+			.denyAll()
 		.and()
 			.formLogin().loginPage("/login")
 				.permitAll()
 		.and()
+			.exceptionHandling()
+			.accessDeniedPage("/403")
+		.and()
 			.csrf().disable();
 	}
+	
 
 }

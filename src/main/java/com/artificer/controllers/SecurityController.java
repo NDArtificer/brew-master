@@ -15,6 +15,12 @@ public class SecurityController {
 			return "redirect:/cervejas";
 		}
 		return "Login";
+
+	}
+
+	@GetMapping("/403")
+	public String acessoNegado() {
+		return "403";
 	}
 
 }
