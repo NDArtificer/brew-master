@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.artificer.model.Cidade;
-import com.artificer.model.Estado;
 import com.artificer.repository.helper.cidade.CidadesQueries;
 
 @Repository

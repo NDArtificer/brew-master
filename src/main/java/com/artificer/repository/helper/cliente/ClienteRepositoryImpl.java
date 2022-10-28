@@ -35,7 +35,7 @@ public class ClienteRepositoryImpl implements ClientesQueries {
 	@Autowired
 	private Pagination pagination;
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "unused" })
 	@Override
 	public Page<Cliente> filtrar(ClienteFilter filter, Pageable pageable) {
 		CriteriaBuilder builder = manager.getCriteriaBuilder();

@@ -8,7 +8,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import lombok.Getter;
+import lombok.Setter;
+
 @Entity
+@Getter
+@Setter
 public class Permissao {
 
 	@Id
@@ -16,7 +21,10 @@ public class Permissao {
 	private Long id;
 
 	@Column
-	private Long nome;
+	private String nome;
+
+	@Column
+	private String descricao;
 
 	@Override
 	public int hashCode() {

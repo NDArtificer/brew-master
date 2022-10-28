@@ -19,7 +19,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.util.StringUtils;
 
 import com.artificer.model.Cidade;
-import com.artificer.model.Cliente;
 import com.artificer.model.Estado;
 import com.artificer.repository.filter.CidadeFilter;
 import com.artificer.repository.paginacao.Pagination;
@@ -32,7 +31,7 @@ public class CidadeRepositoryImpl implements CidadesQueries {
 	@Autowired
 	private Pagination pagination;
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "unused" })
 	@Override
 	public Page<Cidade> filtrar(CidadeFilter filter, Pageable pageable) {
 		CriteriaBuilder builder = manager.getCriteriaBuilder();

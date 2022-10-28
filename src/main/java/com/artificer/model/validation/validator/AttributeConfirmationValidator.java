@@ -8,8 +8,6 @@ import org.apache.commons.beanutils.BeanUtils;
 
 import com.artificer.model.validation.AttributeConfirmation;
 
-import lombok.val;
-
 public class AttributeConfirmationValidator implements ConstraintValidator<AttributeConfirmation, Object> {
 
 	private String atributo;
