@@ -38,8 +38,8 @@
 			<th:block th:include="fragments/mensagemSucesso"></th:block>
 
 
-			<form method="post" th:object="${cerveja}" class="form-vertical  js-form-loading"
-				th:action:"@{cervejas/cadastro}">
+			<form method="POST" th:object="${cerveja}" class="form-vertical  js-form-loading"
+				th:action="@{/cervejas/cadastro}">
 
 				<th:block th:include="fragments/mensagemErroValidacao">
 				</th:block>

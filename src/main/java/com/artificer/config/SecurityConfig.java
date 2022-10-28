@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @SuppressWarnings("deprecation")
 @Configuration
@@ -35,26 +36,28 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	public void configure(WebSecurity web) throws Exception {
 		web.ignoring()
-			.antMatchers("/layout/**", "/images/**");
+			.antMatchers("/layout/**", "/images/**", "/styles/**", "/javascripts/**");
 	}
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-			.antMatchers("/cidades/**").hasAuthority("CADASTRAR_CIDADES")
-			.antMatchers("/usuario/**").hasAuthority("CADASTRAR_USUARIOS")
+			.antMatchers("/cidades/**").hasAuthority("CADASTRAR_CIDADE")
+			.antMatchers("/usuarios/**").hasAuthority("CADASTRAR_USUARIO")
 			.antMatchers("/clientes/**").hasAuthority("CADASTRAR_CLIENTE")
 			.antMatchers("/cervejas/**", "/fotos/**", "/estilos/**").hasAuthority("CADASTRAR_CERVEJA")
 		.anyRequest()
 			.denyAll()
 		.and()
-			.formLogin().loginPage("/login")
+			.formLogin()
+				.loginPage("/login")
 				.permitAll()
+			.and()
+				.logout()
+				.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
 		.and()
 			.exceptionHandling()
-			.accessDeniedPage("/403")
-		.and()
-			.csrf().disable();
+			.accessDeniedPage("/403");
 	}
 	
 

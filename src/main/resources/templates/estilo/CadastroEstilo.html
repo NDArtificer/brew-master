@@ -48,7 +48,8 @@
 			<!-- 					o nome informado. -->
 			<!-- 				</div> -->
 
-			<form method="post" th:object="${estilo}" class="form-vertical  js-form-loading">
+			<form method="post" th:object="${estilo}" class="form-vertical  js-form-loading"
+				th:action="@{/estilos/cadastro}">
 
 				<th:block th:include="fragments/mensagemErroValidacao">
 				</th:block>
