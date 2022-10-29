@@ -42,12 +42,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
+			.antMatchers("/estilos","/cervejas").hasAuthority("PESQUISAR_ESTILO" )
+			.antMatchers("/estilos/**").hasAuthority("CADASTRAR_ESTILO")
 			.antMatchers("/cidades/**").hasAuthority("CADASTRAR_CIDADE")
 			.antMatchers("/usuarios/**").hasAuthority("CADASTRAR_USUARIO")
 			.antMatchers("/clientes/**").hasAuthority("CADASTRAR_CLIENTE")
-			.antMatchers("/cervejas/**", "/fotos/**", "/estilos/**").hasAuthority("CADASTRAR_CERVEJA")
+			.antMatchers("/cervejas/**", "/estilos/**").hasAuthority("CADASTRAR_CERVEJA")
+			.antMatchers("/fotos/**").hasAuthority("ACESSAR_FOTOS")
 		.anyRequest()
-			.denyAll()
+			.authenticated()
 		.and()
 			.formLogin()
 				.loginPage("/login")
@@ -56,8 +59,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.logout()
 				.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
 		.and()
-			.exceptionHandling()
-			.accessDeniedPage("/403");
+			.sessionManagement()
+			.maximumSessions(1)
+			.expiredUrl("/login")
+		.and()
+			.invalidSessionUrl("/login");
 	}
 	
 

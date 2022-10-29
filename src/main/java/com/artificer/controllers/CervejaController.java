@@ -58,19 +58,6 @@ public class CervejaController {
 			return cadastro(cerveja);
 		} else {
 
-			log.info("Cadastro de nova cerveja");
-			log.info("Sku cerveja -> " + cerveja.getSku());
-			log.info("Nome cerveja -> " + cerveja.getNome());
-			log.info("Descicao cerveja -> " + cerveja.getDescricao());
-			log.info("Estilo cerveja -> " + cerveja.getEstilo().getId());
-			log.info("Estilo cerveja -> " + cerveja.getEstilo().getId());
-			log.info("Comissao cerveja -> " + cerveja.getComissao());
-			log.info("Valor cerveja -> " + cerveja.getValor());
-			log.info("Sabor cerveja -> " + cerveja.getSabor());
-			log.info("Teor Alcoolico cerveja -> " + cerveja.getTeorAlcoolico());
-			log.info("Origem cerveja -> " + cerveja.getOrigem());
-			log.info("Quantidade Estoque cerveja -> " + cerveja.getQuantidadeEstoque());
-
 			cervejaService.save(cerveja);
 			atributes.addFlashAttribute("message", "Cerveja salva com sucesso!");
 			return new ModelAndView("redirect:/cervejas/cadastro");

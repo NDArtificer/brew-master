@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	xmlns:brewer="http://brewer.artifcer.com" layout:decorate="~{layouts/defaultLayout}">
+	xmlns:brewer="http://brewer.artifcer.com" layout:decorate="~{layouts/defaultLayout}"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 
 <head>
 	<meta charset="UTF-8" />
@@ -18,7 +19,7 @@
 						<h1>Pesquisa de Cervejas</h1>
 					</diV>
 
-					<diV class="col-sm-2">
+					<diV class="col-sm-2" sec:authorize-url="/cervejas/cadastro">
 						<div class="aw-page-header-controls">
 							<a class="btn btn-default" th:href="@{/cervejas/cadastro}">
 								<i class="glyphicon glyphicon-plus-sign">
@@ -149,8 +150,8 @@
 							<td th:text="${cerveja.estilo.nome}">Lager</td>
 							<td th:text="${cerveja.origem.descricao}">Nacional</td>
 							<td class="text-right" th:text="|R$ ${{cerveja.valor}}|">R$ 8.00</td>
-							<td class="text-center">
-								<a class="btn btn-link btn-xs js-tooltip " titile="Editar">
+							<td class="text-center" sec:authorize="hasAuthority('CADASTRAR_CERVEJA')">
+								<a class=" btn btn-link btn-xs js-tooltip " titile=" Editar">
 									<i class="glyphicon glyphicon-pencil"></i>
 								</a>
 								<a class="btn btn-link btn-xs " titile="Remover">
