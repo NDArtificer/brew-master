@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:brewer="http://brewer.artifcer.com" layout:decorate="~{layouts/defaultLayout}"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+<head>
+	<meta charset="UTF-8" />
+	<title>Brew Master | Pequisa Estilo</title>
+
+</head>
+
+<body>
+	<section layout:fragment="conteudo">
+
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<diV class="col-xs-10">
+						<h1>Pesquisa de Usuários</h1>
+					</diV>
+
+					<diV class="col-xs-2" sec:authorize-url="/usuarios/cadastro">
+						<div class="aw-page-header-controls">
+							<a class="btn btn-default" th:href="@{/usuarios/cadastro}">
+								<i class="glyphicon glyphicon-plus-sign">
+									<span class="hidden-xs hidden-sm">Novo Usuário</span>
+								</i>
+							</a>
+						</div>
+					</diV>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid">
+			<form method="GET" th:object="${usuarioFilter}">
+				<div class="row">
+					<div class="form-group col-sm-5">
+						<label class="control-label" for="nome">Nome</label>
+						<input type="text" class="form-control" id="nome" th:field="*{nome}" />
+					</div>
+
+					<div class="form-group col-sm-7">
+						<label class="control-label" for="email">E-mail</label>
+						<input type="text" class="form-control" id="email" th:field="*{email}" />
+					</div>
+				</div>
+
+				<div class="row">
+
+					<div class="col-sm-3  form-group" th:classappend="${#fields.hasErrors('grupos')} ? has-error">
+
+						<label for="grupos" class="control-label">Grupos</label>
+						<div class="user-checkbox">
+
+							<th:block th:each="grupo : ${grupos}">
+								<div class="checkbox-inline">
+									<input type="checkbox" th:value="${grupo.id}" th:field="*{grupos}" />
+									<label th:for="${#ids.prev('grupos')}" th:text="${grupo.nome}">
+										Administrador
+									</label>
+								</div>
+							</th:block>
+						</div>
+					</div>
+				</div>
+
+				<button type="submit" class="btn btn-primary">Pesquisar</button>
+
+			</form>
+		</div>
+
+
+		<div class="table table-responsive bw-tabela-simples">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th class="table-estilos-col-name">
+							<th:block th:replace="fragments/Ordenacao :: order (${paginas}, 'nome', 'Nome')">
+							</th:block>
+						</th>
+						<th class="table-estilos-col-name">
+							<th:block th:replace="fragments/Ordenacao :: order (${paginas}, 'email', 'E-mail')">
+							</th:block>
+						</th>
+						<th class="table-estilos-col-name">
+							<th:block th:replace="fragments/Ordenacao :: order (${paginas}, 'status', 'Status')">
+							</th:block>
+						</th>
+
+
+						<th class="table-estilos-col-acoes" sec:authorize="hasAuthority('CADASTRAR_USUARIO')"></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="usuario : ${paginas.conteudo}">
+						<td th:text="${usuario.nome}">AA9999</td>
+						<td th:text="${usuario.email}">Cacilds</td>
+						<td th:text="${usuario.ativo} ? Ativo : Inativo">Cacilds</td>
+						<td class="text-center" sec:authorize="hasAuthority('CADASTRAR_ESTILO')">
+							<a class="btn btn-link btn-xs js-tooltip " titile="Editar">
+								<i class="glyphicon glyphicon-pencil"></i>
+							</a>
+							<a class="btn btn-link btn-xs " titile="Remover">
+								<i class="glyphicon glyphicon-remove"></i></a>
+						</td>
+					</tr>
+					<tr th:if="${paginas.vazia}">
+						<td colspan="7">Nenhum estilo Encontrado!</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<div class="col-sm-12 text-center" th:if="${not paginas.vazia}">
+			<nav>
+				<ul class="pagination pagination-sm" th:with="paginaAtual=${paginas.atual}">
+					<li th:class="${paginas.primeira} ? disabled"><a th:href="${paginas.urlParaPagina(paginaAtual - 1)}"
+							th:remove="${paginas.primeira} ? tag"><span>&laquo;</span></a></li>
+
+					<th:block th:each="page : ${#numbers.sequence(1, paginas.total)}"
+						th:with="numeroPagina=${page - 1}">
+						<li th:class="${paginaAtual == numeroPagina} ? active">
+							<a th:href="${paginas.urlParaPagina(numeroPagina)}">[[${page}]]</a>
+						</li>
+					</th:block>
+					<li th:class="${paginas.ultima} ? disabled"><a th:href="${paginas.urlParaPagina(paginaAtual + 1)}"
+							th:remove="${paginas.ultima} ? tag"><span>&raquo;</span></a></li>
+				</ul>
+			</nav>
+		</div>
+
+
+	</section>
+</body>
+
+</html>

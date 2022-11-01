@@ -1,8 +1,11 @@
 package com.artificer.controllers;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,15 +14,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.artificer.controllers.pages.PageWrapper;
 import com.artificer.exceptions.EmailJaCadastradoException;
 import com.artificer.exceptions.SenhaNaoInformadaException;
 import com.artificer.model.Usuario;
 import com.artificer.repository.GrupoRepository;
+import com.artificer.repository.UsuarioRepository;
+import com.artificer.repository.filter.UsuarioFilter;
 import com.artificer.services.CadastroUsuarioService;
 
 @Controller
 @RequestMapping(value = "/usuarios")
 public class UsuarioController {
+
+	@Autowired
+	private UsuarioRepository usuarioRepository;
 
 	@Autowired
 	private CadastroUsuarioService usuarioService;
@@ -33,6 +42,20 @@ public class UsuarioController {
 		mv.setViewName("usuarios/CadastroUsuarios");
 		mv.addObject("grupos", grupoRepository.findAll());
 		return mv;
+	}
+
+	@GetMapping
+	public ModelAndView pesquisar(UsuarioFilter usuariofilter, BindingResult result,
+			@PageableDefault(size = 3) Pageable pageable, HttpServletRequest httpServletRequest) {
+		ModelAndView mv = new ModelAndView("usuarios/PesquisaUsuario");
+		mv.addObject("grupos", grupoRepository.findAll());
+
+		PageWrapper<Usuario> pages = new PageWrapper<>(usuarioRepository.findAll(pageable), httpServletRequest);
+
+		mv.addObject("paginas", pages);
+
+		return mv;
+
 	}
 
 	@PostMapping("/cadastro")
