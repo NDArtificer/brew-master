@@ -1,5 +1,7 @@
 package com.artificer.repository.filter;
 
+import java.util.List;
+
 import com.artificer.model.Grupo;
 
 import lombok.Getter;
@@ -11,6 +13,6 @@ public class UsuarioFilter {
 
 	private String nome;
 	private String email;
-	private Grupo grupos;
+	private List<Grupo> grupos;
 
 }

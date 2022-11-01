@@ -32,7 +32,7 @@ public class Usuario {
 
 	@javax.persistence.Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long Id;
+	private Long id;
 	@Column
 	@NotBlank(message = "Nome é obrigatorio!")
 	private String nome;
@@ -60,12 +60,12 @@ public class Usuario {
 	private Set<Grupo> grupos;
 
 	public boolean isNovo() {
-		return Id == null;
+		return id == null;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(Id);
+		return Objects.hash(id);
 	}
 
 	@Override
@@ -77,7 +77,7 @@ public class Usuario {
 		if (getClass() != obj.getClass())
 			return false;
 		Usuario other = (Usuario) obj;
-		return Objects.equals(Id, other.Id);
+		return Objects.equals(id, other.id);
 	}
 
 }

@@ -75,27 +75,31 @@
 			<table class="table table-hover">
 				<thead>
 					<tr>
-						<th class="table-estilos-col-name">
-							<th:block th:replace="fragments/Ordenacao :: order (${paginas}, 'nome', 'Nome')">
-							</th:block>
+						<th class="table-estilos-col-name">Nome
+							<!--							<th:block th:replace="fragments/Ordenacao :: order (${paginas}, 'nome', 'Nome')">-->
+							<!--							</th:block>-->
 						</th>
-						<th class="table-estilos-col-name">
-							<th:block th:replace="fragments/Ordenacao :: order (${paginas}, 'email', 'E-mail')">
-							</th:block>
+						<th class="table-estilos-col-name">E-mail
+							<!--							<th:block th:replace="fragments/Ordenacao :: order (${paginas}, 'email', 'E-mail')">-->
+							<!--							</th:block>-->
 						</th>
-						<th class="table-estilos-col-name">
-							<th:block th:replace="fragments/Ordenacao :: order (${paginas}, 'status', 'Status')">
-							</th:block>
+						<th class="table-estilos-col-name">Grupo
+							<!--							<th:block th:replace="fragments/Ordenacao :: order (${paginas}, 'status', 'Status')">-->
+							<!--							</th:block>-->
 						</th>
+						<th>Status</th>
 
 
 						<th class="table-estilos-col-acoes" sec:authorize="hasAuthority('CADASTRAR_USUARIO')"></th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr th:each="usuario : ${paginas.conteudo}">
+					<tr th:each="usuario : ${usuarios}">
 						<td th:text="${usuario.nome}">AA9999</td>
 						<td th:text="${usuario.email}">Cacilds</td>
+						<td>
+							<span th:each="grupo : ${usuario.grupos}" th:text="${grupo.nome}"></span>
+						</td>
 						<td th:text="${usuario.ativo} ? Ativo : Inativo">Cacilds</td>
 						<td class="text-center" sec:authorize="hasAuthority('CADASTRAR_ESTILO')">
 							<a class="btn btn-link btn-xs js-tooltip " titile="Editar">
@@ -105,30 +109,30 @@
 								<i class="glyphicon glyphicon-remove"></i></a>
 						</td>
 					</tr>
-					<tr th:if="${paginas.vazia}">
+					<tr th:if="${usuarios.empty}">
 						<td colspan="7">Nenhum estilo Encontrado!</td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
 
-		<div class="col-sm-12 text-center" th:if="${not paginas.vazia}">
-			<nav>
-				<ul class="pagination pagination-sm" th:with="paginaAtual=${paginas.atual}">
-					<li th:class="${paginas.primeira} ? disabled"><a th:href="${paginas.urlParaPagina(paginaAtual - 1)}"
-							th:remove="${paginas.primeira} ? tag"><span>&laquo;</span></a></li>
-
-					<th:block th:each="page : ${#numbers.sequence(1, paginas.total)}"
-						th:with="numeroPagina=${page - 1}">
-						<li th:class="${paginaAtual == numeroPagina} ? active">
-							<a th:href="${paginas.urlParaPagina(numeroPagina)}">[[${page}]]</a>
-						</li>
-					</th:block>
-					<li th:class="${paginas.ultima} ? disabled"><a th:href="${paginas.urlParaPagina(paginaAtual + 1)}"
-							th:remove="${paginas.ultima} ? tag"><span>&raquo;</span></a></li>
-				</ul>
-			</nav>
-		</div>
+		<!--		<div class="col-sm-12 text-center" th:if="${not paginas.vazia}">-->
+		<!--			<nav>-->
+		<!--				<ul class="pagination pagination-sm" th:with="paginaAtual=${paginas.atual}">-->
+		<!--					<li th:class="${paginas.primeira} ? disabled"><a th:href="${paginas.urlParaPagina(paginaAtual - 1)}"-->
+		<!--							th:remove="${paginas.primeira} ? tag"><span>&laquo;</span></a></li>-->
+		<!---->
+		<!--					<th:block th:each="page : ${#numbers.sequence(1, paginas.total)}"-->
+		<!--						th:with="numeroPagina=${page - 1}">-->
+		<!--						<li th:class="${paginaAtual == numeroPagina} ? active">-->
+		<!--							<a th:href="${paginas.urlParaPagina(numeroPagina)}">[[${page}]]</a>-->
+		<!--						</li>-->
+		<!--					</th:block>-->
+		<!--					<li th:class="${paginas.ultima} ? disabled"><a th:href="${paginas.urlParaPagina(paginaAtual + 1)}"-->
+		<!--							th:remove="${paginas.ultima} ? tag"><span>&raquo;</span></a></li>-->
+		<!--				</ul>-->
+		<!--			</nav>-->
+		<!--		</div>-->
 
 
 	</section>
