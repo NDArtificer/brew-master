@@ -5,27 +5,20 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
 
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.Subqueries;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.artificer.model.Grupo;
 import com.artificer.model.Usuario;
-import com.artificer.model.UsuarioGrupo;
 import com.artificer.repository.filter.UsuarioFilter;
 import com.artificer.repository.paginacao.Pagination;
 
@@ -51,43 +44,49 @@ public class UsuarioRepositoryImpl implements UsuariosQueries {
 				String.class).setParameter("usuario", usuario).getResultList();
 	}
 
-	@SuppressWarnings({ "unchecked", "deprecation" })
 	@Override
 	@Transactional(readOnly = true)
 	public List<Usuario> filtrar(UsuarioFilter filter) {
-		Criteria criteria = manager.unwrap(Session.class).createCriteria(Usuario.class);
+		CriteriaBuilder criteriaBuilder = manager.getCriteriaBuilder();
+		CriteriaQuery<Usuario> criteriaQuery = criteriaBuilder.createQuery(Usuario.class).distinct(true);
+		Root<Usuario> root = criteriaQuery.from(Usuario.class);
 
-		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
-		addFilters(filter, criteria);
+		List<Predicate> predicates = addFilters(criteriaBuilder, filter, root, criteriaQuery);
 
-		return criteria.list();
+		criteriaQuery.where(criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()])));
+		TypedQuery<Usuario> query = manager.createQuery(criteriaQuery);
+
+		return query.getResultList();
 	}
 
-	private void addFilters(UsuarioFilter filtro, Criteria criteria) {
-		if (filtro != null) {
-			if (StringUtils.hasText(filtro.getNome())) {
-				criteria.add(Restrictions.ilike("nome", filtro.getNome(), MatchMode.ANYWHERE));
+	@SuppressWarnings("unchecked")
+	private List<Predicate> addFilters(CriteriaBuilder criteriaBuilder, UsuarioFilter filter, Root<Usuario> root,
+			CriteriaQuery<Usuario> criteriaQuery) {
+		var predicates = new ArrayList<Predicate>();
+
+		if (filter != null) {
+			if (StringUtils.hasText(filter.getNome())) {
+				predicates.add(criteriaBuilder.like(root.get("nome"), filter.getNome()));
+			}
+			if (StringUtils.hasText(filter.getEmail())) {
+				predicates.add(criteriaBuilder.like(root.get("email"), filter.getEmail()));
 			}
 
-			if (StringUtils.hasText(filtro.getEmail())) {
-				criteria.add(Restrictions.ilike("email", filtro.getEmail(), MatchMode.START));
-			}
+			if (filter.getGrupos() != null && !filter.getGrupos().isEmpty()) {
+				Subquery<Long> subQuery = criteriaQuery.subquery(Long.class);
+				Root<Usuario> subRoot = subQuery.from(Usuario.class);
+				Join<Usuario, Grupo> subQueryGrupo = subRoot.join("grupos");
 
-			criteria.createAlias("grupos", "g");
-			if (filtro.getGrupos() != null && !filtro.getGrupos().isEmpty()) {
-				List<Criterion> subqueries = new ArrayList<>();
-				for (Long codigoGrupo : filtro.getGrupos().stream().mapToLong(Grupo::getId).toArray()) {
-					DetachedCriteria dc = DetachedCriteria.forClass(UsuarioGrupo.class);
-					dc.add(Restrictions.eq("id.grupo.id", codigoGrupo));
-					dc.setProjection(Projections.property("id.usuario"));
+				for (Long grupoId : filter.getGrupos().stream().mapToLong(Grupo::getId).toArray()) {
+					subQuery.select(subRoot.get("id")).where(criteriaBuilder.equal(subQueryGrupo.get("id"), grupoId));
 
-					subqueries.add(Subqueries.propertyIn("id", dc));
+					predicates.add(criteriaBuilder.in(root.get("id")).value(subQuery));
 				}
 
-				Criterion[] criterions = new Criterion[subqueries.size()];
-				criteria.add(Restrictions.and(subqueries.toArray(criterions)));
 			}
 		}
+
+		return predicates;
 	}
 
 }
