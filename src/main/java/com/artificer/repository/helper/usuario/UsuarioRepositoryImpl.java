@@ -51,6 +51,7 @@ public class UsuarioRepositoryImpl implements UsuariosQueries {
 		CriteriaQuery<Usuario> criteriaQuery = criteriaBuilder.createQuery(Usuario.class).distinct(true);
 		Root<Usuario> root = criteriaQuery.from(Usuario.class);
 
+		root.alias("u");
 		List<Predicate> predicates = addFilters(criteriaBuilder, filter, root, criteriaQuery);
 
 		criteriaQuery.where(criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()])));
@@ -59,7 +60,6 @@ public class UsuarioRepositoryImpl implements UsuariosQueries {
 		return query.getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
 	private List<Predicate> addFilters(CriteriaBuilder criteriaBuilder, UsuarioFilter filter, Root<Usuario> root,
 			CriteriaQuery<Usuario> criteriaQuery) {
 		var predicates = new ArrayList<Predicate>();
@@ -76,10 +76,9 @@ public class UsuarioRepositoryImpl implements UsuariosQueries {
 				Subquery<Long> subQuery = criteriaQuery.subquery(Long.class);
 				Root<Usuario> subRoot = subQuery.from(Usuario.class);
 				Join<Usuario, Grupo> subQueryGrupo = subRoot.join("grupos");
-
+				subRoot.alias("g");
 				for (Long grupoId : filter.getGrupos().stream().mapToLong(Grupo::getId).toArray()) {
 					subQuery.select(subRoot.get("id")).where(criteriaBuilder.equal(subQueryGrupo.get("id"), grupoId));
-
 					predicates.add(criteriaBuilder.in(root.get("id")).value(subQuery));
 				}
 

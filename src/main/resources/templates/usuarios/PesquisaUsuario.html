@@ -5,7 +5,7 @@
 
 <head>
 	<meta charset="UTF-8" />
-	<title>Brew Master | Pequisa Estilo</title>
+	<title>Brew Master | Pequisa Usuários</title>
 
 </head>
 
@@ -98,7 +98,8 @@
 						<td th:text="${usuario.nome}">AA9999</td>
 						<td th:text="${usuario.email}">Cacilds</td>
 						<td>
-							<span th:each="grupo : ${usuario.grupos}" th:text="${grupo.nome}"></span>
+							<span th:each="grupo : ${usuario.grupos}"
+								th:text="|${grupo.nome}${grupoStat.last ? '':', '}|"></span>
 						</td>
 						<td th:text="${usuario.ativo} ? Ativo : Inativo">Cacilds</td>
 						<td class="text-center" sec:authorize="hasAuthority('CADASTRAR_ESTILO')">
@@ -110,7 +111,7 @@
 						</td>
 					</tr>
 					<tr th:if="${usuarios.empty}">
-						<td colspan="7">Nenhum estilo Encontrado!</td>
+						<td colspan="7">Nenhum Usuário Encontrado!</td>
 					</tr>
 				</tbody>
 			</table>
