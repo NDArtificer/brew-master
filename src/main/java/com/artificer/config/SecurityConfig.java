@@ -18,10 +18,9 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-	
 	@Autowired
 	private UserDetailsService userDetailsService;
-	
+
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
@@ -32,20 +31,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
 	}
 
-	
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		web.ignoring()
-			.antMatchers("/layout/**", "/images/**", "/styles/**", "/javascripts/**");
+		web.ignoring().antMatchers("/layout/**", "/images/**", "/styles/**", "/javascripts/**");
 	}
-	
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests()
+		http.
+		authorizeRequests()
 			.antMatchers("/estilos","/cervejas").hasAuthority("PESQUISAR_ESTILO" )
 			.antMatchers("/estilos/**").hasAuthority("CADASTRAR_ESTILO")
 			.antMatchers("/cidades/**").hasAuthority("CADASTRAR_CIDADE")
 			.antMatchers("/usuarios/**").hasAuthority("CADASTRAR_USUARIO")
+			.antMatchers("/status/**").hasAuthority("CADASTRAR_USUARIO")
 			.antMatchers("/clientes/**").hasAuthority("CADASTRAR_CLIENTE")
 			.antMatchers("/cervejas/**", "/estilos/**").hasAuthority("CADASTRAR_CERVEJA")
 			.antMatchers("/fotos/**").hasAuthority("ACESSAR_FOTOS")
@@ -63,8 +62,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.maximumSessions(1)
 			.expiredUrl("/login")
 		.and()
-			.invalidSessionUrl("/login");
+			.invalidSessionUrl("/login")
+		.and();
 	}
-	
 
 }

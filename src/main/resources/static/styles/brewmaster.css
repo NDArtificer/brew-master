@@ -109,8 +109,13 @@
 	text-align: center;
 }
 
+.table-usuario-col-status {
+	width: 30px;
+}
 
 .checkbox input[type="checkbox"]:checked + input + label::after{
 	font-family: 'FontAwesome';
 	content: "\f00c";
 }
+
+

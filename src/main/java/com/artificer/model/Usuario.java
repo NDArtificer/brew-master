@@ -11,12 +11,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.PreUpdate;
 import javax.persistence.Transient;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.artificer.model.validation.AttributeConfirmation;
@@ -27,6 +29,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
+@DynamicUpdate
 @AttributeConfirmation(attribute = "senha", attributeConfirm = "confirmacaoSenha", message = "As senhas informadas não conferem!")
 public class Usuario {
 
@@ -61,6 +64,11 @@ public class Usuario {
 
 	public boolean isNovo() {
 		return id == null;
+	}
+
+	@PreUpdate
+	private void preUpdate() {
+		this.confirmacaoSenha = senha;
 	}
 
 	@Override

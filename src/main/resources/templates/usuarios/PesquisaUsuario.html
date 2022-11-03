@@ -70,11 +70,27 @@
 			</form>
 		</div>
 
+		<div class="aw-datatable-toolbar">
+			<button class="btn btn-default	btn-xs js-btn-status" th:data-status="ATIVAR">
+				<span>Ativar</span>
+			</button>
+			<button class="btn btn-default	btn-xs js-btn-status" th:data-status="DESATIVAR">
+				<span>desativar</span>
+			</button>
+		</div>
+
 
 		<div class="table table-responsive bw-tabela-simples">
 			<table class="table table-hover">
 				<thead>
 					<tr>
+						<th class="table-usuario-col-status">
+							<div class="checkbox aw-checkbox-no-margin">
+								<input type="checkbox" />
+								<label></label>
+							</div>
+						</th>
+
 						<th class="table-estilos-col-name">Nome
 							<!--							<th:block th:replace="fragments/Ordenacao :: order (${paginas}, 'nome', 'Nome')">-->
 							<!--							</th:block>-->
@@ -90,11 +106,18 @@
 						<th>Status</th>
 
 
-						<th class="table-estilos-col-acoes" sec:authorize="hasAuthority('CADASTRAR_USUARIO')"></th>
+						<th class="table-estilos-col-acoes"></th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr th:each="usuario : ${usuarios}">
+						<td>
+							<div class="checkbox aw-checkbox-no-margin">
+								<input type="checkbox" class="js-selected" th:data-codigo="${usuario.id}" />
+								<label></label>
+							</div>
+						</td>
+
 						<td th:text="${usuario.nome}">AA9999</td>
 						<td th:text="${usuario.email}">Cacilds</td>
 						<td>
@@ -102,7 +125,7 @@
 								th:text="|${grupo.nome}${grupoStat.last ? '':', '}|"></span>
 						</td>
 						<td th:text="${usuario.ativo} ? Ativo : Inativo">Cacilds</td>
-						<td class="text-center" sec:authorize="hasAuthority('CADASTRAR_ESTILO')">
+						<td class="text-center" sec:authorize="hasAuthority('CADASTRAR_USUARIO')">
 							<a class="btn btn-link btn-xs js-tooltip " titile="Editar">
 								<i class="glyphicon glyphicon-pencil"></i>
 							</a>
@@ -137,6 +160,9 @@
 
 
 	</section>
+	<th:block layout:fragment="javascript-extra">
+		<script th:src="@{/javascripts/multiselecao.js}"></script>
+	</th:block>
 </body>
 
 </html>
