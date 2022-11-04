@@ -111,6 +111,7 @@
 
 .table-usuario-col-status {
 	width: 30px;
+	text-align: center;
 }
 
 .checkbox input[type="checkbox"]:checked + input + label::after{

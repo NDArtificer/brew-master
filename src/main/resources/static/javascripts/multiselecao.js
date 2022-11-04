@@ -6,18 +6,39 @@ Brewer.MultiSelecao = (function() {
 		constructor() {
 			this.statusBtn = $('.js-btn-status');
 			this.selectedCheckBox = $('.js-selected');
+			this.selectAllCheckBox = $('.js-select-all');
 
 		}
 		enable() {
 			this.statusBtn.on('click', onStatusBtnClick.bind(this));
+			this.selectAllCheckBox.on('click', onSelectAll.bind(this));
+			this.selectedCheckBox.on('click', onSelectClick.bind(this));
 		}
 
 
 	}
 
+	function statusBtnAction(active) {
+		active ? this.statusBtn.removeClass('disable') : this.statusBtn.addClass('disable');
+	}
+
+	function onSelectClick() {
+		var selectedCheckBoxes = this.selectedCheckBox.filter(':checked');
+		this.selectAllCheckBox.prop('checked', selectedCheckBoxes.length >= this.selectedCheckBox.length);
+		statusBtnAction.call(this, selectedCheckBoxes.length);
+
+	}
+
+	function onSelectAll() {
+		var status = this.selectAllCheckBox.prop('checked');
+		this.selectedCheckBox.prop('checked', status);
+		statusBtnAction.call(this, status);
+	}
+
 	function onStatusBtnClick(event) {
 		var btnClicked = $(event.currentTarget);
 		var status = btnClicked.data('status');
+		var url = btnClicked.data('url');
 
 		var checkBoxesSelected = this.selectedCheckBox.filter(':checked');
 		var codigos = []
@@ -30,7 +51,7 @@ Brewer.MultiSelecao = (function() {
 
 		if (codigos.length > 0) {
 			$.ajax({
-				url: '/usuarios/status',
+				url: url,
 				method: 'PUT',
 				data: {
 					'codigos': codigos,
