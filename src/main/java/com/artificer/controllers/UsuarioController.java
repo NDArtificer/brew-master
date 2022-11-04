@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.artificer.controllers.pages.PageWrapper;
 import com.artificer.exceptions.EmailJaCadastradoException;
 import com.artificer.exceptions.SenhaNaoInformadaException;
 import com.artificer.model.Usuario;
@@ -53,10 +54,10 @@ public class UsuarioController {
 			@PageableDefault(size = 3) Pageable pageable, HttpServletRequest httpServletRequest) {
 		ModelAndView mv = new ModelAndView("usuarios/PesquisaUsuario");
 		mv.addObject("grupos", grupoRepository.findAll());
-		mv.addObject("usuarios", usuarioRepository.filtrar(usuariofilter));
+		//mv.addObject("usuarios", usuarioRepository.filtrar(usuariofilter, pageable));
 
-//		PageWrapper<Usuario> pages = new PageWrapper<>(usuarioRepository.findAll(pageable), httpServletRequest);
-//		mv.addObject("paginas", pages);
+		PageWrapper<Usuario> pages = new PageWrapper<>(usuarioRepository.filtrar(usuariofilter, pageable), httpServletRequest);
+		mv.addObject("paginas", pages);
 
 		return mv;
 

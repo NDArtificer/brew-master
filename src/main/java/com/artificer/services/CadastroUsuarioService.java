@@ -1,12 +1,9 @@
 package com.artificer.services;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
-import javax.validation.ReportAsSingleViolation;
 
-import org.apache.catalina.startup.ClassLoaderFactory.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -46,7 +43,6 @@ public class CadastroUsuarioService {
 
 	@Transactional
 	public void alterarStatus(Long[] codigos, StatusUsuario statusUsuario) {
-		// TODO Auto-generated method stub
 		statusUsuario.executar(codigos, repository);
 	}
 

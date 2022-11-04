@@ -71,13 +71,13 @@
 		</div>
 
 		<div class="aw-datatable-toolbar">
-			<button class="btn btn-default	btn-xs js-btn-status disable" th:data-status="ATIVAR"
+			<button class="btn btn-default	btn-xs js-btn-status disabled" th:data-status="ATIVAR"
 				th:data-url="@{/usuarios/status}">
 				<span>Ativar</span>
 			</button>
-			<button class="btn btn-default	btn-xs js-btn-status disable" th:data-status="DESATIVAR"
+			<button class="btn btn-default	btn-xs js-btn-status disabled" th:data-status="DESATIVAR"
 				th:data-url="@{/usuarios/status}">
-				<span>desativar</span>
+				<span>Desativar</span>
 			</button>
 		</div>
 
@@ -94,16 +94,16 @@
 						</th>
 
 						<th class="table-estilos-col-name">Nome
-							<!--							<th:block th:replace="fragments/Ordenacao :: order (${paginas}, 'nome', 'Nome')">-->
-							<!--							</th:block>-->
+							<!--														<th:block th:replace="fragments/Ordenacao :: order (${paginas}, 'nome', 'Nome')">-->
+							<!--														</th:block>-->
 						</th>
 						<th class="table-estilos-col-name">E-mail
-							<!--							<th:block th:replace="fragments/Ordenacao :: order (${paginas}, 'email', 'E-mail')">-->
-							<!--							</th:block>-->
+							<!--														<th:block th:replace="fragments/Ordenacao :: order (${paginas}, 'email', 'E-mail')">-->
+							<!--														</th:block>-->
 						</th>
 						<th class="table-estilos-col-name">Grupo
-							<!--							<th:block th:replace="fragments/Ordenacao :: order (${paginas}, 'status', 'Status')">-->
-							<!--							</th:block>-->
+							<!--														<th:block th:replace="fragments/Ordenacao :: order (${paginas}, 'status', 'Status')">-->
+							<!--														</th:block>-->
 						</th>
 						<th>Status</th>
 
@@ -112,7 +112,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr th:each="usuario : ${usuarios}">
+					<tr th:each="usuario : ${paginas.conteudo}">
 						<td>
 							<div class="checkbox aw-checkbox-no-margin"
 								th:if="${#authentication.principal.usuario.id != usuario.id}">
@@ -144,30 +144,30 @@
 								<i class="glyphicon glyphicon-remove"></i></a>
 						</td>
 					</tr>
-					<tr th:if="${usuarios.empty}">
+					<tr th:if="${paginas.vazia}">
 						<td colspan="7">Nenhum Usuário Encontrado!</td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
 
-		<!--		<div class="col-sm-12 text-center" th:if="${not paginas.vazia}">-->
-		<!--			<nav>-->
-		<!--				<ul class="pagination pagination-sm" th:with="paginaAtual=${paginas.atual}">-->
-		<!--					<li th:class="${paginas.primeira} ? disabled"><a th:href="${paginas.urlParaPagina(paginaAtual - 1)}"-->
-		<!--							th:remove="${paginas.primeira} ? tag"><span>&laquo;</span></a></li>-->
-		<!---->
-		<!--					<th:block th:each="page : ${#numbers.sequence(1, paginas.total)}"-->
-		<!--						th:with="numeroPagina=${page - 1}">-->
-		<!--						<li th:class="${paginaAtual == numeroPagina} ? active">-->
-		<!--							<a th:href="${paginas.urlParaPagina(numeroPagina)}">[[${page}]]</a>-->
-		<!--						</li>-->
-		<!--					</th:block>-->
-		<!--					<li th:class="${paginas.ultima} ? disabled"><a th:href="${paginas.urlParaPagina(paginaAtual + 1)}"-->
-		<!--							th:remove="${paginas.ultima} ? tag"><span>&raquo;</span></a></li>-->
-		<!--				</ul>-->
-		<!--			</nav>-->
-		<!--		</div>-->
+		<div class="col-sm-12 text-center" th:if="${not paginas.vazia}">
+			<nav>
+				<ul class="pagination pagination-sm" th:with="paginaAtual=${paginas.atual}">
+					<li th:class="${paginas.primeira} ? disabled"><a th:href="${paginas.urlParaPagina(paginaAtual - 1)}"
+							th:remove="${paginas.primeira} ? tag"><span>&laquo;</span></a></li>
+
+					<th:block th:each="page : ${#numbers.sequence(1, paginas.total)}"
+						th:with="numeroPagina=${page - 1}">
+						<li th:class="${paginaAtual == numeroPagina} ? active">
+							<a th:href="${paginas.urlParaPagina(numeroPagina)}">[[${page}]]</a>
+						</li>
+					</th:block>
+					<li th:class="${paginas.ultima} ? disabled"><a th:href="${paginas.urlParaPagina(paginaAtual + 1)}"
+							th:remove="${paginas.ultima} ? tag"><span>&raquo;</span></a></li>
+				</ul>
+			</nav>
+		</div>
 
 
 	</section>

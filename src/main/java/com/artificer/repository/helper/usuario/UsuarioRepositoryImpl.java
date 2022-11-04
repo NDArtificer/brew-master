@@ -14,9 +14,13 @@ import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import com.artificer.model.Cliente;
 import com.artificer.model.Grupo;
 import com.artificer.model.Usuario;
 import com.artificer.repository.filter.UsuarioFilter;
@@ -44,9 +48,10 @@ public class UsuarioRepositoryImpl implements UsuariosQueries {
 				String.class).setParameter("usuario", usuario).getResultList();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(readOnly = true)
-	public List<Usuario> filtrar(UsuarioFilter filter) {
+	public Page<Usuario> filtrar(UsuarioFilter filter, Pageable pageable) {
 		CriteriaBuilder criteriaBuilder = manager.getCriteriaBuilder();
 		CriteriaQuery<Usuario> criteriaQuery = criteriaBuilder.createQuery(Usuario.class).distinct(true);
 		Root<Usuario> root = criteriaQuery.from(Usuario.class);
@@ -55,9 +60,23 @@ public class UsuarioRepositoryImpl implements UsuariosQueries {
 		List<Predicate> predicates = addFilters(criteriaBuilder, filter, root, criteriaQuery);
 
 		criteriaQuery.where(criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()])));
-		TypedQuery<Usuario> query = manager.createQuery(criteriaQuery);
+		
+		TypedQuery<Usuario> query = (TypedQuery<Usuario>) pagination.prepararOrdem(criteriaQuery, root, pageable);
+		query = (TypedQuery<Usuario>) pagination.prepararIntervalo(query, pageable);
 
-		return query.getResultList();
+		return new PageImpl<>(query.getResultList(), pageable, total(filter, criteriaQuery));
+	}
+
+	private Long total(UsuarioFilter filter, CriteriaQuery<Usuario> criteriaQuery) {
+		CriteriaBuilder builder = manager.getCriteriaBuilder();
+		CriteriaQuery<Long> criteria = builder.createQuery(Long.class);
+		Root<Usuario> root = criteria.from(Usuario.class);
+		root.alias("u");
+
+		criteria.select(builder.count(root));
+		List<Predicate> predicates = addFilters(builder, filter, root, criteriaQuery);
+		criteria.where(predicates.toArray(new Predicate[predicates.size()]));
+		return manager.createQuery(criteria).getSingleResult();
 	}
 
 	private List<Predicate> addFilters(CriteriaBuilder criteriaBuilder, UsuarioFilter filter, Root<Usuario> root,
