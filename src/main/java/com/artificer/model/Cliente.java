@@ -24,6 +24,7 @@ import com.artificer.model.enums.TipoPessoa;
 import com.artificer.model.validation.ClienteGroupSequenceProvider;
 import com.artificer.model.validation.CnpjGroup;
 import com.artificer.model.validation.CpfGroup;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -57,6 +58,7 @@ public class Cliente {
 	@Email
 	private String email;
 
+	@JsonIgnore
 	@Embedded
 	private Endereco endereco;
 
