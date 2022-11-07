@@ -22,9 +22,10 @@ Brewer.EstiloCadastroRapido = (function() {
 	}
 
 
-
 	function onModalShow() {
-		this.inputNomeEstilo.focus();
+		$('#nomeEstilo').ready(function() {
+			$('#nomeEstilo').find('[autofocus]').focus();
+		});
 	}
 
 	function onModalClose() {
