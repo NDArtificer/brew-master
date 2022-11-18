@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.util.StringUtils;
 
 import com.artificer.model.Cerveja;
+import com.artificer.output.CervejaSummary;
 import com.artificer.repository.filter.CervejaFilter;
 import com.artificer.repository.paginacao.Pagination;
 
@@ -97,14 +98,13 @@ public class CervejasRepositoryImpl implements CervejasQueries {
 		return filtro.getEstilo() != null && filtro.getEstilo().getId() != null;
 	}
 
-//	@Override
-//	public List<CervejaModel> porSkuOuNome(String skuOuNome) {
-//		String jpql = "select new com.algaworks.brewer.dto.CervejaDTO(codigo, sku, nome, origem, valor, foto) "
-//				+ "from Cerveja where lower(sku) like lower(:skuOuNome) or lower(nome) like lower(:skuOuNome)";
-//		List<CervejaModel> cervejasFiltradas = manager.createQuery(jpql, CervejaModel.class)
-//					.setParameter("skuOuNome", skuOuNome + "%")
-//					.getResultList();
-//		return cervejasFiltradas;
-//	}
+	@Override
+	public List<CervejaSummary> porSkuOuNome(String skuOuNome) {
+		String jpql = "select new com.artificer.output.CervejaSummary(id, sku, nome, origem, valor, foto) "
+				+ "from Cerveja where lower(sku) like lower(:skuOuNome) or lower(nome) like lower(:skuOuNome)";
+		List<CervejaSummary> cervejasFiltradas = manager.createQuery(jpql, CervejaSummary.class)
+				.setParameter("skuOuNome", skuOuNome + "%").getResultList();
+		return cervejasFiltradas;
+	}
 
 }
