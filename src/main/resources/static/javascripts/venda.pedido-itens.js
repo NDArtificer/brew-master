@@ -11,7 +11,7 @@ Brewer.PedidoItens = (function() {
 	}
 
 	function onItemSelecionado(event, item) {
-		var reposta = $.ajax({
+		var resposta = $.ajax({
 			url: 'item',
 			method: 'POST',
 			data: {
@@ -20,11 +20,30 @@ Brewer.PedidoItens = (function() {
 			beforeSend: addCsrfToken
 		});
 
-		reposta.done(onItemAdicionadoServidor.bind(this));
+		resposta.done(onItemAtualizadoServidor.bind(this));
 	}
 
-	function onItemAdicionadoServidor(html) {
+	function onItemAtualizadoServidor(html) {
 		this.tabelaCervejasContainer.html(html);
+		$('.js-tabela-cerveja-quantidade-item').on('change', onQuantidadeAlterado.bind(this));
+	}
+
+	function onQuantidadeAlterado(event) {
+		var input = $(event.target);
+		var quantidade = input.val();
+		var id = input.data('id-cerveja');
+
+		var resposta =
+			$.ajax({
+				url: 'item/' + id,
+				method: 'PUT',
+				data: {
+					quantidade: quantidade
+				},
+				beforeSend: addCsrfToken
+			});
+
+		resposta.done(onItemAtualizadoServidor.bind(this));
 	}
 
 	function addCsrfToken(xhr) {
