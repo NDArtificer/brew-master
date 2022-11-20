@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
@@ -42,6 +43,13 @@ public class ItensPedidos {
 
 			itens.add(0, itemPedido);
 		}
+	}
+	
+	public void removerItem(Cerveja cerveja) {
+		int index = IntStream.range(0, itens.size())
+					.filter(item -> itens.get(item).getCerveja().equals(cerveja))
+					.findAny().getAsInt();
+		itens.remove(index);
 	}
 
 	public void alterarQuantidadeItens(Cerveja cerveja, Integer quantidade) {

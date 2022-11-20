@@ -2,6 +2,7 @@ package com.artificer.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,15 +36,24 @@ public class PedidoController {
 	public ModelAndView adicionarItem(Long id) {
 		Cerveja cerveja = cervejaService.buscar(id);
 		itens.adicionarItem(cerveja, 1);
-		ModelAndView mv = new ModelAndView("pedidos/ItensPedido");
-		mv.addObject("itens", itens.getItens());
-		return mv;
+		return mvItensPedido();
 	}
 
 	@PutMapping("/item/{id}")
 	public ModelAndView adicionarItem(@PathVariable Long id, Integer quantidade) {
 		Cerveja cerveja = cervejaService.buscar(id);
 		itens.alterarQuantidadeItens(cerveja, quantidade);
+		return mvItensPedido();
+	}
+
+	@DeleteMapping("/item/{id}")
+	public ModelAndView removerItem(@PathVariable Long id, Integer quantidade) {
+		Cerveja cerveja = cervejaService.buscar(id);
+		itens.removerItem(cerveja);
+		return mvItensPedido();
+	}
+
+	private ModelAndView mvItensPedido() {
 		ModelAndView mv = new ModelAndView("pedidos/ItensPedido");
 		mv.addObject("itens", itens.getItens());
 		return mv;
