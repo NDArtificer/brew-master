@@ -1,0 +1,39 @@
+package com.artificer.model;
+
+import java.math.BigDecimal;
+import java.util.Objects;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class ItemPedido {
+
+	private Long id;
+	private Integer quantidade;
+	private BigDecimal valorUnitario;
+	private Cerveja cerveja;
+
+	public BigDecimal getValorTotal() {
+		return valorUnitario.multiply(new BigDecimal(quantidade));
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ItemPedido other = (ItemPedido) obj;
+		return Objects.equals(id, other.id);
+	}
+
+}

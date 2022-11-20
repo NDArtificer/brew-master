@@ -46,7 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers("/usuarios/**").hasAuthority("CADASTRAR_USUARIO")
 			.antMatchers("/status/**").hasAuthority("CADASTRAR_USUARIO")
 			.antMatchers("/clientes/**").hasAuthority("CADASTRAR_CLIENTE")
-			.antMatchers("/cervejas/**", "/estilos/**").hasAuthority("CADASTRAR_CERVEJA")
+			.antMatchers("/cervejas/**", "/estilos/**", "/pedidos/**").hasAuthority("CADASTRAR_CERVEJA")
 			.antMatchers("/fotos/**").hasAuthority("ACESSAR_FOTOS")
 		.anyRequest()
 			.authenticated()

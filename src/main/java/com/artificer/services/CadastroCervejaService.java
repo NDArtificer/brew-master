@@ -26,4 +26,11 @@ public class CadastroCervejaService {
 		publisher.publishEvent(new CervejaSalvaEvent(cerveja));
 	}
 
+	@Transactional
+	public Cerveja buscar(Long id) {
+
+		return repository.findById(id).orElseThrow(() -> new RuntimeException(
+				String.format("Não existe uma cerveja para o id %s cadastrada na base de dados!", id)));
+	}
+
 }
