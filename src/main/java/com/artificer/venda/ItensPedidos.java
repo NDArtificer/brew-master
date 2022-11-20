@@ -3,6 +3,7 @@ package com.artificer.venda;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
@@ -26,12 +27,25 @@ public class ItensPedidos {
 	}
 
 	public void adicionarItem(Cerveja cerveja, Integer quantidade) {
-		ItemPedido itemPedido = new ItemPedido();
-		itemPedido.setCerveja(cerveja);
-		itemPedido.setQuantidade(quantidade);
-		itemPedido.setValorUnitario(cerveja.getValor());
+		Optional<ItemPedido> itemPedidoOptional = itens.stream().filter(item -> item.getCerveja().equals(cerveja))
+				.findAny();
 
-		itens.add(itemPedido);
+		ItemPedido itemPedido = null;
+		if (itemPedidoOptional.isPresent()) {
+			itemPedido = itemPedidoOptional.get();
+			itemPedido.setQuantidade(itemPedido.getQuantidade() + quantidade);
+		} else {
 
+			itemPedido = new ItemPedido();
+			itemPedido.setCerveja(cerveja);
+			itemPedido.setQuantidade(quantidade);
+			itemPedido.setValorUnitario(cerveja.getValor());
+
+			itens.add(0, itemPedido);
+		}
+	}
+
+	public int getTotalItens() {
+		return itens.size();
 	}
 }

@@ -35,6 +35,7 @@ public class ItensPedidosTest {
 		Cerveja cerveja1 = new Cerveja();
 
 		BigDecimal valor1 = new BigDecimal("8.99");
+		cerveja1.setId(1L);
 		cerveja1.setValor(valor1);
 
 		Integer quantidade1 = 1;
@@ -43,6 +44,7 @@ public class ItensPedidosTest {
 		Cerveja cerveja2 = new Cerveja();
 
 		BigDecimal valor2 = new BigDecimal("8.50");
+		cerveja1.setId(2L);
 		cerveja2.setValor(valor2);
 		Integer quantidade2 = 2;
 
@@ -51,6 +53,20 @@ public class ItensPedidosTest {
 		BigDecimal valorTotal = valor1.multiply(new BigDecimal(quantidade1))
 				.add(valor2.multiply(new BigDecimal(quantidade2)));
 		assertEquals(valorTotal, this.itensPedidos.getValorTotalPedido());
+	}
+
+	@Test
+	public void materOTamanhoDaListaParaMesmasCervejas() {
+		Cerveja cerveja1 = new Cerveja();
+
+		BigDecimal valor1 = new BigDecimal("8.99");
+		cerveja1.setId(1L);
+		cerveja1.setValor(valor1);
+		Integer quantidade1 = 1;
+		itensPedidos.adicionarItem(cerveja1, quantidade1);
+		itensPedidos.adicionarItem(cerveja1, quantidade1);
+
+		assertEquals(1, this.itensPedidos.getTotalItens());
 	}
 
 }
