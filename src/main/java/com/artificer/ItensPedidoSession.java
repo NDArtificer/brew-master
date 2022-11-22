@@ -1,5 +1,6 @@
 package com.artificer;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -50,6 +51,11 @@ public class ItensPedidoSession {
 	public List<ItemPedido> getItens(String uuid) {
 		// TODO Auto-generated method stub
 		return buscarItensPedidosPorUuid(uuid).getItens();
+	}
+
+	public Object getValorTotal(String uuid) {
+		ItensPedidos itens = buscarItensPedidosPorUuid(uuid);
+		return itens.getValorTotalPedido();
 	}
 
 }

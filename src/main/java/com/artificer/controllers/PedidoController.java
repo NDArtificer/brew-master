@@ -45,7 +45,7 @@ public class PedidoController {
 	@PutMapping("/item/{id}")
 	public ModelAndView adicionarItem(@PathVariable Long id, Integer quantidade, String uuid) {
 		Cerveja cerveja = cervejaService.buscar(id);
-		itens.alterarQuantidadeItens(uuid,cerveja, quantidade);
+		itens.alterarQuantidadeItens(uuid, cerveja, quantidade);
 		return mvItensPedido(uuid);
 	}
 
@@ -56,9 +56,10 @@ public class PedidoController {
 		return mvItensPedido(uuid);
 	}
 
-	private ModelAndView mvItensPedido(String uuid) { 
+	private ModelAndView mvItensPedido(String uuid) {
 		ModelAndView mv = new ModelAndView("pedidos/ItensPedido");
 		mv.addObject("itens", itens.getItens(uuid));
+		mv.addObject("valorTotal", itens.getValorTotal(uuid));
 		return mv;
 	}
 }
