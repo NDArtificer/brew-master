@@ -1,5 +1,7 @@
 package com.artificer.controllers;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.artificer.ItensPedidoSession;
 import com.artificer.model.Cerveja;
 import com.artificer.services.CadastroCervejaService;
 import com.artificer.venda.ItensPedidos;
@@ -22,40 +25,40 @@ public class PedidoController {
 	private CadastroCervejaService cervejaService;
 
 	@Autowired
-	private ItensPedidos itens;
+	private ItensPedidoSession itens;
 
 	@GetMapping("/novo")
 	public ModelAndView peididos() {
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("pedidos/cadastroPedido");
-
+		mv.addObject("uuid", UUID.randomUUID().toString());
 		return mv;
 	}
 
 	@PostMapping("/item")
-	public ModelAndView adicionarItem(Long id) {
+	public ModelAndView adicionarItem(Long id, String uuid) {
 		Cerveja cerveja = cervejaService.buscar(id);
-		itens.adicionarItem(cerveja, 1);
-		return mvItensPedido();
+		itens.adicionarItem(uuid, cerveja, 1);
+		return mvItensPedido(uuid);
 	}
 
 	@PutMapping("/item/{id}")
-	public ModelAndView adicionarItem(@PathVariable Long id, Integer quantidade) {
+	public ModelAndView adicionarItem(@PathVariable Long id, Integer quantidade, String uuid) {
 		Cerveja cerveja = cervejaService.buscar(id);
-		itens.alterarQuantidadeItens(cerveja, quantidade);
-		return mvItensPedido();
+		itens.alterarQuantidadeItens(uuid,cerveja, quantidade);
+		return mvItensPedido(uuid);
 	}
 
-	@DeleteMapping("/item/{id}")
-	public ModelAndView removerItem(@PathVariable Long id, Integer quantidade) {
+	@DeleteMapping("/item/{uuid}/{id}")
+	public ModelAndView removerItem(@PathVariable Long id, Integer quantidade, @PathVariable String uuid) {
 		Cerveja cerveja = cervejaService.buscar(id);
-		itens.removerItem(cerveja);
-		return mvItensPedido();
+		itens.removerItem(uuid, cerveja);
+		return mvItensPedido(uuid);
 	}
 
-	private ModelAndView mvItensPedido() {
+	private ModelAndView mvItensPedido(String uuid) { 
 		ModelAndView mv = new ModelAndView("pedidos/ItensPedido");
-		mv.addObject("itens", itens.getItens());
+		mv.addObject("itens", itens.getItens(uuid));
 		return mv;
 	}
 }

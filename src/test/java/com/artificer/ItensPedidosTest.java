@@ -11,7 +11,7 @@ import com.artificer.venda.ItensPedidos;
 
 public class ItensPedidosTest {
 
-	private ItensPedidos itensPedidos = new ItensPedidos();
+	private ItensPedidos itensPedidos = new ItensPedidos("1");
 
 	@Test
 	public void calcularValorTotalPedidoSemItens() {
