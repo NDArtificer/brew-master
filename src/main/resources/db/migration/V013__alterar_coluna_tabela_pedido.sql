@@ -1,0 +1,1 @@
+alter table pedido change data_entrega data_hora_entrega datetime;

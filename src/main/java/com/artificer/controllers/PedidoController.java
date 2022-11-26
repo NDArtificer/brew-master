@@ -3,6 +3,7 @@ package com.artificer.controllers;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,10 +12,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.artificer.ItensPedidoSession;
 import com.artificer.model.Cerveja;
+import com.artificer.model.Pedido;
+import com.artificer.security.UsuarioSistema;
 import com.artificer.services.CadastroCervejaService;
+import com.artificer.services.CadastroPedidoService;
 import com.artificer.venda.ItensPedidos;
 
 @Controller
@@ -25,14 +30,28 @@ public class PedidoController {
 	private CadastroCervejaService cervejaService;
 
 	@Autowired
+	private CadastroPedidoService pedidoService;
+
+	@Autowired
 	private ItensPedidoSession itens;
 
 	@GetMapping("/novo")
-	public ModelAndView peididos() {
+	public ModelAndView peididos(Pedido pedido) {
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("pedidos/cadastroPedido");
-		mv.addObject("uuid", UUID.randomUUID().toString());
+		pedido.setUuid(UUID.randomUUID().toString());
 		return mv;
+	}
+
+	@PostMapping("/novo")
+	public ModelAndView salvarPedido(Pedido pedido, RedirectAttributes redirectAttributes,
+			@AuthenticationPrincipal UsuarioSistema usuarioSistema) {
+
+		pedido.setUsuario(usuarioSistema.getUsuario());
+		pedido.addItens(itens.getItens(pedido.getUuid()));
+		pedidoService.salvar(pedido);
+		redirectAttributes.addFlashAttribute("mensagem", "Pedido Realizado com sucesso!");
+		return new ModelAndView("redirect:/pedidos/novo");
 	}
 
 	@PostMapping("/item")
