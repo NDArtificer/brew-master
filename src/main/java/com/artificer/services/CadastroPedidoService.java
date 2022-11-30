@@ -25,11 +25,6 @@ public class CadastroPedidoService {
 			pedido.setDataCriacao(LocalDateTime.now());
 		}
 
-		var valorTotalItens = pedido.getItens().stream().map(ItemPedido::getValorTotal).reduce(BigDecimal::add).get();
-		var valorTotal = valorTotalItens.add(Optional.ofNullable(pedido.getValorFrete()).orElse(BigDecimal.ZERO))
-				.subtract(Optional.ofNullable(pedido.getValorDesconto()).orElse(BigDecimal.ZERO));
-		pedido.setValorTotal(valorTotal);
-
 		if (pedido.getDataEntrega() != null) {
 			pedido.setDataHoraEntrega(LocalDateTime.of(pedido.getDataEntrega(), pedido.getHoraEntrega()));
 		}

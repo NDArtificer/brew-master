@@ -2,11 +2,17 @@ package com.artificer.controllers;
 
 import java.util.UUID;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -15,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.artificer.ItensPedidoSession;
+import com.artificer.controllers.validator.PedidoValidator;
 import com.artificer.model.Cerveja;
 import com.artificer.model.Pedido;
 import com.artificer.security.UsuarioSistema;
@@ -35,22 +42,43 @@ public class PedidoController {
 	@Autowired
 	private ItensPedidoSession itens;
 
+	@Autowired
+	private PedidoValidator pedidoValidator;
+
+	@InitBinder
+	public void initializeValidator(WebDataBinder binder) {
+		binder.setValidator(pedidoValidator);
+	}
+
 	@GetMapping("/novo")
 	public ModelAndView peididos(Pedido pedido) {
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("pedidos/cadastroPedido");
-		pedido.setUuid(UUID.randomUUID().toString());
+
+		if (!StringUtils.hasText(pedido.getUuid())) {
+			pedido.setUuid(UUID.randomUUID().toString());
+		}
+
+		mv.addObject("itens", pedido.getItens());
+		mv.addObject("valorFrete", pedido.getValorFrete());
+		mv.addObject("valorDesconto", pedido.getValorDesconto());
+		mv.addObject("valorTotalItens", itens.getValorTotal(pedido.getUuid()));
 		return mv;
 	}
 
 	@PostMapping("/novo")
-	public ModelAndView salvarPedido(Pedido pedido, RedirectAttributes redirectAttributes,
+	public ModelAndView salvarPedido(Pedido pedido, BindingResult result, RedirectAttributes redirectAttributes,
 			@AuthenticationPrincipal UsuarioSistema usuarioSistema) {
-
-		pedido.setUsuario(usuarioSistema.getUsuario());
 		pedido.addItens(itens.getItens(pedido.getUuid()));
+		pedido.calcularValorTotal();
+
+		pedidoValidator.validate(pedido, result);
+		if (result.hasErrors()) {
+			return peididos(pedido);
+		}
+		pedido.setUsuario(usuarioSistema.getUsuario());
 		pedidoService.salvar(pedido);
-		redirectAttributes.addFlashAttribute("mensagem", "Pedido Realizado com sucesso!");
+		redirectAttributes.addFlashAttribute("message", "Pedido Realizado com sucesso!");
 		return new ModelAndView("redirect:/pedidos/novo");
 	}
 

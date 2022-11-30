@@ -25,7 +25,9 @@
 	<div class="container-fluid">
 
 		<th:block th:include="fragments/mensagemSucesso"></th:block>
+
 		<form method="POST" th:action="@{/pedidos/novo}" th:object="${pedido}">
+			<th:block th:include="fragments/mensagemErroValidacao"></th:block>
 
 			<input type="hidden" id="uuid" th:field="*{uuid}" />
 
@@ -36,7 +38,7 @@
 							<i class="fa  fa-usd  fa-3x"></i>
 						</div>
 						<div class="aw-box__value">R$
-							<span class="js-valor-total-box">0,00</span>
+							<span class="js-valor-total-box" th:text="${{pedido.valorTotal}}">0,00</span>
 						</div>
 						<div class="aw-box__title">Total</div>
 					</div>
@@ -66,11 +68,12 @@
 			</div>
 
 			<div class="row">
-				<div class="form-group  col-sm-4  bw-required">
+				<div class="form-group  col-sm-4  bw-required"
+					th:classappend="${#fields.hasErrors('cliente')} ? has-error">
 					<label class="control-label" for="nomeCliente">Cliente</label>
 					<div class="input-group">
 						<input id="nomeCliente" type="text" readonly="readonly" class="form-control"
-							placeholder="Clique na lupa para pesquisar o cliente" />
+							th:field="*{cliente.nome}" placeholder="Clique na lupa para pesquisar o cliente" />
 						<input id="idCliente" type="hidden" th:field="*{cliente}" />
 						<span class="input-group-btn">
 							<button class="btn  btn-default  js-tooltip" type="button" title="Pesquisa avançada"
@@ -88,7 +91,7 @@
 					<div class="input-group">
 						<div class="input-group-addon">R$</div>
 						<input type="text" maxlength="14" class="form-control  js-decimal" id="valorFrete"
-							th:field="*{valorFrete}" />
+							th:field="*{valorFrete}" th:data-valor="*{valorFrete}" />
 					</div>
 				</div>
 
@@ -97,7 +100,7 @@
 					<div class="input-group">
 						<div class="input-group-addon">R$</div>
 						<input type="text" maxlength="14" class="form-control  js-decimal" id="valorDesconto"
-							th:field="*{valorDesconto}" />
+							th:field="*{valorDesconto}" th:data-valor="*{valorDesconto}" />
 					</div>
 				</div>
 			</div>
@@ -122,19 +125,15 @@
 						</div>
 					</div>
 
-					<div class="bw-tabela-cervejas js-tabela-cervejas-container">
-
-
-						<div class="bw-tabela-cervejas__vazio">
-							<i class="glyphicon  glyphicon-shopping-cart"></i>
-							<span>Você ainda não adicionou nenhuma cerveja.</span>
-						</div>
+					<div class="bw-tabela-cervejas js-tabela-cervejas-container" th:data-valor="${valorTotalItens}">
+						<th:block th:replace="pedidos/ItensPedido"></th:block>
 					</div>
 				</div>
 
 				<div class="tab-pane" id="entrega">
 					<div class="row">
-						<div class="form-group  col-sm-3">
+						<div class="form-group  col-sm-3"
+							th:classappend="${#fields.hasErrors('dataEntrega')} ? has-error">
 							<label class="control-label" for="dataEntrega">Data da entrega</label>
 							<input type="text" class="form-control" id="dataEntrega" th:field="*{dataEntrega}" />
 						</div>

@@ -4,8 +4,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -45,7 +47,7 @@ public class Pedido {
 	@Column
 	private BigDecimal valorDesconto;
 	@Column
-	private BigDecimal valorTotal;
+	private BigDecimal valorTotal = BigDecimal.ZERO;
 	@Column
 	private LocalDateTime dataHoraEntrega;
 
@@ -64,7 +66,7 @@ public class Pedido {
 	private StatusVenda status = StatusVenda.ORCAMENTO;
 
 	@OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
-	private List<ItemPedido> itens;
+	private List<ItemPedido> itens = new ArrayList<>();
 
 	@Transient
 	private String uuid;
@@ -76,6 +78,19 @@ public class Pedido {
 	@DateTimeFormat(pattern = "HH:mm")
 	@Transient
 	private LocalTime horaEntrega;
+
+	public void calcularValorTotal() {
+		var valorTotalItens = getItens().stream().map(ItemPedido::getValorTotal).reduce(BigDecimal::add)
+				.orElse(BigDecimal.ZERO);
+		this.valorTotal = calcularValorTotal(valorTotalItens, getValorFrete(), getValorDesconto());
+	}
+
+	private BigDecimal calcularValorTotal(BigDecimal valorTotalItens, BigDecimal valorFrete2,
+			BigDecimal valorDesconto2) {
+		var valorTotal = valorTotalItens.add(Optional.ofNullable(getValorFrete()).orElse(BigDecimal.ZERO))
+				.subtract(Optional.ofNullable(getValorDesconto()).orElse(BigDecimal.ZERO));
+		return valorTotal;
+	}
 
 	public boolean isNovoPedido() {
 		return id == null;

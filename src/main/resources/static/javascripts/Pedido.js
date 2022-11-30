@@ -5,25 +5,28 @@ Brewer.Pedido = (function() {
 			this.valorTotalBox = $('.js-valor-total-box');
 			this.valorFreteInput = $('#valorFrete');
 			this.valorDescontoInput = $('#valorDesconto');
-			
+
 			this.valorTotalBoxContainer = $('.js-valor-total-box-container');
 
-			this.valorDesconto = 0;
-			this.valorFrete = 0;
-			this.valorTotalItens = 0;
+			this.valorDesconto = this.valorDescontoInput.data('valor');
+			this.valorFrete = this.valorFreteInput.data('valor');
+			this.valorTotalItens = this.tabelaItens.valorTotal();
 
 
 		}
 
 		enable() {
+
 			this.tabelaItens.on('tabela-itens-atualizada', onTabelaItensAutalizada.bind(this));
-			this.valorFreteInput.on('keyup', onValorFreteAlterado.bind(this))
+			this.valorFreteInput.on('keyup', onValorFreteAlterado.bind(this));
 			this.valorDescontoInput.on('keyup', onValorDescontoAlterado.bind(this));
 
 
 			this.tabelaItens.on('tabela-itens-atualizada', onValoresAlterados.bind(this));
-			this.valorFreteInput.on('keyup', onValoresAlterados.bind(this))
+			this.valorFreteInput.on('keyup', onValoresAlterados.bind(this));
 			this.valorDescontoInput.on('keyup', onValoresAlterados.bind(this));
+
+			onValoresAlterados.call(this);
 		}
 
 
@@ -35,9 +38,9 @@ Brewer.Pedido = (function() {
 	}
 
 	function onValoresAlterados() {
-		var valorTotal = this.valorTotalItens + this.valorFrete - this.valorDesconto;
+		var valorTotal = numeral(this.valorTotalItens) + numeral(this.valorFrete) - numeral(this.valorDesconto);
 		this.valorTotalBox.html(Brewer.formatarMoeda(valorTotal));
-		
+
 		this.valorTotalBoxContainer.toggleClass('negativo', valorTotal < 0);
 	}
 
