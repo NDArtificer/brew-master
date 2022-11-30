@@ -66,19 +66,42 @@ public class PedidoController {
 		return mv;
 	}
 
-	@PostMapping("/novo")
+	@PostMapping(value = "/novo", params = "salvar")
 	public ModelAndView salvarPedido(Pedido pedido, BindingResult result, RedirectAttributes redirectAttributes,
 			@AuthenticationPrincipal UsuarioSistema usuarioSistema) {
-		pedido.addItens(itens.getItens(pedido.getUuid()));
-		pedido.calcularValorTotal();
-
-		pedidoValidator.validate(pedido, result);
+		validatePedido(pedido, result);
 		if (result.hasErrors()) {
 			return peididos(pedido);
 		}
 		pedido.setUsuario(usuarioSistema.getUsuario());
 		pedidoService.salvar(pedido);
 		redirectAttributes.addFlashAttribute("message", "Pedido Realizado com sucesso!");
+		return new ModelAndView("redirect:/pedidos/novo");
+	}
+
+	@PostMapping(value = "/novo", params = "emitir")
+	public ModelAndView emitirPedido(Pedido pedido, BindingResult result, RedirectAttributes redirectAttributes,
+			@AuthenticationPrincipal UsuarioSistema usuarioSistema) {
+		validatePedido(pedido, result);
+		if (result.hasErrors()) {
+			return peididos(pedido);
+		}
+		pedido.setUsuario(usuarioSistema.getUsuario());
+		pedidoService.emitir(pedido);
+		redirectAttributes.addFlashAttribute("message", "Pedido realizado e emitido com sucesso!");
+		return new ModelAndView("redirect:/pedidos/novo");
+	}
+
+	@PostMapping(value = "/novo", params = "email")
+	public ModelAndView emailPedido(Pedido pedido, BindingResult result, RedirectAttributes redirectAttributes,
+			@AuthenticationPrincipal UsuarioSistema usuarioSistema) {
+		validatePedido(pedido, result);
+		if (result.hasErrors()) {
+			return peididos(pedido);
+		}
+		pedido.setUsuario(usuarioSistema.getUsuario());
+		pedidoService.enviarEmail(pedido);
+		redirectAttributes.addFlashAttribute("message", "Pedido salvo e e-mail enviado!");
 		return new ModelAndView("redirect:/pedidos/novo");
 	}
 
@@ -108,5 +131,12 @@ public class PedidoController {
 		mv.addObject("itens", itens.getItens(uuid));
 		mv.addObject("valorTotal", itens.getValorTotal(uuid));
 		return mv;
+	}
+
+	private void validatePedido(Pedido pedido, BindingResult result) {
+		pedido.addItens(itens.getItens(pedido.getUuid()));
+		pedido.calcularValorTotal();
+
+		pedidoValidator.validate(pedido, result);
 	}
 }

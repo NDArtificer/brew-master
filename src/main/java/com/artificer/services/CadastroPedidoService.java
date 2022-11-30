@@ -1,16 +1,14 @@
 package com.artificer.services;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.artificer.model.ItemPedido;
 import com.artificer.model.Pedido;
+import com.artificer.model.enums.StatusVenda;
 import com.artificer.repository.PedidoRepository;
 
 @Service
@@ -29,6 +27,19 @@ public class CadastroPedidoService {
 			pedido.setDataHoraEntrega(LocalDateTime.of(pedido.getDataEntrega(), pedido.getHoraEntrega()));
 		}
 		pedidoRepository.save(pedido);
+	}
+
+	@Transactional
+	public void enviarEmail(Pedido pedido) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Transactional
+	public void emitir(Pedido pedido) {
+		pedido.setStatus(StatusVenda.EMITIDA);
+		salvar(pedido);
+
 	}
 
 }
