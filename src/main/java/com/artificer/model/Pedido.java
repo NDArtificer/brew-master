@@ -22,9 +22,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
+import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.NumberFormat;
 
+import com.artificer.events.PedidoCanceladoEvent;
+import com.artificer.events.PedidoEmitidoEvent;
 import com.artificer.model.enums.StatusVenda;
 
 import lombok.Getter;
@@ -33,7 +36,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class Pedido {
+public class Pedido extends AbstractAggregateRoot<Pedido> {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -116,6 +119,17 @@ public class Pedido {
 	public void addItens(List<ItemPedido> itens) {
 		this.itens = itens;
 		this.itens.forEach(item -> item.setPedido(this));
+	}
+
+	public void emitir() {
+		setStatus(StatusVenda.EMITIDA);
+		registerEvent(new PedidoEmitidoEvent(this));
+
+	}
+
+	public void cancelar() {
+		setStatus(StatusVenda.CANCELADA);
+		registerEvent(new PedidoCanceladoEvent(this));
 	}
 
 }

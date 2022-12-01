@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -29,7 +30,7 @@ public class ItemPedido {
 	@ManyToOne
 	@JoinColumn(name = "cerveja_id")
 	private Cerveja cerveja;
-
+	
 	@ManyToOne
 	@JoinColumn(name = "pedido_id")
 	private Pedido pedido;

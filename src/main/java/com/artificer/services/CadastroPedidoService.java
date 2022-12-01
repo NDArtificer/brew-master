@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.artificer.model.Pedido;
-import com.artificer.model.enums.StatusVenda;
 import com.artificer.repository.PedidoRepository;
 
 @Service
@@ -37,7 +36,7 @@ public class CadastroPedidoService {
 
 	@Transactional
 	public void emitir(Pedido pedido) {
-		pedido.setStatus(StatusVenda.EMITIDA);
+		pedido.emitir();
 		salvar(pedido);
 
 	}
