@@ -45,5 +45,4 @@ public class Pagination {
 		return manager.createQuery(query);
 	}
 
-	
 }

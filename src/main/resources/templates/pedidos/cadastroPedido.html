@@ -17,6 +17,16 @@
 				<div class="col-xs-10">
 					<h1>Cadastro de Pedido</h1>
 				</div>
+
+				<diV class="col-sm-2">
+					<div class="aw-page-header-controls">
+						<a class="btn btn-default" th:href="@{/pedidos}">
+							<i class="glyphicon glyphicon-plus-sign">
+								<span class="hidden-xs hidden-sm">Pesquisar Pedidos</span>
+							</i>
+						</a>
+					</div>
+				</diV>
 			</div>
 		</div>
 	</div>
@@ -135,12 +145,14 @@
 						<div class="form-group  col-sm-3"
 							th:classappend="${#fields.hasErrors('dataEntrega')} ? has-error">
 							<label class="control-label" for="dataEntrega">Data da entrega</label>
-							<input type="text" class="form-control" id="dataEntrega" th:field="*{dataEntrega}" />
+							<input type="text" class="form-control js-date" id="dataEntrega"
+								th:field="*{dataEntrega}" />
 						</div>
 
 						<div class="form-group  col-sm-3">
 							<label class="control-label" for="horarioEntrega">Horário de entrega</label>
-							<input type="text" class="form-control" id="horarioEntrega" th:field="*{horaEntrega}" />
+							<input type="text" class="form-control js-hour" id="horarioEntrega"
+								th:field="*{horaEntrega}" />
 						</div>
 					</div>
 

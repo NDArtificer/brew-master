@@ -2,9 +2,12 @@ package com.artificer.controllers;
 
 import java.util.UUID;
 
-import javax.validation.Valid;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -12,7 +15,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -21,13 +23,16 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.artificer.ItensPedidoSession;
+import com.artificer.controllers.pages.PageWrapper;
 import com.artificer.controllers.validator.PedidoValidator;
 import com.artificer.model.Cerveja;
 import com.artificer.model.Pedido;
+import com.artificer.model.enums.StatusVenda;
+import com.artificer.repository.PedidoRepository;
+import com.artificer.repository.filter.PedidoFilter;
 import com.artificer.security.UsuarioSistema;
 import com.artificer.services.CadastroCervejaService;
 import com.artificer.services.CadastroPedidoService;
-import com.artificer.venda.ItensPedidos;
 
 @Controller
 @RequestMapping("/pedidos")
@@ -35,6 +40,9 @@ public class PedidoController {
 
 	@Autowired
 	private CadastroCervejaService cervejaService;
+
+	@Autowired
+	private PedidoRepository pedidoRepository;
 
 	@Autowired
 	private CadastroPedidoService pedidoService;
@@ -45,7 +53,6 @@ public class PedidoController {
 	@Autowired
 	private PedidoValidator pedidoValidator;
 
-	@InitBinder
 	public void initializeValidator(WebDataBinder binder) {
 		binder.setValidator(pedidoValidator);
 	}
@@ -63,6 +70,18 @@ public class PedidoController {
 		mv.addObject("valorFrete", pedido.getValorFrete());
 		mv.addObject("valorDesconto", pedido.getValorDesconto());
 		mv.addObject("valorTotalItens", itens.getValorTotal(pedido.getUuid()));
+		return mv;
+	}
+
+	@GetMapping
+	public ModelAndView pesquisar(PedidoFilter pedidoFilter, BindingResult result,
+			@PageableDefault(size = 4) Pageable pageable, HttpServletRequest httpServletRequest) {
+		ModelAndView mv = new ModelAndView("pedidos/PesquisaPedidos");
+		mv.addObject("statuses", StatusVenda.values());
+
+		PageWrapper<Pedido> pages = new PageWrapper<>(pedidoRepository.filtrar(pedidoFilter, pageable),
+				httpServletRequest);
+		mv.addObject("paginas", pages);	
 		return mv;
 	}
 

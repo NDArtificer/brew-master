@@ -30,6 +30,19 @@ Brewer.MaskDate = (function() {
 	return MaskDate;
 }());
 
+Brewer.MaskHour = (function() {
+	class MaskHour {
+		constructor() {
+			this.inputHour = $('.js-hour');
+		}
+
+		enable() {
+			this.inputHour.mask('00:00')
+		}
+	}
+	return MaskHour;
+}());
+
 
 Brewer.MaskCepNumber = (function() {
 
@@ -98,8 +111,10 @@ $(function() {
 	var maskPhone = new Brewer.MaskPhoneNumber();
 	var maskCep = new Brewer.MaskCepNumber();
 	var maskDate = new Brewer.MaskDate();
+	var maskHour = new Brewer.MaskHour();
 	maskMoney.enable();
 	maskPhone.enable();
 	maskCep.enable();
 	maskDate.enable();
+	maskHour.enable();
 });

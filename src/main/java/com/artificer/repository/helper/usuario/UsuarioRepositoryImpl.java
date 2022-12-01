@@ -20,7 +20,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import com.artificer.model.Cliente;
 import com.artificer.model.Grupo;
 import com.artificer.model.Usuario;
 import com.artificer.repository.filter.UsuarioFilter;

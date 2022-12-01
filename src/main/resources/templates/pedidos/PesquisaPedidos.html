@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:brewer="http://brewer.artifcer.com" layout:decorate="~{layouts/defaultLayout}">
+
+<head>
+	<meta charset="UTF-8" />
+	<title>Brew Master | Pequisa Pedidos</title>
+
+</head>
+
+<body>
+	<section layout:fragment="conteudo">
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<diV class="col-sm-10">
+						<h1>Pesquisa de Pedidos</h1>
+					</diV>
+
+					<diV class="col-sm-2">
+						<div class="aw-page-header-controls">
+							<a class="btn btn-default" th:href="@{/pedidos/novo}">
+								<i class="glyphicon glyphicon-plus-sign">
+									<span class="hidden-xs hidden-sm">Novo Pedido</span>
+								</i>
+							</a>
+						</div>
+					</diV>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid">
+			<form method="GET" th:object="${pedidoFilter}">
+				<div class="row">
+					<div class="form-group col-sm-6">
+						<label class="control-label" for="id">Id</label>
+						<input type="text" class="form-control" id="id" th:field="*{id}" />
+					</div>
+					<div class="form-group col-sm-6">
+						<label class="control-label" for="status">Status</label>
+						<select id="status" class="form-control" th:field="*{status}">
+							<option value="">Todos os status</option>
+							<option th:each="status : ${statuses}" th:text="${status.descricao}" th:value="${status}">
+							</option>
+						</select>
+					</div>
+
+				</div>
+
+				<div class="row">
+					<div class="form-group col-sm-6">
+						<label for="dataCriacao">Data Criacao</label>
+						<div class="form-inline">
+							<input type="text" class="form-control aw-form-control-inline-sm js-date" id="desde"
+								th:field="*{desde}" />
+							<label th:for="valorAte" class="aw-form-label-between">até</label>
+							<input type="text" class="form-control aw-form-control-inline-sm js-date" id="ate"
+								th:field="*{ate}" />
+
+						</div>
+					</div>
+
+					<div class="form-group col-sm-6">
+						<label for="valorTotal">Valor Total</label>
+						<div class="form-inline">
+							<input type="text" class="form-control aw-form-control-inline-sm js-decimal"
+								id="valorMinimo" th:field="*{valorMinimo}" />
+							<label th:for="valorAte" class="aw-form-label-between">até</label>
+							<input type="text" class="form-control aw-form-control-inline-sm js-decimal"
+								id="valorMaximo" th:field="*{valorMaximo}" />
+
+						</div>
+					</div>
+
+				</div>
+
+				<div class="row">
+					<div class="form-group col-sm-6">
+						<label class="control-label" for="nomeCliente">Nome Cliente</label>
+						<input type="text" class="form-control" id="nomeCliente" th:field="*{nomeCliente}" />
+					</div>
+
+					<div class="form-group col-sm-6">
+						<label class="control-label" for="cpfCnpjCliente">CPF/CNPJ</label>
+						<input type="text" class="form-control" id="cpfCnpjCliente" th:field="*{cpfCnpjCliente}" />
+					</div>
+				</div>
+
+				<button type="submit" class="btn btn-primary">Pesquisar</button>
+
+				<div class="table table-responsive bw-tabela-simples">
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th class="table-estilos-col-name">
+									<th:block th:replace="fragments/Ordenacao :: order (${paginas}, 'id', 'Id')">
+									</th:block>
+								</th>
+								<th class="table-cervejas-col-name">
+									<th:block
+										th:replace="fragments/Ordenacao :: order (${paginas}, 'cliente', 'Cliente')">
+									</th:block>
+								</th>
+								<th class="table-estilos-col-name">
+									Data Criação
+								</th>
+								<th class="table-estilos-col-name">
+									Valor Total
+								</th>
+								<th class="table-estilos-col-name">
+									Vendedor
+								</th>
+								<th class="table-estilos-col-name">
+									Status
+								</th>
+
+								<th class="table-estilos-col-acoes"></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="pedido : ${paginas.conteudo}">
+								<td th:text="${pedido.id}">AA9999</td>
+								<td th:text="${pedido.cliente.nome}">Cacilds</td>
+								<td th:text="${pedido.dataCriacao}">Cacilds</td>
+								<td th:text="|R$ ${{pedido.valorTotal}}|">Cacilds</td>
+								<td th:text="${pedido.usuario.nome}">Cacilds</td>
+								<td th:text="${pedido.status.descricao}">Cacilds</td>
+								<td class="text-center">
+									<a class="btn btn-link btn-xs js-tooltip " titile="Editar">
+										<i class="glyphicon glyphicon-pencil"></i>
+									</a>
+									<a class="btn btn-link btn-xs " titile="Remover">
+										<i class="glyphicon glyphicon-remove"></i></a>
+								</td>
+							</tr>
+							<tr th:if="${paginas.vazia}">
+								<td colspan="7">Nenhum estilo Encontrado!</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<div class="col-sm-12 text-center" th:if="${not paginas.vazia}">
+					<nav>
+						<ul class="pagination pagination-sm" th:with="paginaAtual=${paginas.atual}">
+							<li th:class="${paginas.primeira} ? disabled"><a
+									th:href="${paginas.urlParaPagina(paginaAtual - 1)}"
+									th:remove="${paginas.primeira} ? tag"><span>&laquo;</span></a></li>
+
+							<th:block th:each="page : ${#numbers.sequence(1, paginas.total)}"
+								th:with="numeroPagina=${page - 1}">
+								<li th:class="${paginaAtual == numeroPagina} ? active">
+									<a th:href="${paginas.urlParaPagina(numeroPagina)}">[[${page}]]</a>
+								</li>
+							</th:block>
+							<li th:class="${paginas.ultima} ? disabled"><a
+									th:href="${paginas.urlParaPagina(paginaAtual + 1)}"
+									th:remove="${paginas.ultima} ? tag"><span>&raquo;</span></a></li>
+						</ul>
+					</nav>
+				</div>
+			</form>
+		</div>
+	</section>
+</body>
+
+</html>
