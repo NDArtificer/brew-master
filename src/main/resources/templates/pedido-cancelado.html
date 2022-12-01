@@ -6,35 +6,52 @@
 
 	<p>${pedido.cliente.nome} Seu pedido foi cancelado!</p>
 
-	<h2 style="font-size: 26px">${pedido.usuario.nome}</h2>
+	<h3 style="font-size: 26px">Status: ${pedido.status}</h3>
 	<table width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width: 600px; color: #6F6F6F">
 
-		<#list pedido.itens as item>
+		<thead>
+			<th align="left">Produto</th>
+			<th align="left">Quantidade</th>
+			<th align="left">Valor Unitário</th>
+			<th align="left">Valor</th>
+		</thead>
+		<tbody>
+			<#list pedido.itens as item>
+				<tr>
+					<td style="padding: 10px 0">${item.cerveja.nome}</td>
+					<td style="padding: 10px 0">${item.quantidade}</td>
+					<td style="padding: 10px 0">${item.cerveja.valor}</td>
+					<td style="padding: 10px 0">${item.valorTotal?string.currency}</td>
+
+				</tr>
+
+
+			</#list>
+
 			<tr>
-				<td style="padding: 10px 0">${item.quantidade} x
-					${item.cerveja.nome}</td>
-				<td style="padding: 10px 0">Valor Unitário</td>
-				<td style="width: 30px">${item.cerveja.valor?string.currency}</td>
-				<td style="padding: 10px 0">Total dos Itens</td>
-				<td style="width: 30px">${item.valorTotal?string.currency}</td>
+				<td style="padding: 10px 0">Frete</td>
+				<td style="padding: 10px 0"></td>
+				<td style="padding: 10px 0"></td>
+				<td style="padding: 10px 0">${pedido.valorFrete?string.currency}</td>
 			</tr>
-		</#list>
+			<tr>
+				<td style="padding: 10px 0">Desconto</td>
+				<td style="padding: 10px 0"></td>
+				<td style="padding: 10px 0"></td>
+				<td style="padding: 10px 0">${pedido.valorDesconto?string.currency}</td>
+			</tr>
 
-		<tr>
-			<td style="padding: 10px 0">Frete</td>
-			<td style="width: 30px">${pedido.valorFrete?string.currency}</td>
-		</tr>
-		<tr>
-			<td style="padding: 10px 0">Desconto</td>
-			<td style="width: 30px">${pedido.valorDesconto?string.currency}</td>
-		</tr>
-
-		<tr>
-			<td style="padding: 10px 0">Total do Pedido</td>
-			<td style="width: 30px">${pedido.valorTotal?string.currency}</td>
-		</tr>
-
+			<tr>
+				<td style="padding: 10px 0">Total do Pedido</td>
+				<td style="padding: 10px 0"></td>
+				<td style="padding: 10px 0"></td>
+				<td style="width: 30px">${pedido.valorTotal?string.currency}</td>
+			</tr>
+		</tbody>
 	</table>
+
+	<p>Atenciosamente,</p>
+	<h3>BrewMaster</h3>
 
 </body>
 
