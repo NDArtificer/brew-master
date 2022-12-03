@@ -11,4 +11,6 @@ public interface FotoStorageService {
 	void salvar(String foto);
 	
 	byte[] recuperar(String nome);
+
+	void excluir(String foto);
 }

@@ -26,13 +26,13 @@ public class PageWrapper<T> {
 	}
 
 	public String urlParaPagina(int pagina) {
-		return uriBuilder.replaceQueryParam("page", pagina).build(true).encode().toUriString();
+		return uriBuilder.replaceQueryParam("page", pagina).build(true).encode().toUriString().replaceAll("excluido", "");
 	}
 
 	public String urlOrdenada(String property) {
 		var uriBuilderOrder = UriComponentsBuilder.fromUriString(uriBuilder.build(true).encode().toUriString());
 		String orderType = String.format("%s,%s", property, inverterDirecao(property));
-		return uriBuilderOrder.replaceQueryParam("sort", orderType).build(true).encode().toUriString();
+		return uriBuilderOrder.replaceQueryParam("sort", orderType).build(true).encode().toUriString().replaceAll("excluido", "");
 	}
 
 	public String inverterDirecao(String property) {
@@ -48,6 +48,10 @@ public class PageWrapper<T> {
 
 	public boolean descendente(String property) {
 		return inverterDirecao(property).equals("asc");
+	}
+	
+	public int getNumeroElementos(){
+		return page.getNumberOfElements();
 	}
 
 	public boolean ordenada(String property) {

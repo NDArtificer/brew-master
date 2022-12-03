@@ -16,6 +16,27 @@ Brewer.MaskMoney = (function() {
 
 }());
 
+
+Brewer.Security = (function() {
+
+	class Security {
+		constructor() {
+			this.token = $('input[name=_csrf]').val();
+			this.header = $('input[name=_csrf_header]').val();
+		}
+		enable() {
+			$(document).ajaxSend(function(event, jqxhr, settings) {
+				jqxhr.setRequestHeader(this.header, this.token);
+			}.bind(this));
+		}
+	}
+
+
+	return Security;
+
+}());
+
+
 Brewer.MaskDate = (function() {
 
 	class MaskDate {
@@ -107,14 +128,23 @@ Brewer.recuperarValor = function(valorFormatado) {
 }
 
 $(function() {
+
 	var maskMoney = new Brewer.MaskMoney();
-	var maskPhone = new Brewer.MaskPhoneNumber();
-	var maskCep = new Brewer.MaskCepNumber();
-	var maskDate = new Brewer.MaskDate();
-	var maskHour = new Brewer.MaskHour();
 	maskMoney.enable();
+
+	var maskPhone = new Brewer.MaskPhoneNumber();
 	maskPhone.enable();
+
+	var maskCep = new Brewer.MaskCepNumber();
 	maskCep.enable();
+
+	var maskDate = new Brewer.MaskDate();
 	maskDate.enable();
+
+	var maskHour = new Brewer.MaskHour();
 	maskHour.enable();
+
+	var security = new Brewer.Security();
+	security.enable();
+
 });

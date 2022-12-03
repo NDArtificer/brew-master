@@ -12,15 +12,15 @@ import org.springframework.web.multipart.MultipartFile;
 import com.artificer.services.FotoStorageService;
 import com.artificer.storage.StorageProperties;
 
-import groovy.util.logging.Log4j2;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 import net.coobird.thumbnailator.name.Rename;
 
 @Getter
 @Setter
-@Log4j2
+@Slf4j
 public class FotoStorageLocal implements FotoStorageService {
 
 	private Path path;
@@ -99,6 +99,16 @@ public class FotoStorageLocal implements FotoStorageService {
 			return Files.readAllBytes(this.path.resolve(nome));
 		} catch (Exception e) {
 			throw new RuntimeException("Falha ao mover a foto do diretorio!", e);
+		}
+	}
+
+	@Override
+	public void excluir(String foto) {
+		try {
+			Files.deleteIfExists(this.path.resolve(foto));
+			Files.deleteIfExists(this.path.resolve("thumbnail." + foto));
+		} catch (IOException e) {
+			log.warn(String.format("Falha ao deletar a foto %s", foto));
 		}
 	}
 

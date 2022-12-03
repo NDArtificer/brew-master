@@ -9,9 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -19,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.artificer.controllers.pages.PageWrapper;
+import com.artificer.exceptions.CervejaEmUsoException;
 import com.artificer.model.Cerveja;
 import com.artificer.model.enums.Origem;
 import com.artificer.model.enums.Sabor;
@@ -87,6 +91,19 @@ public class CervejaController {
 	@GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody List<CervejaSummary> pesquisar(String skuOuNome) {
 		return cervejaRepository.porSkuOuNome(skuOuNome);
+	}
+
+	@DeleteMapping("/{id}")
+	public @ResponseBody ResponseEntity<?> excluir(@PathVariable("id") Cerveja cerveja) {
+		try {
+			cervejaService.excluir(cerveja);
+
+		} catch (CervejaEmUsoException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+
+		return ResponseEntity.noContent().build();
+
 	}
 
 }
