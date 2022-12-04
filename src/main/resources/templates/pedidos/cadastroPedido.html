@@ -15,7 +15,8 @@
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-xs-10">
-					<h1>Cadastro de Pedido</h1>
+					<h1 th:if="${pedido.novoPedido}">Cadastro de Pedido</h1>
+					<h1 th:unless="${pedido.novoPedido}">Editar Pedido: Número Pedido [[${pedido.id}]] </h1>
 				</div>
 
 				<diV class="col-sm-2">
@@ -39,6 +40,8 @@
 		<form method="POST" th:action="@{/pedidos/novo}" th:object="${pedido}" class="js-formulario-principal">
 			<th:block th:include="fragments/mensagemErroValidacao"></th:block>
 
+			<input type="hidden" th:field="*{id}" />
+			<input type="hidden" th:field="*{usuario}" />
 			<input type="hidden" id="uuid" th:field="*{uuid}" />
 
 			<div class="row">
@@ -59,7 +62,7 @@
 						<div class="aw-box__icon">
 							<i class="fa  fa-tag  fa-3x"></i>
 						</div>
-						<div class="aw-box__value">Orçamento</div>
+						<div class="aw-box__value" th:text="${pedido.status.descricao}">Orçamento</div>
 						<div class="aw-box__title">Status</div>
 					</div>
 				</div>
@@ -70,7 +73,10 @@
 							<i class="fa  fa-calendar  fa-3x"></i>
 						</div>
 						<div class="aw-box__value">
-							<span class="js-tooltip">Hoje</span>
+							<span class="js-tooltip" th:if="${pedido.diasCriacao == 0}">Hoje</span>
+							<span class="js-tooltip" th:if="${pedido.diasCriacao == 1}">Há 1 dia</span>
+							<span class="js-tooltip" th:if="${pedido.diasCriacao > 1}">Há [[${pedido.diasCriacao}]]
+								dias</span>
 						</div>
 						<div class="aw-box__title">Criação</div>
 					</div>
@@ -84,10 +90,11 @@
 					<div class="input-group">
 						<input id="nomeCliente" type="text" readonly="readonly" class="form-control"
 							th:field="*{cliente.nome}" placeholder="Clique na lupa para pesquisar o cliente" />
-						<input id="idCliente" type="hidden" th:field="*{cliente}" />
+						<input id="idCliente" type="hidden" th:field="*{cliente}" th:disabled="${pedido.notEditable}" />
 						<span class="input-group-btn">
 							<button class="btn  btn-default  js-tooltip" type="button" title="Pesquisa avançada"
-								data-toggle="modal" data-target="#pesquisaRapidaClientes">
+								data-toggle="modal" data-target="#pesquisaRapidaClientes"
+								th:disabled="${pedido.notEditable}">
 								<i class="glyphicon  glyphicon-search"></i>
 							</button>
 						</span>
@@ -101,7 +108,8 @@
 					<div class="input-group">
 						<div class="input-group-addon">R$</div>
 						<input type="text" maxlength="14" class="form-control  js-decimal" id="valorFrete"
-							th:field="*{valorFrete}" th:data-valor="*{valorFrete}" />
+							th:field="*{valorFrete}" th:data-valor="*{valorFrete}"
+							th:disabled="${pedido.notEditable}" />
 					</div>
 				</div>
 
@@ -110,7 +118,8 @@
 					<div class="input-group">
 						<div class="input-group-addon">R$</div>
 						<input type="text" maxlength="14" class="form-control  js-decimal" id="valorDesconto"
-							th:field="*{valorDesconto}" th:data-valor="*{valorDesconto}" />
+							th:field="*{valorDesconto}" th:data-valor="*{valorDesconto}"
+							th:disabled="${pedido.notEditable}" />
 					</div>
 				</div>
 			</div>
@@ -131,7 +140,7 @@
 						<div class="form-group  col-lg-12">
 							<input type="text" class="form-control js-sku-nome-cerveja-input" id="cerveja"
 								placeholder="Pesquise e adicione a cerveja pelo SKU ou nome" autofocus="autofocus"
-								th:data-url="@{/cervejas}" />
+								th:data-url="@{/cervejas}" th:disabled="${pedido.notEditable}" />
 						</div>
 					</div>
 
@@ -145,28 +154,28 @@
 						<div class="form-group  col-sm-3"
 							th:classappend="${#fields.hasErrors('dataEntrega')} ? has-error">
 							<label class="control-label" for="dataEntrega">Data da entrega</label>
-							<input type="text" class="form-control js-date" id="dataEntrega"
-								th:field="*{dataEntrega}" />
+							<input type="text" class="form-control js-date" id="dataEntrega" th:field="*{dataEntrega}"
+								th:disabled="${pedido.notEditable}" />
 						</div>
 
 						<div class="form-group  col-sm-3">
 							<label class="control-label" for="horarioEntrega">Horário de entrega</label>
 							<input type="text" class="form-control js-hour" id="horarioEntrega"
-								th:field="*{horaEntrega}" />
+								th:field="*{horaEntrega}" th:disabled="${pedido.notEditable}" />
 						</div>
 					</div>
 
 					<div class="row">
 						<div class="form-group  col-sm-12">
 							<textarea class="form-control" id="dataEntrega" rows="5"
-								placeholder="Alguma observação para o entregador desse pedido?"
-								th:field="*{observacao}"></textarea>
+								placeholder="Alguma observação para o entregador desse pedido?" th:field="*{observacao}"
+								th:disabled="${pedido.notEditable}"></textarea>
 						</div>
 					</div>
 				</div>
 			</div>
 
-			<div class="row" style="clear: both">
+			<div class="row" style="clear: both" th:if="${pedido.editable}">
 				<div class="col-lg-12">
 					<div class="btn-group">
 						<button type="submit" class="btn  btn-primary js-btn-submit"
@@ -182,7 +191,8 @@
 						</ul>
 					</div>
 
-					<button class="btn  btn-danger">Cancelar</button>
+					<button class="btn  btn-danger js-btn-submit" th:data-acao="cancelar"
+						th:unless="${pedido.novoPedido}">Cancelar</button>
 				</div>
 			</div>
 		</form>

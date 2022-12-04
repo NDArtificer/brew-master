@@ -16,13 +16,14 @@
 		<div class="bw-tabela-cerveja-valor-pequeno">
 			<input type="text" maxlength="3"
 				class="bw-tabela-cerveja-campo-quantidade js-tabela-cerveja-quantidade-item"
-				th:value="${item.quantidade}" th:data-id-cerveja="${item.cerveja.id}" />
+				th:value="${item.quantidade}" th:data-id-cerveja="${item.cerveja.id}"
+				th:disabled="${pedido != null ? pedido.notEditable: false }" />
 			<span>x R$[[${item.valorUnitario}]]</span>
 		</div>
 		<div class="bw-tabela-cerveja-valor-grande">R$[[${item.valorTotal}]]</div>
 	</div>
 
-	<div class="bw-tabela-item__painel-exclusao">
+	<div class="bw-tabela-item__painel-exclusao" th:disabled="${pedido != null ? pedido.editable : false }">
 		<span class="bw-tabela-item__titulo-exclusao">Remover Item?</span>
 		<button type="button" class="btn btn-danger js-remover-iten-btn"
 			th:data-id-cerveja="${item.cerveja.id}">Remover</button>

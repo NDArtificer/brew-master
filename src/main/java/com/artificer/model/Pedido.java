@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -20,6 +21,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PostLoad;
 import javax.persistence.Transient;
 
 import org.springframework.data.domain.AbstractAggregateRoot;
@@ -68,7 +70,7 @@ public class Pedido extends AbstractAggregateRoot<Pedido> {
 	@Enumerated(EnumType.STRING)
 	private StatusVenda status = StatusVenda.ORCAMENTO;
 
-	@OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ItemPedido> itens = new ArrayList<>();
 
 	@Transient
@@ -99,6 +101,27 @@ public class Pedido extends AbstractAggregateRoot<Pedido> {
 		return id == null;
 	}
 
+	public Long getDiasCriacao() {
+		LocalDate dataInicio = dataCriacao != null ? dataCriacao.toLocalDate() : LocalDate.now();
+		return ChronoUnit.DAYS.between(dataInicio, LocalDate.now());
+	}
+
+	@PostLoad
+	private void postLoad() {
+		if (dataHoraEntrega != null) {
+			this.dataEntrega = this.dataHoraEntrega.toLocalDate();
+			this.horaEntrega = this.dataHoraEntrega.toLocalTime();
+		}
+	}
+
+	public boolean isEditable() {
+		return !this.status.equals(StatusVenda.CANCELADA);
+	}
+
+	public boolean isNotEditable() {
+		return !isEditable();
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);
@@ -123,13 +146,17 @@ public class Pedido extends AbstractAggregateRoot<Pedido> {
 
 	public void emitir() {
 		setStatus(StatusVenda.EMITIDA);
-		registerEvent(new PedidoEmitidoEvent(this));
 
 	}
 
 	public void cancelar() {
 		setStatus(StatusVenda.CANCELADA);
 		registerEvent(new PedidoCanceladoEvent(this));
+	}
+
+	public void emitirEnviarEmail() {
+		emitir();
+		registerEvent(new PedidoEmitidoEvent(this));
 	}
 
 }

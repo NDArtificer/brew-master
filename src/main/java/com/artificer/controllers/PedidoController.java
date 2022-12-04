@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -61,9 +62,7 @@ public class PedidoController {
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("pedidos/cadastroPedido");
 
-		if (!StringUtils.hasText(pedido.getUuid())) {
-			pedido.setUuid(UUID.randomUUID().toString());
-		}
+		setUuid(pedido);
 
 		mv.addObject("itens", pedido.getItens());
 		mv.addObject("valorFrete", pedido.getValorFrete());
@@ -80,7 +79,20 @@ public class PedidoController {
 
 		PageWrapper<Pedido> pages = new PageWrapper<>(pedidoRepository.filtrar(pedidoFilter, pageable),
 				httpServletRequest);
-		mv.addObject("paginas", pages);	
+		mv.addObject("paginas", pages);
+		return mv;
+	}
+
+	@GetMapping("/{id}")
+	public ModelAndView editar(@PathVariable Long id) {
+		Pedido pedido = pedidoRepository.findWithItens(id);
+		setUuid(pedido);
+		pedido.getItens().forEach(i -> {
+			itens.adicionarItem(pedido.getUuid(), i.getCerveja(), i.getQuantidade());
+		});
+
+		ModelAndView mv = peididos(pedido);
+		mv.addObject(pedido);
 		return mv;
 	}
 
@@ -108,6 +120,21 @@ public class PedidoController {
 		pedidoService.emitir(pedido);
 		redirectAttributes.addFlashAttribute("message", "Pedido realizado e emitido com sucesso!");
 		return new ModelAndView("redirect:/pedidos/novo");
+	}
+
+	@PostMapping(value = "/novo", params = "cancelar")
+	public ModelAndView cancelarPedido(Pedido pedido, BindingResult result, RedirectAttributes redirectAttributes,
+			@AuthenticationPrincipal UsuarioSistema usuarioSistema) {
+		try {
+			pedidoService.cancelar(pedido);
+
+		} catch (AccessDeniedException e) {
+			ModelAndView mv = new ModelAndView("error");
+			mv.addObject("status", 403);
+			return mv;
+		}
+		redirectAttributes.addFlashAttribute("message", "Pedido cancelado com sucesso!");
+		return new ModelAndView(String.format("redirect:/pedidos/%s", pedido.getId()));
 	}
 
 	@PostMapping(value = "/novo", params = "email")
@@ -157,4 +184,11 @@ public class PedidoController {
 
 		pedidoValidator.validate(pedido, result);
 	}
+
+	private void setUuid(Pedido pedido) {
+		if (!StringUtils.hasText(pedido.getUuid())) {
+			pedido.setUuid(UUID.randomUUID().toString());
+		}
+	}
+
 }

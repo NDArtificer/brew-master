@@ -127,7 +127,7 @@
 								<td th:text="${pedido.usuario.nome}">Cacilds</td>
 								<td th:text="${pedido.status.descricao}">Cacilds</td>
 								<td class="text-center">
-									<a class="btn btn-link btn-xs js-tooltip " titile="Editar">
+									<a class="btn btn-link btn-xs js-tooltip " titile="Editar" th:href="@{/pedidos/{id}(id=${pedido.id})}">
 										<i class="glyphicon glyphicon-pencil"></i>
 									</a>
 									<a class="btn btn-link btn-xs " titile="Remover">

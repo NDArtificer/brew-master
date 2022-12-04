@@ -10,4 +10,6 @@ public interface PedidoQueries {
 
 	Page<Pedido> filtrar(PedidoFilter filter, Pageable pageable);
 
+	Pedido findWithItens(Long id);
+
 }

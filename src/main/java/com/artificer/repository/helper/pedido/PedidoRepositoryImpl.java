@@ -12,6 +12,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.util.StringUtils;
 
 import com.artificer.model.Cliente;
+import com.artificer.model.ItemPedido;
 import com.artificer.model.Pedido;
 import com.artificer.model.enums.TipoPessoa;
 import com.artificer.repository.filter.PedidoFilter;
@@ -45,7 +47,7 @@ public class PedidoRepositoryImpl implements PedidoQueries {
 
 		Join<Pedido, Cliente> pedidoCidade = root.join("cliente");
 		pedidoCidade.alias("c");
-		
+
 		criteriaQuery.where(predicate.toArray(new Predicate[predicate.size()]));
 		TypedQuery<Pedido> query = (TypedQuery<Pedido>) pagination.prepararOrdem(criteriaQuery, root, pageable);
 		query = (TypedQuery<Pedido>) pagination.prepararIntervalo(query, pageable);
@@ -60,10 +62,10 @@ public class PedidoRepositoryImpl implements PedidoQueries {
 		root.alias("p");
 
 		criteria.select(builder.count(root));
-		
+
 		Join<Pedido, Cliente> pedidoCidade = root.join("cliente");
 		pedidoCidade.alias("c");
-		
+
 		List<Predicate> predicates = addFilters(builder, filter, root);
 		criteria.where(predicates.toArray(new Predicate[predicates.size()]));
 		return manager.createQuery(criteria).getSingleResult();
@@ -110,6 +112,20 @@ public class PedidoRepositoryImpl implements PedidoQueries {
 			}
 		}
 		return predicate;
+	}
+
+	@Transactional
+	@Override
+	public Pedido findWithItens(Long id) {
+		CriteriaBuilder criteriaBuilder = manager.getCriteriaBuilder();
+		CriteriaQuery<Pedido> criteriaQuery = criteriaBuilder.createQuery(Pedido.class).distinct(true);
+		Root<Pedido> root = criteriaQuery.from(Pedido.class);
+		root.alias("p");
+		Join<Pedido, ItemPedido> pedidoItens = root.join("itens");
+		pedidoItens.alias("i");
+		criteriaQuery.where(criteriaBuilder.equal(root.get("id"), id));
+		TypedQuery<Pedido> query = manager.createQuery(criteriaQuery);
+		return query.getSingleResult();
 	}
 
 }
