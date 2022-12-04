@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
+import javax.persistence.Transient;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
@@ -67,7 +68,7 @@ public class Cerveja {
 	@DecimalMax(value = "100.0", message = "A comissão deve ser menor que ou igual a 100")
 	@Column
 	private BigDecimal comissao;
-	
+
 	@NumberFormat(pattern = "#,##0")
 	@NotNull(message = "A quantidade de estoque é obrigatoria!")
 	@Max(value = 9999, message = "Quantidade de estoque deve ser inferior a 9.999")
@@ -93,12 +94,22 @@ public class Cerveja {
 	@Column
 	private String contentType;
 
+	@Transient
+	private boolean novaFoto;
+
+	@Transient
+	private String fotoAtual;
+
 	public Cerveja() {
 
 	}
 
 	public String getFotoOrMock() {
 		return StringUtils.hasText(foto) ? foto : "cerveja-mock.png";
+	}
+
+	public boolean isNovaCerveja() {
+		return id == null;
 	}
 
 	@PrePersist

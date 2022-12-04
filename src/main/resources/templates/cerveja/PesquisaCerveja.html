@@ -39,6 +39,8 @@
 				<input type="hidden" id="numeroElementosPagina" th:value="${paginas.numeroElementos}" />
 				<input type="hidden" id="ultimaPagina" th:value="${paginas.ultima}" />
 				<input type="hidden" id="paginaAtual" th:value="${paginas.atual}" />
+				
+				
 				<div class="row">
 					<div class="form-group col-sm-6">
 						<label class="control-label" for="sku">SKU</label>
@@ -155,7 +157,8 @@
 							<td th:text="${cerveja.origem.descricao}">Nacional</td>
 							<td class="text-right" th:text="|R$ ${{cerveja.valor}}|">R$ 8.00</td>
 							<td class="text-center" sec:authorize="hasAuthority('CADASTRAR_CERVEJA')">
-								<a class=" btn btn-link btn-xs js-tooltip " titile=" Editar">
+								<a class=" btn btn-link btn-xs js-tooltip " titile=" Editar"
+									th:href="@{/cervejas/{id}(id=${cerveja.id})}">
 									<i class="glyphicon glyphicon-pencil"></i>
 								</a>
 								<a class="btn btn-link btn-xs js-tooltip js-exclusao" href="#" titile="Remover"

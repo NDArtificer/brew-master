@@ -18,7 +18,10 @@
 			<div class="container-fluid">
 				<div class="row">
 					<diV class="col-xs-10">
-						<h1>Cadastro de Cerveja</h1>
+						<h1 th:if="${cerveja.novaCerveja}">Cadastro de Cerveja</h1>
+						<h1 th:unless="${cerveja.novaCerveja}" th:text="|Editar Cerveja: ${cerveja.nome}|">Cadastro de
+							Cerveja
+						</h1>
 					</diV>
 					<diV class="col-xs-2">
 						<div class="aw-page-header-controls">
@@ -39,11 +42,11 @@
 
 
 			<form method="POST" th:object="${cerveja}" class="form-vertical  js-form-loading"
-				th:action="@{/cervejas/cadastro}">
+				th:action="${cerveja.novaCerveja} ? @{/cervejas/cadastro} : @{/cervejas/{id}(id=${cerveja.id})} ">
 
-				<th:block th:include="fragments/mensagemErroValidacao">
-				</th:block>
 
+				<th:block th:include="fragments/mensagemErroValidacao"></th:block>
+				<input type="hidden" th:field="*{id}" />
 				<div class="row">
 					<div class="form-group col-md-3 bw-required"
 						th:classappend="${#fields.hasErrors('sku')} ? has-error">
@@ -176,6 +179,8 @@
 					<div class="form-group col-md-12">
 						<input type="hidden" th:field="*{foto}" />
 						<input type="hidden" th:field="*{contentType}" />
+						<input type="hidden" th:field="*{novaFoto}" />
+						<input type="hidden" th:field="*{fotoAtual}" />
 						<label class="control-label">Foto</label>
 
 						<div class="js-container-foto-cerveja" th:attr="data-url-fotos=@{/fotos}">

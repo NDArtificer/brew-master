@@ -18,4 +18,12 @@ public class CervejaSalvaEvent {
 	public boolean temFoto() {
 		return StringUtils.hasText(cerveja.getFoto());
 	}
+
+	public boolean isNovaFoto() {
+		return cerveja.isNovaFoto();
+	}
+
+	public boolean fotoAlterada() {
+		return StringUtils.hasText(cerveja.getFotoAtual()) && !cerveja.getFotoAtual().equals(cerveja.getFoto());
+	}
 }
