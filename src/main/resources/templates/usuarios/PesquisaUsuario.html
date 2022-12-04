@@ -137,7 +137,8 @@
 							</th:block>
 						</td>
 						<td class="text-center" sec:authorize="hasAuthority('CADASTRAR_USUARIO')">
-							<a class="btn btn-link btn-xs js-tooltip " titile="Editar">
+							<a class="btn btn-link btn-xs js-tooltip " titile="Editar"
+								th:href="@{/usuarios/{id}(id=${usuario.id})}">
 								<i class="glyphicon glyphicon-pencil"></i>
 							</a>
 							<a class="btn btn-link btn-xs " titile="Remover">

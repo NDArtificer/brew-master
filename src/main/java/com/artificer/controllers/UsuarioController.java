@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,21 +50,30 @@ public class UsuarioController {
 		return mv;
 	}
 
+	@GetMapping("/{id}")
+	public ModelAndView editar(@PathVariable Long id) {
+		Usuario usuario = usuarioRepository.findUserWithGroups(id);
+		ModelAndView mv = home(usuario);
+		mv.addObject(usuario);
+		return mv;
+	}
+
 	@GetMapping
 	public ModelAndView pesquisar(UsuarioFilter usuariofilter, BindingResult result,
 			@PageableDefault(size = 3) Pageable pageable, HttpServletRequest httpServletRequest) {
 		ModelAndView mv = new ModelAndView("usuarios/PesquisaUsuario");
 		mv.addObject("grupos", grupoRepository.findAll());
-		//mv.addObject("usuarios", usuarioRepository.filtrar(usuariofilter, pageable));
+		// mv.addObject("usuarios", usuarioRepository.filtrar(usuariofilter, pageable));
 
-		PageWrapper<Usuario> pages = new PageWrapper<>(usuarioRepository.filtrar(usuariofilter, pageable), httpServletRequest);
+		PageWrapper<Usuario> pages = new PageWrapper<>(usuarioRepository.filtrar(usuariofilter, pageable),
+				httpServletRequest);
 		mv.addObject("paginas", pages);
 
 		return mv;
 
 	}
 
-	@PostMapping("/cadastro")
+	@PostMapping(value = { "/cadastro", "{\\d+}" })
 	public ModelAndView cadastrar(@Valid Usuario usuario, BindingResult result, RedirectAttributes atributes) {
 
 		if (result.hasErrors()) {
@@ -87,7 +97,8 @@ public class UsuarioController {
 
 	@PutMapping("/status")
 	@ResponseStatus(code = HttpStatus.OK)
-	public void atualizar(@RequestParam("codigos[]") Long[] codigos, @RequestParam("status") StatusUsuario statusUsuario) {
+	public void atualizar(@RequestParam("codigos[]") Long[] codigos,
+			@RequestParam("status") StatusUsuario statusUsuario) {
 		usuarioService.alterarStatus(codigos, statusUsuario);
 	}
 

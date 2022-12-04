@@ -14,6 +14,8 @@ public interface UsuariosQueries {
 	Optional<Usuario> findByEmailAndAtivo(String email);
 
 	List<String> permissoes(Usuario usuario);
-	
+
 	Page<Usuario> filtrar(UsuarioFilter filter, Pageable pageable);
+
+	Usuario findUserWithGroups(Long id);
 }

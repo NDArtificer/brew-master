@@ -27,15 +27,21 @@ public class CadastroUsuarioService {
 	@Transactional
 	public Usuario save(Usuario usuario) {
 		Optional<Usuario> usuarioExistente = repository.findByEmail(usuario.getEmail());
-		if (usuarioExistente.isPresent()) {
+		if (usuarioExistente.isPresent() && !usuarioExistente.get().equals(usuario)) {
 			throw new EmailJaCadastradoException("E-mail informado já está em uso!");
 		}
 		if (usuario.isNovo() && !StringUtils.hasText(usuario.getSenha())) {
 			throw new SenhaNaoInformadaException("O campo senha é obrigtório ao cadastrar novo usuário!");
 		}
-		if (usuario.isNovo()) {
+		if (usuario.isNovo() || StringUtils.hasText(usuario.getSenha())) {
 			usuario.setSenha(this.passwordEncoder.encode(usuario.getSenha()));
-			usuario.setConfirmacaoSenha(usuario.getSenha());
+		} else if (!StringUtils.hasText(usuario.getSenha())) {
+			usuario.setSenha(usuarioExistente.get().getSenha());
+		}
+		usuario.setConfirmacaoSenha(usuario.getSenha());
+		
+		if(!usuario.isNovo() && usuario.getAtivo() == null) {
+			usuario.setAtivo(usuarioExistente.get().getAtivo());
 		}
 
 		return repository.save(usuario);

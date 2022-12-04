@@ -59,7 +59,7 @@ public class UsuarioRepositoryImpl implements UsuariosQueries {
 		List<Predicate> predicates = addFilters(criteriaBuilder, filter, root, criteriaQuery);
 
 		criteriaQuery.where(criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()])));
-		
+
 		TypedQuery<Usuario> query = (TypedQuery<Usuario>) pagination.prepararOrdem(criteriaQuery, root, pageable);
 		query = (TypedQuery<Usuario>) pagination.prepararIntervalo(query, pageable);
 
@@ -104,6 +104,19 @@ public class UsuarioRepositoryImpl implements UsuariosQueries {
 		}
 
 		return predicates;
+	}
+
+	@Override
+	public Usuario findUserWithGroups(Long id) {
+		CriteriaBuilder criteriaBuilder = manager.getCriteriaBuilder();
+		CriteriaQuery<Usuario> criteriaQuery = criteriaBuilder.createQuery(Usuario.class).distinct(true);
+		Root<Usuario> root = criteriaQuery.from(Usuario.class);
+		root.alias("u");
+		Join<Usuario, Grupo> subQueryGrupo = root.join("grupos");
+		subQueryGrupo.alias("g");
+		criteriaQuery.where(criteriaBuilder.equal(root.get("id"), id));
+		TypedQuery<Usuario> query = manager.createQuery(criteriaQuery);
+		return query.getSingleResult();
 	}
 
 }
