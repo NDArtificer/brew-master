@@ -63,7 +63,6 @@ public class UsuarioController {
 			@PageableDefault(size = 3) Pageable pageable, HttpServletRequest httpServletRequest) {
 		ModelAndView mv = new ModelAndView("usuarios/PesquisaUsuario");
 		mv.addObject("grupos", grupoRepository.findAll());
-		// mv.addObject("usuarios", usuarioRepository.filtrar(usuariofilter, pageable));
 
 		PageWrapper<Usuario> pages = new PageWrapper<>(usuarioRepository.filtrar(usuariofilter, pageable),
 				httpServletRequest);

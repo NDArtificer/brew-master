@@ -6,7 +6,6 @@ import java.util.Objects;
 import org.springframework.util.StringUtils;
 
 import com.artificer.model.enums.Origem;
-import com.google.common.base.Strings;
 
 import lombok.Getter;
 import lombok.Setter;

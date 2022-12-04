@@ -1,6 +1,5 @@
 package com.artificer.services;
 
-import javax.persistence.PersistenceException;
 import javax.transaction.Transactional;
 
 import org.hibernate.exception.ConstraintViolationException;

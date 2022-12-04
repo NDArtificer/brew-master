@@ -30,7 +30,6 @@ import com.artificer.repository.ClienteRepository;
 import com.artificer.repository.EstadoRepository;
 import com.artificer.repository.filter.ClienteFilter;
 import com.artificer.services.CadastroClienteService;
-import com.google.common.base.Strings;
 
 @Controller
 @RequestMapping("/clientes")
