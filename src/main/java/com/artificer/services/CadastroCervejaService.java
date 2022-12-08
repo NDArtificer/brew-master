@@ -21,14 +21,13 @@ public class CadastroCervejaService {
 
 	@Autowired
 	private FotoStorageService fotoStorage;
-	
+
 	@Autowired
 	private ApplicationEventPublisher publisher;
 
 	@Transactional
 	public void save(Cerveja cerveja) {
 		repository.save(cerveja);
-
 		publisher.publishEvent(new CervejaSalvaEvent(cerveja));
 	}
 
@@ -45,9 +44,9 @@ public class CadastroCervejaService {
 		try {
 			repository.delete(cerveja);
 			repository.flush();
-			
+
 			fotoStorage.excluir(cerveja.getFoto());
-		} catch (ConstraintViolationException |  DataIntegrityViolationException e) {
+		} catch (ConstraintViolationException | DataIntegrityViolationException e) {
 			throw new CervejaEmUsoException("Falha ao excluir, Cerveja informada está em uso!");
 		}
 

@@ -19,6 +19,7 @@ import org.springframework.util.StringUtils;
 
 import com.artificer.model.Cerveja;
 import com.artificer.output.CervejaSummary;
+import com.artificer.output.ValorItensEstoque;
 import com.artificer.repository.filter.CervejaFilter;
 import com.artificer.repository.paginacao.Pagination;
 
@@ -105,6 +106,12 @@ public class CervejasRepositoryImpl implements CervejasQueries {
 		List<CervejaSummary> cervejasFiltradas = manager.createQuery(jpql, CervejaSummary.class)
 				.setParameter("skuOuNome", skuOuNome + "%").getResultList();
 		return cervejasFiltradas;
+	}
+
+	@Override
+	public ValorItensEstoque valorItensEstoque() {
+		String query = "select new com.artificer.output.ValorItensEstoque(sum(valor * quantidadeEstoque), sum(quantidadeEstoque)) from Cerveja";
+		return manager.createQuery(query, ValorItensEstoque.class).getSingleResult();
 	}
 
 }

@@ -19,6 +19,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.format.annotation.NumberFormat;
 import org.springframework.util.StringUtils;
 
@@ -32,7 +33,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-public class Cerveja {
+public class Cerveja extends AbstractAggregateRoot<Cerveja>{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

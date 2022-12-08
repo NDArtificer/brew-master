@@ -1,5 +1,7 @@
 package com.artificer.controllers;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -28,6 +31,8 @@ import com.artificer.controllers.validator.PedidoValidator;
 import com.artificer.model.Cerveja;
 import com.artificer.model.Pedido;
 import com.artificer.model.enums.StatusVenda;
+import com.artificer.output.VendaMes;
+import com.artificer.output.VendaOrigem;
 import com.artificer.repository.PedidoRepository;
 import com.artificer.repository.filter.PedidoFilter;
 import com.artificer.security.UsuarioSistema;
@@ -94,6 +99,40 @@ public class PedidoController {
 		ModelAndView mv = peididos(pedido);
 		mv.addObject(pedido);
 		return mv;
+	}
+
+	@GetMapping("/totalPorMes")
+	public @ResponseBody List<VendaMes> listarVendasPorMes() {
+		var listaVenda = pedidoRepository.totalVendaMes();
+
+		LocalDate hoje = LocalDate.now();
+		for (int i = 1; i <= 12; i++) {
+			String month = String.format("%d/%02d", hoje.getYear(), hoje.getMonthValue());
+			boolean hasMonth = listaVenda.stream().filter(venda -> venda.getMes().equals(month)).findAny().isPresent();
+			if (!hasMonth) {
+				listaVenda.add(i - 1, new VendaMes(month, 0));
+			}
+			hoje = hoje.minusMonths(1);
+		}
+
+		return listaVenda;
+	}
+
+	@GetMapping("/porOrigem")
+	public @ResponseBody List<VendaOrigem> listarVendasPorOrigem() {
+		var listaVenda = pedidoRepository.totalVendaOrigem();
+
+		LocalDate hoje = LocalDate.now();
+		for (int i = 1; i <= 12; i++) {
+			String month = String.format("%d/%02d", hoje.getYear(), hoje.getMonthValue());
+			boolean hasMonth = listaVenda.stream().filter(venda -> venda.getMes().equals(month)).findAny().isPresent();
+			if (!hasMonth) {
+				listaVenda.add(i - 1, new VendaOrigem(month, 0, 0));
+			}
+			hoje = hoje.minusMonths(1);
+		}
+
+		return listaVenda;
 	}
 
 	@PostMapping(value = "/novo", params = "salvar")

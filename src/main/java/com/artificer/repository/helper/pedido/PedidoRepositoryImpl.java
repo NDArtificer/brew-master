@@ -1,9 +1,14 @@
 package com.artificer.repository.helper.pedido;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Month;
+import java.time.MonthDay;
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -23,7 +28,10 @@ import org.springframework.util.StringUtils;
 import com.artificer.model.Cliente;
 import com.artificer.model.ItemPedido;
 import com.artificer.model.Pedido;
+import com.artificer.model.enums.StatusVenda;
 import com.artificer.model.enums.TipoPessoa;
+import com.artificer.output.VendaMes;
+import com.artificer.output.VendaOrigem;
 import com.artificer.repository.filter.PedidoFilter;
 import com.artificer.repository.paginacao.Pagination;
 
@@ -126,6 +134,50 @@ public class PedidoRepositoryImpl implements PedidoQueries {
 		criteriaQuery.where(criteriaBuilder.equal(root.get("id"), id));
 		TypedQuery<Pedido> query = manager.createQuery(criteriaQuery);
 		return query.getSingleResult();
+	}
+
+	@Override
+	public BigDecimal valorTotalVendasAno() {
+		String query = "select sum(valorTotal) FROM Pedido where year(dataCriacao) =:year and status =:status";
+		Optional<BigDecimal> valor = Optional
+				.ofNullable(manager.createQuery(query, BigDecimal.class).setParameter("year", Year.now().getValue())
+						.setParameter("status", StatusVenda.EMITIDA).getSingleResult());
+		return valor.orElse(BigDecimal.ZERO);
+
+	}
+
+	@Override
+	public BigDecimal valorTotalVendasMes() {
+		String query = "select sum(valorTotal) FROM Pedido where month(dataCriacao) =:month and status =:status";
+		Optional<BigDecimal> valor = Optional.ofNullable(
+				manager.createQuery(query, BigDecimal.class).setParameter("month", MonthDay.now().getMonthValue())
+						.setParameter("status", StatusVenda.EMITIDA).getSingleResult());
+		return valor.orElse(BigDecimal.ZERO);
+
+	}
+
+	@Override
+	public BigDecimal valorTicketMedio() {
+		String query = "select sum(valorTotal)/count(*) FROM Pedido where year(dataCriacao) =:year and status =:status";
+		Optional<BigDecimal> valor = Optional
+				.ofNullable(manager.createQuery(query, BigDecimal.class).setParameter("year", Year.now().getValue())
+						.setParameter("status", StatusVenda.EMITIDA).getSingleResult());
+		return valor.orElse(BigDecimal.ZERO);
+
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<VendaMes> totalVendaMes() {
+
+		return manager.createNamedQuery("Vendas.totalPorMes").getResultList();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<VendaOrigem> totalVendaOrigem() {
+
+		return manager.createNamedQuery("Vendas.porOrigem").getResultList();
 	}
 
 }

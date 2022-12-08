@@ -14,11 +14,10 @@ public class NotificacaoPedidoConfirmadoListener {
 
 	@Autowired
 	private EnvioEmailService envioService;
-
+	
 	@TransactionalEventListener
 	private void confimarPedido(PedidoEmitidoEvent event) {
 		Pedido pedido = event.getPedido();
-
 		var message = Message.builder()
 				.subject(pedido.getUsuario()
 				.getNome() + " Pedido Emitido")
@@ -28,6 +27,7 @@ public class NotificacaoPedidoConfirmadoListener {
 				.build();
 		
 		envioService.enviar(message);
+		 
 	}
 
 }

@@ -9,7 +9,8 @@ import lombok.Setter;
 @Setter
 @Getter
 @AllArgsConstructor
-public class PedidoEmitidoEvent {
+public class PedidoEstoqueEvent {
 
 	private Pedido pedido;
+
 }

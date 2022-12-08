@@ -15,10 +15,12 @@ public class NotificacaoPedidoCanceladoListener {
 	@Autowired
 	private EnvioEmailService envioService;
 
+	
 	@TransactionalEventListener
 	private void cancelarPedido(PedidoCanceladoEvent event) {
 		Pedido pedido = event.getPedido();
 
+		
 		var message = Message.builder()
 				.subject(pedido.getUsuario()
 				.getNome() + " Pedido Cancelado")
@@ -28,6 +30,7 @@ public class NotificacaoPedidoCanceladoListener {
 				.build();
 		
 		envioService.enviar(message);
+		
 	}
-	
+
 }

@@ -9,11 +9,11 @@ import lombok.Getter;
 @Getter
 public class CervejaSalvaEvent {
 
+	private Cerveja cerveja;
+
 	public CervejaSalvaEvent(Cerveja cerveja) {
 		this.cerveja = cerveja;
 	}
-
-	private Cerveja cerveja;
 
 	public boolean temFoto() {
 		return StringUtils.hasText(cerveja.getFoto());
