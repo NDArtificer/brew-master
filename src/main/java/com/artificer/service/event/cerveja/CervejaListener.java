@@ -14,7 +14,7 @@ public class CervejaListener {
 
 	@EventListener(condition = "#event.temFoto() and #event.novaFoto")
 	public void cervejaSalva(CervejaSalvaEvent event) {
-		fotoStorage.salvar(event.getCerveja().getFoto());
+		// fotoStorage.salvar(event.getCerveja().getFoto());
 	}
 
 	@EventListener(condition = "#evento.fotoAlterada()")

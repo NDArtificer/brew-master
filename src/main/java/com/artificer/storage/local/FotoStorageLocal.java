@@ -24,7 +24,6 @@ import net.coobird.thumbnailator.name.Rename;
 public class FotoStorageLocal implements FotoStorageService {
 
 	private Path path;
-	private Path tempPath;
 	private StorageProperties properties;
 
 	public FotoStorageLocal(StorageProperties properties) {
@@ -37,40 +36,35 @@ public class FotoStorageLocal implements FotoStorageService {
 
 		try {
 			Files.createDirectories(this.path);
-			this.tempPath = FileSystems.getDefault().getPath(this.path.toString(), "temp");
-			Files.createDirectories(this.tempPath);
 		} catch (Exception e) {
 			throw new RuntimeException("Erro ao criar a pasta para criar os aquivos de imagens!", e);
 		}
 	}
 
 	@Override
-	public String salvarTemporariamente(MultipartFile[] files) {
+	public String salvar(MultipartFile[] files) {
 
 		String novoNome = null;
 		if (files != null && files.length > 0) {
 			MultipartFile file = files[0];
 			novoNome = renomearArquivo(file.getOriginalFilename());
 			try {
-				file.transferTo(new File(this.tempPath.toAbsolutePath().toString()
+				file.transferTo(new File(this.path.toAbsolutePath().toString()
 						+ FileSystems.getDefault().getSeparator() + novoNome));
 			} catch (Exception e) {
-				throw new RuntimeException("Erro ao salvar o arquivo na pasta temporaria!", e);
+				throw new RuntimeException("Erro ao salvar o arquivo no diretório!", e);
 			}
 
 		}
+		
+		try {
+			Thumbnails.of(this.path.resolve(novoNome).toString()).size(40, 68).toFiles(Rename.PREFIX_DOT_THUMBNAIL);
+		} catch (IOException e) {
+			throw new RuntimeException("Falha ao gerar a thumbnail!", e);
+		}
+		
 		return novoNome;
 
-	}
-
-	@Override
-	public byte[] recuperarFoto(String nome) {
-
-		try {
-			return Files.readAllBytes(this.tempPath.resolve(nome));
-		} catch (IOException e) {
-			throw new RuntimeException("falha ao ler o arquivo !", e);
-		}
 	}
 
 	private String renomearArquivo(String originalFilename) {
@@ -78,20 +72,7 @@ public class FotoStorageLocal implements FotoStorageService {
 		return novoNome;
 	}
 
-	@Override
-	public void salvar(String foto) {
-		try {
-			Files.move(this.tempPath.resolve(foto), this.path.resolve(foto));
-		} catch (IOException e) {
-			throw new RuntimeException("Falha ao mover a foto do diretorio temporário!", e);
-		}
 
-		try {
-			Thumbnails.of(this.path.resolve(foto).toString()).size(40, 68).toFiles(Rename.PREFIX_DOT_THUMBNAIL);
-		} catch (IOException e) {
-			throw new RuntimeException("Falha ao gerar a thumbnail!", e);
-		}
-	}
 
 	@Override
 	public byte[] recuperar(String nome) {
@@ -110,6 +91,12 @@ public class FotoStorageLocal implements FotoStorageService {
 		} catch (IOException e) {
 			log.warn(String.format("Falha ao deletar a foto %s", foto));
 		}
+	}
+
+	@Override
+	public String getUrl(String nomeFoto) {
+		String url = String.format("http://localhost:8080/fotos/%s", nomeFoto);
+		return url;
 	}
 
 }

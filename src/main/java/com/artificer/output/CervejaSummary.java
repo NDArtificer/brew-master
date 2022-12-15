@@ -20,6 +20,7 @@ public class CervejaSummary {
 	private String origem;
 	private BigDecimal valor;
 	private String foto;
+	private String urlThumbnailFoto;
 
 	@Override
 	public int hashCode() {

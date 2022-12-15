@@ -39,8 +39,8 @@
 				<input type="hidden" id="numeroElementosPagina" th:value="${paginas.numeroElementos}" />
 				<input type="hidden" id="ultimaPagina" th:value="${paginas.ultima}" />
 				<input type="hidden" id="paginaAtual" th:value="${paginas.atual}" />
-				
-				
+
+
 				<div class="row">
 					<div class="form-group col-sm-6">
 						<label class="control-label" for="sku">SKU</label>
@@ -148,8 +148,8 @@
 					<tbody>
 						<tr th:each="cerveja : ${paginas.conteudo}">
 							<td class="text-center">
-								<img th:src="@{/fotos/thumbnail.{foto}(foto=${cerveja.fotoOrMock})}"
-									class="img-responsive" />
+								<!--								<img th:src="@{/fotos/thumbnail.{foto}(foto=${cerveja.fotoOrMock})}" class="img-responsive" /> -->
+								<img th:src="${cerveja.urlThumbnailFoto}" class="img-responsive" />
 							</td>
 							<td class="text-center" th:text="${cerveja.sku}">AA9999</td>
 							<td th:text="${cerveja.nome}">Cacilds</td>

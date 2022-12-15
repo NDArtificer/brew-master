@@ -22,6 +22,7 @@ import com.artificer.output.CervejaSummary;
 import com.artificer.output.ValorItensEstoque;
 import com.artificer.repository.filter.CervejaFilter;
 import com.artificer.repository.paginacao.Pagination;
+import com.artificer.services.FotoStorageService;
 
 public class CervejasRepositoryImpl implements CervejasQueries {
 
@@ -30,6 +31,9 @@ public class CervejasRepositoryImpl implements CervejasQueries {
 
 	@Autowired
 	private Pagination pagination;
+
+	@Autowired
+	private FotoStorageService storageService;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -105,6 +109,11 @@ public class CervejasRepositoryImpl implements CervejasQueries {
 				+ "from Cerveja where lower(sku) like lower(:skuOuNome) or lower(nome) like lower(:skuOuNome)";
 		List<CervejaSummary> cervejasFiltradas = manager.createQuery(jpql, CervejaSummary.class)
 				.setParameter("skuOuNome", skuOuNome + "%").getResultList();
+
+		cervejasFiltradas.forEach(cerveja -> {
+			String thumbnailFoto = String.format("%s%s", FotoStorageService.THUMBNAIL_PREFIX, cerveja.getFoto());
+			cerveja.setUrlThumbnailFoto(storageService.getUrl(thumbnailFoto));
+		});
 		return cervejasFiltradas;
 	}
 

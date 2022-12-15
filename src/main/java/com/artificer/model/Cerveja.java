@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
@@ -23,6 +24,7 @@ import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.format.annotation.NumberFormat;
 import org.springframework.util.StringUtils;
 
+import com.artificer.listeners.CervejaEntityListener;
 import com.artificer.model.annotations.Sku;
 import com.artificer.model.enums.Origem;
 import com.artificer.model.enums.Sabor;
@@ -33,7 +35,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-public class Cerveja extends AbstractAggregateRoot<Cerveja>{
+@EntityListeners(CervejaEntityListener.class)
+public class Cerveja extends AbstractAggregateRoot<Cerveja> {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -97,6 +100,12 @@ public class Cerveja extends AbstractAggregateRoot<Cerveja>{
 
 	@Transient
 	private boolean novaFoto;
+
+	@Transient
+	private String urlFoto;
+
+	@Transient
+	private String urlThumbnailFoto;
 
 	@Transient
 	private String fotoAtual;

@@ -27,9 +27,9 @@ public class FotoStorageRunnable implements Runnable {
 		System.out.println(files[0].getOriginalFilename());
 		System.out.println(files[0].getContentType());
 
-		String nomeFoto = this.storageService.salvarTemporariamente(files);
+		String nomeFoto = this.storageService.salvar(files);
 		String contentType = files[0].getContentType();
-		result.setResult(new FotoCervejaInput(nomeFoto, contentType));
+		result.setResult(new FotoCervejaInput(nomeFoto, contentType, storageService.getUrl(nomeFoto)));
 
 	}
 
