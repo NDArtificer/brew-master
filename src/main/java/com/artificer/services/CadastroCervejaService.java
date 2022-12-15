@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import com.artificer.exceptions.CervejaEmUsoException;
 import com.artificer.model.Cerveja;
 import com.artificer.repository.CervejasRepository;
-import com.artificer.service.event.cerveja.CervejaSalvaEvent;
 
 @Service
 public class CadastroCervejaService {
@@ -22,13 +21,9 @@ public class CadastroCervejaService {
 	@Autowired
 	private FotoStorageService fotoStorage;
 
-	@Autowired
-	private ApplicationEventPublisher publisher;
-
 	@Transactional
 	public void save(Cerveja cerveja) {
 		repository.save(cerveja);
-		// publisher.publishEvent(new CervejaSalvaEvent(cerveja));
 	}
 
 	@Transactional
