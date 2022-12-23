@@ -13,8 +13,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,6 +26,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.artificer.controllers.pages.PageWrapper;
 import com.artificer.exceptions.CpfCnpjClienteCadastroException;
+import com.artificer.exceptions.EntidadeEmUsoException;
 import com.artificer.model.Cliente;
 import com.artificer.model.enums.TipoPessoa;
 import com.artificer.repository.ClienteRepository;
@@ -54,7 +57,16 @@ public class ClienteController {
 		return mv;
 	}
 
-	@PostMapping("/cadastro")
+	@GetMapping("/{id}")
+	public ModelAndView editar(@PathVariable Long id) {
+		Cliente cliente = clienteRepository.findById(id).get();
+		ModelAndView mv = this.home(cliente);
+		this.clienteService.clientComposeData(cliente);
+		mv.addObject(cliente);
+		return mv;
+	}
+
+	@PostMapping(value = { "/cadastro", "{\\d+}" })
 	public ModelAndView cadastrar(@Valid Cliente cliente, BindingResult result, RedirectAttributes atributes) {
 		if (result.hasErrors()) {
 			System.out.println("Tem Erros no Elemento!");
@@ -99,6 +111,16 @@ public class ClienteController {
 		if ((!StringUtils.hasText(nome)) || (nome.length() < 3)) {
 			throw new IllegalArgumentException();
 		}
+	}
+
+	@DeleteMapping("/{id}")
+	public ResponseEntity<?> excluir(@PathVariable("id") Cliente cliente) {
+		try {
+			clienteService.excluir(cliente);
+		} catch (EntidadeEmUsoException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+		return ResponseEntity.ok().build();
 	}
 
 	@ExceptionHandler(IllegalArgumentException.class)

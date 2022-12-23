@@ -19,7 +19,10 @@
 			<div class="container-fluid">
 				<div class="row">
 					<diV class="col-xs-10">
-						<h1>Cadastro Estilo</h1>
+						<h1 th:if="${estilo.novo}">Cadastro de Estilo</h1>
+						<h1 th:unless="${estilo.novo}" th:text="|Editar Estilo: ${estilo.nome}|">Cadastro de
+							Estilo
+						</h1>
 					</diV>
 
 					<diV class="col-xs-2">
@@ -49,7 +52,8 @@
 			<!-- 				</div> -->
 
 			<form method="post" th:object="${estilo}" class="form-vertical  js-form-loading"
-				th:action="@{/estilos/cadastro}">
+				th:action="${estilo.novo} ? @{/estilos/cadastro} : @{/estilos/{id}(id=${estilo.id})}">
+				<input type="hidden" th:field="*{id}" />
 
 				<th:block th:include="fragments/mensagemErroValidacao">
 				</th:block>

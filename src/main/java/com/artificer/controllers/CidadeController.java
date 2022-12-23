@@ -11,9 +11,12 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,7 +26,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.artificer.controllers.pages.PageWrapper;
 import com.artificer.exceptions.CidadeJaCadastradaExeption;
+import com.artificer.exceptions.EntidadeEmUsoException;
 import com.artificer.model.Cidade;
+import com.artificer.model.Estilo;
 import com.artificer.repository.CidadeRepository;
 import com.artificer.repository.EstadoRepository;
 import com.artificer.repository.filter.CidadeFilter;
@@ -65,7 +70,14 @@ public class CidadeController {
 
 	}
 
-	@PostMapping("/cadastro")
+	@GetMapping("/{id}")
+	public ModelAndView editar(@PathVariable("id") Cidade cidade) {
+		ModelAndView mv = home(cidade);
+		mv.addObject(cidade);
+		return mv;
+	}
+
+	@PostMapping(value = { "/cadastro", "{\\d+}" })
 	@CacheEvict(value = "cidades", key = "#cidade.estado.id", condition = "#cidade.estadoIsNotNull()")
 	public ModelAndView cadastrar(@Valid Cidade cidade, BindingResult result, RedirectAttributes atributes) {
 
@@ -93,6 +105,16 @@ public class CidadeController {
 
 		return cidadeRepository.findByEstadoId(estadoId);
 
+	}
+
+	@DeleteMapping("/{id}")
+	public ResponseEntity<?> excluir(@PathVariable("id") Cidade cidade) {
+		try {
+			cidadeService.excluir(cidade);
+		} catch (EntidadeEmUsoException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+		return ResponseEntity.ok().build();
 	}
 
 }

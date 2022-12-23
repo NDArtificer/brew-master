@@ -4,11 +4,14 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.artificer.exceptions.CervejaEmUsoException;
 import com.artificer.exceptions.EmailJaCadastradoException;
 import com.artificer.exceptions.SenhaNaoInformadaException;
 import com.artificer.model.Usuario;
@@ -39,8 +42,8 @@ public class CadastroUsuarioService {
 			usuario.setSenha(usuarioExistente.get().getSenha());
 		}
 		usuario.setConfirmacaoSenha(usuario.getSenha());
-		
-		if(!usuario.isNovo() && usuario.getAtivo() == null) {
+
+		if (!usuario.isNovo() && usuario.getAtivo() == null) {
 			usuario.setAtivo(usuarioExistente.get().getAtivo());
 		}
 
@@ -50,6 +53,18 @@ public class CadastroUsuarioService {
 	@Transactional
 	public void alterarStatus(Long[] codigos, StatusUsuario statusUsuario) {
 		statusUsuario.executar(codigos, repository);
+	}
+
+	@Transactional
+	public void excluir(Usuario usuario) {
+		try {
+
+			repository.delete(usuario);
+			repository.flush();
+		} catch (ConstraintViolationException | DataIntegrityViolationException e) {
+			throw new CervejaEmUsoException("Falha ao excluir, Cerveja informada está em uso!");
+		}
+
 	}
 
 }

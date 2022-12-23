@@ -34,6 +34,10 @@ public class Cidade {
 	@NotNull
 	private Estado estado;
 
+	public boolean isNovo() {
+		return id == null;
+	}
+
 	public boolean estadoIsNotNull() {
 		return estado != null;
 	}

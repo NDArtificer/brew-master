@@ -82,6 +82,10 @@ public class Cliente {
 		return Objects.hash(id);
 	}
 
+	public boolean isNovo() {
+		return id == null;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

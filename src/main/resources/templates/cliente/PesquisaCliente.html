@@ -87,10 +87,12 @@
 						<td th:text="${cliente.endereco.cidade.nome}">Cacilds</td>
 						<td th:text="${cliente.endereco.cidade.estado.uf}">Cacilds</td>
 						<td class="text-center">
-							<a class="btn btn-link btn-xs js-tooltip " titile="Editar">
+							<a class="btn btn-link btn-xs js-tooltip " titile="Editar"
+								th:href="@{/clientes/{id}(id=${cliente.id})}">
 								<i class="glyphicon glyphicon-pencil"></i>
 							</a>
-							<a class="btn btn-link btn-xs " titile="Remover">
+							<a class="btn btn-link btn-xs js-exclusao js-tooltip" href="#" titile="Remover"
+								th:data-objeto="${cliente.nome}" th:data-url="@{/clientes/{id}(id=${cliente.id})}">
 								<i class="glyphicon glyphicon-remove"></i></a>
 						</td>
 					</tr>

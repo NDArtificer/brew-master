@@ -16,7 +16,10 @@
 			<div class="container-fluid">
 				<div class="row">
 					<diV class="col-xs-10">
-						<h1>Cadastro de Clientes</h1>
+						<h1 th:if="${cliente.novo}">Cadastro de Cliente</h1>
+						<h1 th:unless="${cliente.novo}" th:text="|Editar Cliente: ${cliente.nome}|">Cadastro de
+							Cerveja
+						</h1>
 					</diV>
 
 					<diV class="col-xs-2">
@@ -45,9 +48,9 @@
 			<th:block th:include="fragments/mensagemSucesso"></th:block>
 
 
-			<form th:action="@{/clientes/cadastro}" method="post" th:object="${cliente}"
-				class="form-vertical  js-form-loading">
-
+			<form th:action="${cliente.novo} ? @{/clientes/cadastro} : @{/clientes/{id}(id=${cliente.id})}"
+				method="post" th:object="${cliente}" class="form-vertical  js-form-loading">
+				<input type="hidden" th:field="*{id}" />
 				<th:block th:include="fragments/mensagemErroValidacao"></th:block>
 				<div class="row">
 					<div class="form-group col-md-12">

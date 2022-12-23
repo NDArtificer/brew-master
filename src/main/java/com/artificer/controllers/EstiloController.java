@@ -10,7 +10,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,8 +22,10 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.artificer.controllers.pages.PageWrapper;
+import com.artificer.exceptions.EntidadeEmUsoException;
 import com.artificer.exceptions.NomeEstiloJaCadastradoException;
 import com.artificer.model.Estilo;
+import com.artificer.model.Usuario;
 import com.artificer.repository.EstiloRepository;
 import com.artificer.services.CadastroEstiloService;
 
@@ -55,7 +59,15 @@ public class EstiloController {
 
 	}
 
-	@PostMapping("/cadastro")
+	@GetMapping("/{id}")
+	public ModelAndView editar(@PathVariable Long id) {
+		Estilo estilo = estiloRepository.findById(id).get();
+		ModelAndView mv = cadastro(estilo);
+		mv.addObject(estilo);
+		return mv;
+	}
+
+	@PostMapping(value = { "/cadastro", "{\\d+}" })
 	public ModelAndView cadastrar(@Valid Estilo estilo, BindingResult result, RedirectAttributes atributes) {
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("estilo/CadastroEstilo");
@@ -86,6 +98,16 @@ public class EstiloController {
 		estilo = cadastroEstiloService.save(estilo);
 
 		return ResponseEntity.ok(estilo);
+	}
+
+	@DeleteMapping("/{id}")
+	public ResponseEntity<?> excluir(@PathVariable("id") Estilo estilo) {
+		try {
+			cadastroEstiloService.excluir(estilo);
+		} catch (EntidadeEmUsoException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+		return ResponseEntity.ok().build();
 	}
 
 }
