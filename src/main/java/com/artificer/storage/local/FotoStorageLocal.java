@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.UUID;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -66,12 +65,6 @@ public class FotoStorageLocal implements FotoStorageService {
 		return novoNome;
 
 	}
-
-	private String renomearArquivo(String originalFilename) {
-		var novoNome = String.format("%s_%s", UUID.randomUUID().toString(), originalFilename);
-		return novoNome;
-	}
-
 
 
 	@Override

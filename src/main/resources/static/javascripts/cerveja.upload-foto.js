@@ -14,6 +14,7 @@ Brewer.UploadFoto = (function() {
 
 			this.containerFotoCerveja = $('.js-container-foto-cerveja');
 			this.inputDrop = $('#upload-drop');
+			this.imgLoading = $(".js-img-loading");
 
 		}
 		enable() {
@@ -23,7 +24,8 @@ Brewer.UploadFoto = (function() {
 				allow: '*.(jpg|jpeg|png)',
 				action: this.containerFotoCerveja.data('url-fotos'),
 				complete: onUploadSuccess.bind(this),
-				beforeSend: addCsrfToken
+				beforeSend: addCsrfToken,
+				loadStart: onLoadStart.bind(this)
 			}
 
 			UIkit.uploadSelect($('#upload-select'), settings);
@@ -40,9 +42,14 @@ Brewer.UploadFoto = (function() {
 	}
 
 
+	function onLoadStart() {
+		this.imgLoading.removeClass('hidden');
+	}
+
 	function onUploadSuccess(resposta) {
 		this.novaFoto.val('true');
 		this.inputUrl.val(resposta.url);
+		this.imgLoading.addClass('hidden');
 		renderizarFoto.call(this, resposta);
 
 	}
