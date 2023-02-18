@@ -28,7 +28,6 @@ import com.artificer.controllers.pages.PageWrapper;
 import com.artificer.exceptions.CidadeJaCadastradaExeption;
 import com.artificer.exceptions.EntidadeEmUsoException;
 import com.artificer.model.Cidade;
-import com.artificer.model.Estilo;
 import com.artificer.repository.CidadeRepository;
 import com.artificer.repository.EstadoRepository;
 import com.artificer.repository.filter.CidadeFilter;

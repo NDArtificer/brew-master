@@ -25,7 +25,6 @@ import com.artificer.controllers.pages.PageWrapper;
 import com.artificer.exceptions.EntidadeEmUsoException;
 import com.artificer.exceptions.NomeEstiloJaCadastradoException;
 import com.artificer.model.Estilo;
-import com.artificer.model.Usuario;
 import com.artificer.repository.EstiloRepository;
 import com.artificer.services.CadastroEstiloService;
 
