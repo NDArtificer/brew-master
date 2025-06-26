@@ -159,4 +159,8 @@ public class Pedido extends AbstractAggregateRoot<Pedido> {
 		registerEvent(new PedidoEmitidoEvent(this));
 	}
 
+	public boolean isCancelado() {
+		return getStatus().equals(StatusVenda.CANCELADA);
+	}
+
 }

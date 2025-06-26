@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import com.artificer.events.PedidoEstoqueEvent;
 import com.artificer.model.Cerveja;
 import com.artificer.model.Pedido;
-import com.artificer.model.enums.StatusVenda;
 import com.artificer.repository.CervejasRepository;
 
 @Component
@@ -22,7 +21,7 @@ public class PedidoEstoqueListener {
 		pedido.getItens().forEach(item -> {
 			Integer quantidade;
 			Cerveja cerveja = repository.findById(item.getCerveja().getId()).get();
-			if(pedido.getStatus().equals(StatusVenda.CANCELADA)) {
+			if(pedido.isCancelado()) {
 				quantidade = cerveja.getQuantidadeEstoque() + item.getQuantidade();
 			} else {
 				quantidade = (cerveja.getQuantidadeEstoque() - item.getQuantidade());
