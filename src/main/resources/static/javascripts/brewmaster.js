@@ -45,6 +45,12 @@ Brewer.MaskDate = (function() {
 		}
 		enable() {
 			this.inputDate.mask('00/00/0000');
+			this.inputDate.datepicker({
+                                    todayHighlight: true,
+                                    autoclose: true,
+                                    format: 'dd/mm/yyyy',
+                                    language: 'pt-BR',
+                                  });
 		}
 
 	}

@@ -154,20 +154,20 @@
 						<div class="form-group  col-sm-3"
 							th:classappend="${#fields.hasErrors('dataEntrega')} ? has-error">
 							<label class="control-label" for="dataEntrega">Data da entrega</label>
-							<input type="text" class="form-control js-date" id="dataEntrega" th:field="*{dataEntrega}"
+							<input type="text" placeholder="dd/MM/yyyy" class="form-control js-date" id="dataEntrega" th:field="*{dataEntrega}"
 								th:disabled="${pedido.notEditable}" />
 						</div>
 
 						<div class="form-group  col-sm-3">
-							<label class="control-label" for="horarioEntrega">Horário de entrega</label>
-							<input type="text" class="form-control js-hour" id="horarioEntrega"
+							<label class="control-label" for="horarioEntrega" >Horário de entrega</label>
+							<input type="text" class="form-control js-hour" placeholder="HH:mm"  id="horarioEntrega"
 								th:field="*{horaEntrega}" th:disabled="${pedido.notEditable}" />
 						</div>
 					</div>
 
 					<div class="row">
 						<div class="form-group  col-sm-12">
-							<textarea class="form-control" id="dataEntrega" rows="5"
+							<textarea class="form-control" id="observacaoEntrega" rows="5"
 								placeholder="Alguma observação para o entregador desse pedido?" th:field="*{observacao}"
 								th:disabled="${pedido.notEditable}"></textarea>
 						</div>
@@ -214,6 +214,9 @@
 	<script th:src="@{/javascripts/venda.pedido-itens.js}"></script>
 	<script th:src="@{/javascripts/Pedido.js}"></script>
 	<script th:src="@{/javascripts/Pedido.botoes-submit.js}"></script>
+	<script th:src="@{/styles/vendors/bootstrap-datepicker.standalone.min.css}"></script>
+	<script th:src="@{/javascripts/vendors/bootstrap-datepicker.min.js}"></script>
+	<script th:src="@{/javascripts/vendors/bootstrap-datepicker.pt-BR.min.js}"></script>
 	<script>
 		$(function () {
 			$('.js-abas-venda a').click(function (e) {
@@ -223,5 +226,6 @@
 		});
 	</script>
 </th:block>
+
 
 </html>

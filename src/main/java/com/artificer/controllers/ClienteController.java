@@ -100,8 +100,9 @@ public class ClienteController {
 
 	}
 
-	@GetMapping(value = "/pesquisar", produces = { MediaType.APPLICATION_JSON_VALUE }, consumes = {
-			MediaType.APPLICATION_JSON_VALUE })
+	@GetMapping(value = "/pesquisar",
+				produces = { MediaType.APPLICATION_JSON_VALUE },
+				consumes = {MediaType.APPLICATION_JSON_VALUE })
 	public @ResponseBody List<Cliente> findClientes(@RequestParam("nome") String nome) {
 		tratarParametro(nome);
 		return clienteRepository.findByNomeContainingIgnoreCase(nome);

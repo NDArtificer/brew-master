@@ -25,10 +25,10 @@
 					<label for="dataInicio">Data de criação</label>
 					<div class="form-inline">
 						<input type="text" class="form-control  aw-form-control-inline-sm  js-date" id="dataInicio"
-							th:field="*{dataInicio}" autocomplete="off" />
-						<label for="a" class="aw-form-label-between">a</label>
+							th:field="*{dataInicio}" autocomplete="off" placeholder="dd/mm/yyyy"/>
+						<label class="aw-form-label-between">a</label>
 						<input type="text" class="form-control  aw-form-control-inline-sm  js-date" id="dataFim"
-							th:field="*{dataFim}" autocomplete="off" />
+							th:field="*{dataFim}" autocomplete="off" placeholder="dd/mm/yyyy"/>
 					</div>
 				</div>
 			</div>
@@ -37,5 +37,13 @@
 		</form>
 	</div>
 </section>
+
+
+<th:block layout:fragment="javascript-extra">
+	<script th:src="@{/styles/vendors/bootstrap-datepicker.standalone.min.css}"></script>
+	<script th:src="@{/javascripts/vendors/bootstrap-datepicker.min.js}"></script>
+	<script th:src="@{/javascripts/vendors/bootstrap-datepicker.pt-BR.min.js}"></script>
+</th:block>
+
 
 </html>

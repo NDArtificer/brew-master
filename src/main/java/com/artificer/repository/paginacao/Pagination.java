@@ -18,7 +18,7 @@ public class Pagination {
 	@PersistenceContext
 	private EntityManager manager;
 
-	public TypedQuery<?> prepararIntervalo(TypedQuery<?> typedQuery, Pageable pageable) {
+	public <T> TypedQuery<T> prepararIntervalo(TypedQuery<T> typedQuery, Pageable pageable) {
 		int paginaAtual = pageable.getPageNumber();
 		int totalRegistrosPorPagina = pageable.getPageSize();
 		int primeiroRegistro = paginaAtual * totalRegistrosPorPagina;
@@ -29,7 +29,7 @@ public class Pagination {
 		return typedQuery;
 	}
 
-	public TypedQuery<?> prepararOrdem(CriteriaQuery<?> query, Root<?> fromEntity, Pageable pageable) {
+	public <T> TypedQuery<T> prepararOrdem(CriteriaQuery<T> query, Root<T> fromEntity, Pageable pageable) {
 		Sort sort = pageable.getSort();
 
 		if (sort != null && sort.isSorted()) {

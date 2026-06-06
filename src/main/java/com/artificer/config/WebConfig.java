@@ -1,6 +1,7 @@
 package com.artificer.config;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.cache.CacheManager;
@@ -9,6 +10,7 @@ import org.springframework.cache.guava.GuavaCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.FormContentFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -41,7 +43,7 @@ public class WebConfig implements WebMvcConfigurer {
 	@Bean
 	public FormContentFilter httpPutFormContentFilter() {
 		FormContentFilter filter = new FormContentFilter();
-		filter.setCharset(Charset.forName("utf-8"));
+		filter.setCharset(StandardCharsets.UTF_8);
 		return filter;
 	}
 }

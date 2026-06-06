@@ -6,12 +6,7 @@ import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.persistence.criteria.Subquery;
+import javax.persistence.criteria.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -35,88 +30,80 @@ public class UsuarioRepositoryImpl implements UsuariosQueries {
 
 	@Override
 	public Optional<Usuario> findByEmailAndAtivo(String email) {
-		return manager.createQuery("from Usuario where lower(email) = lower(:email) and ativo = true", Usuario.class)
-				.setParameter("email", email).getResultList().stream().findFirst();
+		return manager.createQuery(
+						"from Usuario where lower(email) = lower(:email) and ativo = true", Usuario.class)
+				.setParameter("email", email)
+				.getResultList()
+				.stream()
+				.findFirst();
 	}
 
 	@Override
 	public List<String> permissoes(Usuario usuario) {
-
 		return manager.createQuery(
-				"select distinct p.nome from Usuario u inner join u.grupos g inner join g.permissoes p where u = :usuario",
-				String.class).setParameter("usuario", usuario).getResultList();
+						"select distinct p.nome " +
+								"from Usuario u " +
+								"join u.grupos g " +
+								"join g.permissoes p " +
+								"where u = :usuario", String.class)
+				.setParameter("usuario", usuario)
+				.getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(readOnly = true)
 	public Page<Usuario> filtrar(UsuarioFilter filter, Pageable pageable) {
-		CriteriaBuilder criteriaBuilder = manager.getCriteriaBuilder();
-		CriteriaQuery<Usuario> criteriaQuery = criteriaBuilder.createQuery(Usuario.class).distinct(true);
-		Root<Usuario> root = criteriaQuery.from(Usuario.class);
+		CriteriaBuilder cb = manager.getCriteriaBuilder();
+		CriteriaQuery<Usuario> cq = cb.createQuery(Usuario.class).distinct(true);
+		Root<Usuario> root = cq.from(Usuario.class);
 
-		root.alias("u");
-		List<Predicate> predicates = addFilters(criteriaBuilder, filter, root, criteriaQuery);
+		List<Predicate> predicates = criarPredicados(cb, filter, root);
+		cq.where(cb.and(predicates.toArray(new Predicate[0])));
 
-		criteriaQuery.where(criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()])));
+		TypedQuery<Usuario> query = pagination.prepararOrdem(cq, root, pageable);
+		query = pagination.prepararIntervalo(query, pageable);
 
-		TypedQuery<Usuario> query = (TypedQuery<Usuario>) pagination.prepararOrdem(criteriaQuery, root, pageable);
-		query = (TypedQuery<Usuario>) pagination.prepararIntervalo(query, pageable);
-
-		return new PageImpl<>(query.getResultList(), pageable, total(filter, criteriaQuery));
+		return new PageImpl<>(query.getResultList(), pageable, contarTotal(filter));
 	}
 
-	private Long total(UsuarioFilter filter, CriteriaQuery<Usuario> criteriaQuery) {
-		CriteriaBuilder builder = manager.getCriteriaBuilder();
-		CriteriaQuery<Long> criteria = builder.createQuery(Long.class);
-		Root<Usuario> root = criteria.from(Usuario.class);
-		root.alias("u");
+	private Long contarTotal(UsuarioFilter filter) {
+		CriteriaBuilder cb = manager.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<Usuario> root = cq.from(Usuario.class);
 
-		criteria.select(builder.count(root));
-		List<Predicate> predicates = addFilters(builder, filter, root, criteriaQuery);
-		criteria.where(predicates.toArray(new Predicate[predicates.size()]));
-		return manager.createQuery(criteria).getSingleResult();
+		cq.select(cb.count(root));
+		List<Predicate> predicates = criarPredicados(cb, filter, root);
+		cq.where(predicates.toArray(new Predicate[0]));
+
+		return manager.createQuery(cq).getSingleResult();
 	}
 
-	private List<Predicate> addFilters(CriteriaBuilder criteriaBuilder, UsuarioFilter filter, Root<Usuario> root,
-			CriteriaQuery<Usuario> criteriaQuery) {
-		var predicates = new ArrayList<Predicate>();
+	private List<Predicate> criarPredicados(CriteriaBuilder cb, UsuarioFilter filter, Root<Usuario> root) {
+		List<Predicate> predicates = new ArrayList<>();
 
 		if (filter != null) {
 			if (StringUtils.hasText(filter.getNome())) {
-				predicates.add(criteriaBuilder.like(root.get("nome"), filter.getNome()));
+				predicates.add(cb.like(cb.lower(root.get("nome")), "%%%s%%".formatted(filter.getNome().toLowerCase())));
 			}
 			if (StringUtils.hasText(filter.getEmail())) {
-				predicates.add(criteriaBuilder.like(root.get("email"), filter.getEmail()));
+				predicates.add(cb.like(cb.lower(root.get("email")), "%%%s%%".formatted(filter.getEmail().toLowerCase())));
 			}
-
 			if (filter.getGrupos() != null && !filter.getGrupos().isEmpty()) {
-				Subquery<Long> subQuery = criteriaQuery.subquery(Long.class);
-				Root<Usuario> subRoot = subQuery.from(Usuario.class);
-				Join<Usuario, Grupo> subQueryGrupo = subRoot.join("grupos");
-				subRoot.alias("g");
-				for (Long grupoId : filter.getGrupos().stream().mapToLong(Grupo::getId).toArray()) {
-					subQuery.select(subRoot.get("id")).where(criteriaBuilder.equal(subQueryGrupo.get("id"), grupoId));
-					predicates.add(criteriaBuilder.in(root.get("id")).value(subQuery));
-				}
-
+				Join<Usuario, Grupo> joinGrupo = root.join("grupos");
+				predicates.add(joinGrupo.get("id").in(filter.getGrupos().stream().map(Grupo::getId).toList()));
 			}
 		}
-
 		return predicates;
 	}
 
 	@Override
 	public Usuario findUserWithGroups(Long id) {
-		CriteriaBuilder criteriaBuilder = manager.getCriteriaBuilder();
-		CriteriaQuery<Usuario> criteriaQuery = criteriaBuilder.createQuery(Usuario.class).distinct(true);
-		Root<Usuario> root = criteriaQuery.from(Usuario.class);
-		root.alias("u");
-		Join<Usuario, Grupo> subQueryGrupo = root.join("grupos");
-		subQueryGrupo.alias("g");
-		criteriaQuery.where(criteriaBuilder.equal(root.get("id"), id));
-		TypedQuery<Usuario> query = manager.createQuery(criteriaQuery);
-		return query.getSingleResult();
-	}
+		CriteriaBuilder cb = manager.getCriteriaBuilder();
+		CriteriaQuery<Usuario> cq = cb.createQuery(Usuario.class).distinct(true);
+		Root<Usuario> root = cq.from(Usuario.class);
+		root.fetch("grupos", JoinType.LEFT); // carrega grupos junto
 
+		cq.where(cb.equal(root.get("id"), id));
+		return manager.createQuery(cq).getSingleResult();
+	}
 }

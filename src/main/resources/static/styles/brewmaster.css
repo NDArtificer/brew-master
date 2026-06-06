@@ -277,4 +277,170 @@
 
 		text-align: right;
 	}
+
+}
+
+.datepicker.datepicker-dropdown.dropdown-menu {
+  width: 27.5% !important;
+  max-width: 27.5% !important;
+  margin: 0 auto;
+}
+
+/* Força a tabela de dias a ter 7 colunas fixas */
+.datepicker-days table {
+  table-layout: fixed;
+  width: 100%;                /* ocupa toda a largura */
+  border-collapse: separate;
+  border-spacing: 4px;        /* espaçamento entre células */
+}
+
+.datepicker-days table td {
+  width: 14.2857%;            /* 100% / 7 colunas */
+  text-align: center;
+  vertical-align: middle;
+  padding: 6px;               /* espaço interno */
+}
+
+/* Estilo visual dos dias */
+.datepicker-days .day {
+  padding: 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.datepicker-days .day:hover {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.datepicker-days .day.active {
+  background-color: #0056b3;
+  color: #fff;
+  font-weight: bold;
+}
+
+/* Cabeçalho central (mês/ano) */
+.datepicker .datepicker-switch {
+   text-align: center;
+   background-color: transparent; /* fundo transparente por padrão */
+   color: #007bff;                /* texto azul */
+   cursor: pointer;
+   transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Hover no cabeçalho */
+.datepicker .datepicker-switch:hover {
+   background-color: #007bff; /* fundo azul só no hover */
+   color: #fff;               /* texto branco no hover */
+}
+
+/* Botões prev/next */
+.datepicker .prev,
+.datepicker .next {
+   text-align: center;
+   background-color: transparent; /* fundo transparente por padrão */
+   color: #007bff;                /* texto azul */
+   cursor: pointer;
+   transition: color 0.2s ease, background-color 0.2s ease;
+   border-radius: 4px;
+   padding: 4px;
+}
+
+/* Hover nos botões prev/next */
+.datepicker .prev:hover,
+.datepicker .next:hover {
+   background-color: #007bff; /* fundo azul no hover */
+   color: #fff;               /* texto branco no hover */
+}
+
+
+/* Tabela de meses */
+.datepicker-months table {
+  table-layout: fixed;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 8px; /* espaçamento entre células */
+}
+
+.datepicker-months table td {
+  text-align: center;
+  vertical-align: middle;
+  padding: 8px;
+}
+
+/* Cada mês dentro da célula */
+.datepicker-months .month {
+  display: inline-block;       /* mantém em bloco dentro do td */
+  width: 30%;                  /* 3 colunas por linha */
+  margin: 5px;                 /* espaçamento entre meses */
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #007bff;              /* texto azul padrão */
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Hover */
+.datepicker-months .month:hover {
+  background-color: #007bff;   /* fundo azul no hover */
+  color: #fff;                 /* texto branco no hover */
+}
+
+/* Mês ativo */
+.datepicker-months .month.active {
+  background-color: #0056b3;
+  color: #fff;
+  font-weight: bold;
+}
+
+/* Tabela de anos */
+.datepicker-years table {
+  table-layout: fixed;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 8px; /* espaçamento entre células */
+}
+
+.datepicker-years table td {
+  text-align: center;
+  vertical-align: middle;
+  padding: 8px;
+}
+
+/* Cada ano dentro da célula */
+.datepicker-years .year {
+  display: inline-block;       /* mantém em bloco dentro do td */
+  width: 30%;                  /* 3 colunas por linha */
+  margin: 5px;                 /* espaçamento entre anos */
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #007bff;              /* texto azul padrão */
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Hover */
+.datepicker-years .year:hover {
+  background-color: #007bff;   /* fundo azul no hover */
+  color: #fff;                 /* texto branco no hover */
+}
+
+/* Ano ativo */
+.datepicker-years .year.active {
+  background-color: #0056b3;
+  color: #fff;
+  font-weight: bold;
+}
+
+.datepicker-days td.today {
+  background-color: transparent !important; /* sem fundo */
+  color: #007bff !important;
+  font-weight: bold;
+}
+
+/* Hover no dia atual */
+.datepicker-days td.today:hover {
+  background-color: #007bff !important; /* fundo azul no hover */
+  color: #fff !important;               /* texto branco no hover */
 }

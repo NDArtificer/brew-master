@@ -19,7 +19,7 @@ public enum TipoPessoa {
 		@Override
 		public String formatar(String cpfCnpj) {
 			// TODO Auto-generated method stub
-			return cpfCnpj.replaceAll("(\\d{2}(\\d{3})(\\d{3})(\\d{4})", "$1.$2.$3/$4-");
+			return cpfCnpj.replaceAll("(\\d{2})(\\d{3})(\\d{3})(\\d{4})", "$1.$2.$3/$4-");
 		}
 	};
 
