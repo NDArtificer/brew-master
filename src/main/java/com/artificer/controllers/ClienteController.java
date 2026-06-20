@@ -2,9 +2,9 @@ package com.artificer.controllers;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -66,7 +66,7 @@ public class ClienteController {
 		return mv;
 	}
 
-	@PostMapping(value = { "/cadastro", "{\\d+}" })
+	@PostMapping(value = { "/cadastro",  "/{id:\\d+}" })
 	public ModelAndView cadastrar(@Valid Cliente cliente, BindingResult result, RedirectAttributes atributes) {
 		if (result.hasErrors()) {
 			System.out.println("Tem Erros no Elemento!");

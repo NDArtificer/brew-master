@@ -1,7 +1,8 @@
 package com.artificer.thymeleaf.processor;
 
-import javax.servlet.http.HttpServletRequest;
-
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.thymeleaf.IEngineConfiguration;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
@@ -31,12 +32,12 @@ public class MenuAttributeTagProcessor extends AbstractAttributeTagProcessor {
 		IStandardExpression expression = parser.parseExpression(context, attributeValue);
 		String menu = (String) expression.execute(context);
 
-		HttpServletRequest request = ((IWebContext) context).getRequest();
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 		String uri = request.getRequestURI();
 
 		if (uri.matches(menu)) {
 			String classesExistentes = tag.getAttributeValue("class");
-			structureHandler.setAttribute("class", classesExistentes + " is-active");
+			structureHandler.setAttribute("class", "%s is-active".formatted(classesExistentes));
 		}
 	}
 

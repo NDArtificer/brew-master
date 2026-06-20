@@ -1,9 +1,8 @@
 package com.artificer.model.validation.validator;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
-import javax.validation.ConstraintValidatorContext.ConstraintViolationBuilder;
 
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import org.apache.commons.beanutils.BeanUtils;
 
 import com.artificer.model.validation.AttributeConfirmation;
@@ -36,7 +35,7 @@ public class AttributeConfirmationValidator implements ConstraintValidator<Attri
 		if (!isValid) {
 			context.disableDefaultConstraintViolation();
 			String message = context.getDefaultConstraintMessageTemplate();
-			ConstraintViolationBuilder violationBuilder = context.buildConstraintViolationWithTemplate(message);
+			ConstraintValidatorContext.ConstraintViolationBuilder violationBuilder = context.buildConstraintViolationWithTemplate(message);
 			violationBuilder.addPropertyNode(atributoConfirmacao).addConstraintViolation();
 		}
 
@@ -44,7 +43,6 @@ public class AttributeConfirmationValidator implements ConstraintValidator<Attri
 	}
 
 	private boolean bothEquals(Object valorAtributo, Object valorAtributoConfirmacao) {
-		// TODO Auto-generated method stub
 		return valorAtributo != null && (valorAtributo.equals(valorAtributoConfirmacao));
 	}
 

@@ -1,12 +1,6 @@
 package com.artificer.model;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
-
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 

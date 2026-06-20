@@ -3,14 +3,13 @@ package com.artificer.repository.helper.estilo;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -28,7 +27,6 @@ public class EstiloRepositoryImpl implements EstilosQueries {
 	@Autowired
 	private Pagination pagination;
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public Page<Estilo> filtrar(String nome, Pageable pageable) {
 		CriteriaBuilder criteriaBuilder = manager.getCriteriaBuilder();
@@ -36,9 +34,9 @@ public class EstiloRepositoryImpl implements EstilosQueries {
 		Root<Estilo> root = criteriaQuery.from(Estilo.class);
 
 		var predicate = addFilters(criteriaBuilder, nome, root);
-		criteriaQuery.where(predicate.toArray(new Predicate[predicate.size()]));
-		TypedQuery<Estilo> query = (TypedQuery<Estilo>) pagination.prepararOrdem(criteriaQuery, root, pageable);
-		query = (TypedQuery<Estilo>) pagination.prepararIntervalo(query, pageable);
+		criteriaQuery.where(predicate.toArray(new Predicate[0]));
+		TypedQuery<Estilo> query = pagination.prepararOrdem(criteriaQuery, root, pageable);
+		query = pagination.prepararIntervalo(query, pageable);
 
 		return new PageImpl<>(query.getResultList(), pageable, total(nome));
 	}
@@ -50,7 +48,7 @@ public class EstiloRepositoryImpl implements EstilosQueries {
 
 		query.select(criteriaBuilder.count(estiloEntity));
 		var predicates = addFilters(criteriaBuilder, nome, estiloEntity);
-		query.where(predicates.toArray(new Predicate[predicates.size()]));
+		query.where(predicates.toArray(new Predicate[0]));
 
 		return manager.createQuery(query).getSingleResult();
 	}
@@ -59,7 +57,6 @@ public class EstiloRepositoryImpl implements EstilosQueries {
 		var predicate = new ArrayList<Predicate>();
 
 		if (StringUtils.hasText(nome)) {
-
 			predicate.add(criteriaBuilder.like(root.get("nome"), "%" + nome + "%"));
 		}
 		return predicate;

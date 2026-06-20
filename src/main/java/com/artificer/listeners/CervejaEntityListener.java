@@ -1,7 +1,7 @@
 package com.artificer.listeners;
 
-import javax.persistence.PostLoad;
 
+import jakarta.persistence.PostLoad;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 

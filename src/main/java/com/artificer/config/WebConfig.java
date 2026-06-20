@@ -1,16 +1,15 @@
 package com.artificer.config;
 
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
+import com.github.benmanes.caffeine.cache.Caffeine;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.cache.guava.GuavaCacheManager;
+import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.FormContentFilter;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -31,13 +30,13 @@ public class WebConfig implements WebMvcConfigurer {
 
 	@Bean
 	public CacheManager cacheManager() {
-		CacheBuilder<Object, Object> cacheBuilder = CacheBuilder.newBuilder().maximumSize(3).expireAfterAccess(20,
-				TimeUnit.SECONDS);
-		GuavaCacheManager guavaCacheManager = new GuavaCacheManager();
-
-		guavaCacheManager.setCacheBuilder(cacheBuilder);
-		return guavaCacheManager;
-
+		CaffeineCacheManager cacheManager = new CaffeineCacheManager("usuarios", "produtos", "pedidos");
+		cacheManager.setCaffeine(
+				Caffeine.newBuilder()
+						.maximumSize(3) // mesmo limite que você usava
+						.expireAfterAccess(20, TimeUnit.SECONDS) // expira após 20s sem acesso
+		);
+		return cacheManager;
 	}
 
 	@Bean
