@@ -14,12 +14,12 @@
 	<parameter name="logo" class="java.lang.Object"/>
 	<parameter name="tipoRelatorio" class="java.lang.String"/>
 
-	<!-- Query -->
+	<!-- Query com COALESCE para evitar nulos -->
 	<query language="sql"><![CDATA[
-        SELECT p.data_criacao AS data_criacao,
-               p.valor_total AS valor_total,
-               c.nome AS nome_cliente,
-               u.nome AS nome_vendedor,
+        SELECT COALESCE(p.data_criacao, CURRENT_DATE) AS data_criacao,
+               COALESCE(p.valor_total, 0) AS valor_total,
+               COALESCE(c.nome, '') AS nome_cliente,
+               COALESCE(u.nome, '') AS nome_vendedor,
                p.id AS id
         FROM pedido p
         INNER JOIN cliente c ON p.cliente_id = c.id
@@ -62,45 +62,45 @@
 		<element kind="staticText" x="90" y="5" width="50" height="15" bold="true" hTextAlign="Center"><text><![CDATA[Id]]></text></element>
 		<element kind="staticText" x="150" y="5" width="160" height="15" bold="true" hTextAlign="Center"><text><![CDATA[Cliente]]></text></element>
 		<element kind="staticText" x="320" y="5" width="120" height="15" bold="true" hTextAlign="Center"><text><![CDATA[Vendedor]]></text></element>
-		<element kind="staticText" x="450" y="5" width="100" height="15" bold="true" hTextAlign="Center"><text><![CDATA[Valor Pedido]]></text></element>
+		<element kind="staticText" x="450" y="5" width="100" height="15" bold="true" hTextAlign="Right"><text><![CDATA[Valor Pedido]]></text></element>
 	</columnHeader>
 
-	<!-- Corpo com valores centralizados -->
+	<!-- Corpo -->
 	<detail>
 		<band height="20">
 			<element kind="rectangle" x="0" y="0" width="555" height="20" backcolor="#F5F5F5">
 				<printWhenExpression><![CDATA[$V{REPORT_COUNT} % 2 == 0]]></printWhenExpression>
 			</element>
-			<element kind="textField" x="0" y="2" width="80" height="15" pattern="dd/MM/yyyy" hTextAlign="Center">
-				<expression><![CDATA[$F{data_criacao}]]></expression>
+			<element kind="textField" x="0" y="2" width="80" height="15" hTextAlign="Center" pattern="dd/MM/yyyy">
+				<expression><![CDATA[$F{data_criacao} == null ? "" : $F{data_criacao}]]></expression>
 			</element>
 			<element kind="textField" x="90" y="2" width="50" height="15" hTextAlign="Center">
-				<expression><![CDATA[$F{id}]]></expression>
+				<expression><![CDATA[$F{id} == null ? "" : $F{id}]]></expression>
 			</element>
-			<element kind="textField" x="150" y="2" width="160" height="15" hTextAlign="Center" >
-				<expression><![CDATA[$F{nome_cliente}]]></expression>
+			<element kind="textField" x="150" y="2" width="160" height="15" hTextAlign="Center">
+				<expression><![CDATA[$F{nome_cliente} == null ? "" : $F{nome_cliente}]]></expression>
 			</element>
 			<element kind="textField" x="320" y="2" width="120" height="15" hTextAlign="Center">
-				<expression><![CDATA[$F{nome_vendedor}]]></expression>
+				<expression><![CDATA[$F{nome_vendedor} == null ? "" : $F{nome_vendedor}]]></expression>
 			</element>
-			<element kind="textField" x="450" y="2" width="100" height="15" pattern="¤ #,##0.00;¤ -#,##0.00" hTextAlign="Center" >
-				<expression><![CDATA[$F{valor_total}]]></expression>
+			<element kind="textField" x="450" y="2" width="100" height="15" hTextAlign="Right" pattern="¤ #,##0.00;¤ -#,##0.00">
+				<expression><![CDATA[$F{valor_total} == null ? "" : $F{valor_total}]]></expression>
 			</element>
 		</band>
 	</detail>
 
-	<!-- Resumo com somatório -->
+	<!-- Resumo -->
 	<summary height="40">
 		<element kind="line" x="0" y="0" width="555" height="1" forecolor="#003366"/>
 		<element kind="staticText" x="300" y="10" width="120" height="20" bold="true" hTextAlign="Right" forecolor="#003366">
 			<text><![CDATA[Total:]]></text>
 		</element>
-		<element kind="textField" x="430" y="10" width="120" height="20" pattern="¤ #,##0.00;¤ -#,##0.00" bold="true" hTextAlign="Center" forecolor="#333333">
-			<expression><![CDATA[$V{valor_total1}]]></expression>
+		<element kind="textField" x="430" y="10" width="120" height="20" hTextAlign="Right" pattern="¤ #,##0.00;¤ -#,##0.00">
+			<expression><![CDATA[$V{valor_total1} == null ? "" : $V{valor_total1}]]></expression>
 		</element>
 	</summary>
 
-	<!-- Rodapé com página atual -->
+	<!-- Rodapé -->
 	<pageFooter height="30">
 		<element kind="line" x="0" y="0" width="555" height="1" forecolor="#003366"/>
 		<element kind="textField" x="0" y="5" width="200" height="20" forecolor="#333333">
