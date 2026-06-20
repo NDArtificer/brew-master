@@ -33,13 +33,14 @@ public class RelatorioService {
 				.atZone(ZoneId.systemDefault()).toInstant());
 		Date dataFim = Date.from(LocalDateTime.of(periodoRelatorio.getDataFim(), LocalTime.of(23, 59, 59))
 				.atZone(ZoneId.systemDefault()).toInstant());
-
+		InputStream logoStream = Objects.requireNonNull(
+				getClass().getResourceAsStream("/static/layout/images/logo.png")
+		);
 		Map<String, Object> parametros = new HashMap<>();
 		parametros.put("format", "pdf");
 		parametros.put("data_inicio", dataInicio);
 		parametros.put("data_fim", dataFim);
-		parametros.put("logo", getClass().getResource("/images/logo.png")
-		);
+		parametros.put("logo", logoStream);
 		parametros.put("tipoRelatorio", "Pedidos Emitidos");
 		parametros.put(JRParameter.REPORT_LOCALE, Locale.of("pt", "BR"));
 		parametros.put(JRParameter.REPORT_TIME_ZONE, TimeZone.getTimeZone("America/Sao_Paulo"));
