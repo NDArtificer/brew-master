@@ -41,16 +41,24 @@
 		<expression><![CDATA[$F{valor_total}]]></expression>
 	</variable>
 
-	<!-- Cabeçalho -->
 	<title height="100">
+		<!-- Retângulo de fundo -->
 		<element kind="rectangle" x="0" y="0" width="555" height="80" backcolor="#003366"/>
+
+		<!-- Logo à esquerda -->
 		<element kind="image" x="10" y="10" width="120" height="70">
 			<expression><![CDATA[$P{logo}]]></expression>
 		</element>
-		<element kind="staticText" x="0" y="15" width="555" height="25" fontSize="22" bold="true" hTextAlign="Center" forecolor="#FFFFFF">
+
+		<!-- Texto Relatório centralizado -->
+		<element kind="staticText" x="0" y="10" width="555" height="30"
+				 fontSize="22" bold="true" hTextAlign="Center" forecolor="#FFFFFF">
 			<text><![CDATA[Relatório]]></text>
 		</element>
-		<element kind="staticText" x="0" y="45" width="555" height="25" fontSize="18" bold="true" hTextAlign="Center" forecolor="#FFFFFF">
+
+		<!-- Texto Pedidos Emitidos centralizado -->
+		<element kind="staticText" x="0" y="45" width="555" height="30"
+				 fontSize="18" bold="true" hTextAlign="Center" forecolor="#FFFFFF">
 			<text><![CDATA[Pedidos Emitidos]]></text>
 		</element>
 	</title>
@@ -92,10 +100,12 @@
 	<!-- Resumo -->
 	<summary height="40">
 		<element kind="line" x="0" y="0" width="555" height="1" forecolor="#003366"/>
-		<element kind="staticText" x="300" y="10" width="120" height="20" bold="true" hTextAlign="Right" forecolor="#003366">
-			<text><![CDATA[Total:]]></text>
+		<element kind="staticText" x="300" y="10" width="120" height="25" fontSize="14" bold="true" hTextAlign="Right" forecolor="#003366">
+			<text><![CDATA[Valor Total:]]></text>
 		</element>
-		<element kind="textField" x="430" y="10" width="120" height="20" hTextAlign="Right" pattern="¤ #,##0.00;¤ -#,##0.00">
+		<element kind="textField" x="430" y="10" width="120" height="25"
+				 fontSize="14" bold="true" hTextAlign="Right" forecolor="#003366"
+				 pattern="¤ #,##0.00;¤ -#,##0.00">
 			<expression><![CDATA[$V{valor_total1} == null ? "" : $V{valor_total1}]]></expression>
 		</element>
 	</summary>
