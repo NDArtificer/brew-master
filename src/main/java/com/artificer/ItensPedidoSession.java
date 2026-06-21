@@ -31,9 +31,8 @@ public class ItensPedidoSession {
 	}
 
 	private ItensPedidos buscarItensPedidosPorUuid(String uuid) {
-		ItensPedidos itens = itensPedidos.stream().filter(item -> item.getUuid().equals(uuid)).findAny()
-				.orElse(new ItensPedidos(uuid));
-		return itens;
+        return itensPedidos.stream().filter(item -> item.getUuid().equals(uuid)).findAny()
+                .orElse(new ItensPedidos(uuid));
 	}
 
 	public void alterarQuantidadeItens(String uuid, Cerveja cerveja, Integer quantidade) {
@@ -48,7 +47,6 @@ public class ItensPedidoSession {
 	}
 
 	public List<ItemPedido> getItens(String uuid) {
-		// TODO Auto-generated method stub
 		return buscarItensPedidosPorUuid(uuid).getItens();
 	}
 

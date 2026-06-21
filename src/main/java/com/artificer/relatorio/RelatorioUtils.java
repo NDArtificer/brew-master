@@ -12,21 +12,25 @@ import java.io.InputStream;
 
 public class RelatorioUtils {
 
+    public static final String JASPER_PATH = "/relatorios/%s.jasper";
+    public static final String JRXML_PATH = "/relatorios/%s.jrxml";
+    public static final String JASPER_ABSOLUTE_PATH = "%s/src/main/resources/relatorios/%s.jasper";
+    public static final String JRXML_ABSOLUTE_PATH = "%s/src/main/resources/relatorios/%s.jrxml";
+
     public static JasperReport loadReport(String nomeRelatorio) {
         JasperReport jasperReport = null;
 
-        // 1. Tenta carregar o .jasper via classpath
-        String pathName = "/relatorios/%s.jasper".formatted(nomeRelatorio);
+        String pathName = JASPER_PATH.formatted(nomeRelatorio);
         try (InputStream jasperStream = RelatorioUtils.class
                 .getResourceAsStream(pathName)) {
             if (jasperStream != null) {
+                
                 jasperReport = (JasperReport) JRLoader.loadObject(jasperStream);
             }
         } catch (Exception ignored) {}
 
-        // 2. Se não achou, tenta compilar o .jrxml via classpath
         if (jasperReport == null) {
-            pathName = "/relatorios/%s.jrxml".formatted(nomeRelatorio);
+            pathName = JRXML_PATH.formatted(nomeRelatorio);
             try (InputStream jrxmlStream = RelatorioUtils.class
                     .getResourceAsStream(pathName)) {
                 if (jrxmlStream != null) {
@@ -36,17 +40,16 @@ public class RelatorioUtils {
             } catch (Exception ignored) {}
         }
 
-        // 3. Se ainda não achou, usa caminho absoluto com user.dir
         if (jasperReport == null) {
             String baseDir = System.getProperty("user.dir");
-            String pathname = "%s/src/main/resources/relatorios/%s.jasper".formatted(baseDir, nomeRelatorio);
+            String pathname = JASPER_ABSOLUTE_PATH.formatted(baseDir, nomeRelatorio);
             File jasperFile = new File(pathname);
             if (jasperFile.exists()) {
                 try {
                     jasperReport = (JasperReport) JRLoader.loadObject(new FileInputStream(jasperFile));
                 } catch (Exception ignored) {}
             } else {
-                pathname = "%s/src/main/resources/relatorios/%s.jrxml".formatted(baseDir, nomeRelatorio);
+                pathname = JRXML_ABSOLUTE_PATH.formatted(baseDir, nomeRelatorio);
                 File jrxmlFile = new File(pathname);
                 if (jrxmlFile.exists()) {
                     try {

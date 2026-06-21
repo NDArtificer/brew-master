@@ -108,7 +108,7 @@ public class PedidoController {
 		LocalDate hoje = LocalDate.now();
 		for (int i = 1; i <= 12; i++) {
 			String month = String.format("%d/%02d", hoje.getYear(), hoje.getMonthValue());
-			boolean hasMonth = listaVenda.stream().filter(venda -> venda.getMes().equals(month)).findAny().isPresent();
+			boolean hasMonth = listaVenda.stream().anyMatch(venda -> venda.getMes().equals(month));
 			if (!hasMonth) {
 				listaVenda.add(i - 1, new VendaMes(month, 0));
 			}
@@ -125,7 +125,7 @@ public class PedidoController {
 		LocalDate hoje = LocalDate.now();
 		for (int i = 1; i <= 12; i++) {
 			String month = String.format("%d/%02d", hoje.getYear(), hoje.getMonthValue());
-			boolean hasMonth = listaVenda.stream().filter(venda -> venda.getMes().equals(month)).findAny().isPresent();
+			boolean hasMonth = listaVenda.stream().anyMatch(venda -> venda.getMes().equals(month));
 			if (!hasMonth) {
 				listaVenda.add(i - 1, new VendaOrigem(month, 0, 0));
 			}

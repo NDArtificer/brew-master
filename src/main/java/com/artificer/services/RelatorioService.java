@@ -1,7 +1,5 @@
 package com.artificer.services;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -14,9 +12,6 @@ import javax.sql.DataSource;
 
 import com.artificer.relatorio.RelatorioUtils;
 import net.sf.jasperreports.engine.*;
-import net.sf.jasperreports.engine.design.JasperDesign;
-import net.sf.jasperreports.engine.util.JRLoader;
-import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,9 +28,8 @@ public class RelatorioService {
 				.atZone(ZoneId.systemDefault()).toInstant());
 		Date dataFim = Date.from(LocalDateTime.of(periodoRelatorio.getDataFim(), LocalTime.of(23, 59, 59))
 				.atZone(ZoneId.systemDefault()).toInstant());
-		InputStream logoStream = Objects.requireNonNull(
-				getClass().getResourceAsStream("/static/layout/images/logo.png")
-		);
+
+		InputStream logoStream = Objects.requireNonNull(getClass().getResourceAsStream("/static/layout/images/logo.png"));
 		Map<String, Object> parametros = new HashMap<>();
 		parametros.put("format", "pdf");
 		parametros.put("data_inicio", dataInicio);
