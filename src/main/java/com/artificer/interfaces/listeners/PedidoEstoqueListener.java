@@ -1,0 +1,34 @@
+package com.artificer.interfaces.listeners;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
+import org.springframework.stereotype.Component;
+
+import com.artificer.application.events.PedidoEstoqueEvent;
+import com.artificer.domain.model.Cerveja;
+import com.artificer.domain.model.Pedido;
+import com.artificer.infrastructure.repository.CervejasRepository;
+
+@Component
+public class PedidoEstoqueListener {
+
+	@Autowired
+	private CervejasRepository repository;
+
+	@EventListener
+	public void atulizarEstoque(PedidoEstoqueEvent event) {
+		Pedido pedido = event.getPedido();
+		pedido.getItens().forEach(item -> {
+			Integer quantidade;
+			Cerveja cerveja = repository.findById(item.getCerveja().getId()).get();
+			if(pedido.isCancelado()) {
+				quantidade = cerveja.getQuantidadeEstoque() + item.getQuantidade();
+			} else {
+				quantidade = (cerveja.getQuantidadeEstoque() - item.getQuantidade());
+			}
+			cerveja.setQuantidadeEstoque(quantidade);
+			repository.save(cerveja);
+		});
+	}
+
+}

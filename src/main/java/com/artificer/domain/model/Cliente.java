@@ -1,0 +1,90 @@
+package com.artificer.domain.model;
+
+import java.util.Objects;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import org.hibernate.validator.constraints.br.CNPJ;
+import org.hibernate.validator.constraints.br.CPF;
+import org.hibernate.validator.group.GroupSequenceProvider;
+
+import com.artificer.domain.model.enums.TipoPessoa;
+import com.artificer.domain.model.validation.ClienteGroupSequenceProvider;
+import com.artificer.domain.model.validation.CnpjGroup;
+import com.artificer.domain.model.validation.CpfGroup;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Entity
+@Setter
+@Getter
+@GroupSequenceProvider(ClienteGroupSequenceProvider.class)
+public class Cliente {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+
+	@Column
+	private String nome;
+
+	@NotBlank
+	@CPF(groups = CpfGroup.class)
+	@CNPJ(groups = CnpjGroup.class)
+	private String cpfCnpj;
+
+	@Column
+	@Enumerated(EnumType.STRING)
+	private TipoPessoa tipoPessoa;
+
+	@Column
+	private String telefone;
+
+	@Column
+	@Email
+	private String email;
+
+	@JsonIgnore
+	@Embedded
+	private Endereco endereco;
+
+	@PrePersist
+	@PreUpdate
+	private void removerFormatacaoCpfCnpj() {
+		this.cpfCnpj = TipoPessoa.removerFormatacao(this.cpfCnpj);
+	}
+
+	@PostLoad
+	private void postLoad() {
+		this.cpfCnpj = this.tipoPessoa.formatar(this.cpfCnpj);
+	}
+
+	public String getCpfCnpjSemFormatacao() {
+		return TipoPessoa.removerFormatacao(this.cpfCnpj);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+
+	public boolean isNovo() {
+		return id == null;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Cliente other = (Cliente) obj;
+		return Objects.equals(id, other.id);
+	}
+
+}

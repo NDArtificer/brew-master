@@ -1,0 +1,54 @@
+package com.artificer.domain.model.validation.validator;
+
+
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
+import org.apache.commons.beanutils.BeanUtils;
+
+import com.artificer.domain.model.validation.AttributeConfirmation;
+
+public class AttributeConfirmationValidator implements ConstraintValidator<AttributeConfirmation, Object> {
+
+	private String atributo;
+	private String atributoConfirmacao;
+
+	@Override
+	public void initialize(AttributeConfirmation constraintAnnotation) {
+		this.atributo = constraintAnnotation.attribute();
+		this.atributoConfirmacao = constraintAnnotation.attributeConfirm();
+	}
+
+	@Override
+	public boolean isValid(Object value, ConstraintValidatorContext context) {
+		boolean isValid = false;
+		try {
+			Object valorAtributo = BeanUtils.getProperty(value, this.atributo);
+			Object valorAtributoConfirmacao = BeanUtils.getProperty(value, this.atributoConfirmacao);
+
+			isValid = bothNull(valorAtributo, valorAtributoConfirmacao)
+					|| bothEquals(valorAtributo, valorAtributoConfirmacao);
+
+		} catch (Exception e) {
+			throw new RuntimeException("Falha ao Recuperar os valores do atributos!", e);
+			// TODO: handle exception
+		}
+		if (!isValid) {
+			context.disableDefaultConstraintViolation();
+			String message = context.getDefaultConstraintMessageTemplate();
+			ConstraintValidatorContext.ConstraintViolationBuilder violationBuilder = context.buildConstraintViolationWithTemplate(message);
+			violationBuilder.addPropertyNode(atributoConfirmacao).addConstraintViolation();
+		}
+
+		return isValid;
+	}
+
+	private boolean bothEquals(Object valorAtributo, Object valorAtributoConfirmacao) {
+		return valorAtributo != null && (valorAtributo.equals(valorAtributoConfirmacao));
+	}
+
+	private boolean bothNull(Object valorAtributo, Object valorAtributoConfirmacao) {
+
+		return valorAtributo == null && valorAtributoConfirmacao == null;
+	}
+
+}

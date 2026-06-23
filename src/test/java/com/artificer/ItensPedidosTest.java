@@ -6,8 +6,8 @@ import java.math.BigDecimal;
 
 import org.junit.jupiter.api.Test;
 
-import com.artificer.model.Cerveja;
-import com.artificer.venda.ItensPedidos;
+import com.artificer.domain.model.Cerveja;
+import com.artificer.domain.venda.ItensPedidos;
 
 public class ItensPedidosTest {
 

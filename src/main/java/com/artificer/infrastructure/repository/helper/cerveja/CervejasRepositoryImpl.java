@@ -1,0 +1,103 @@
+package com.artificer.infrastructure.repository.helper.cerveja;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.util.StringUtils;
+
+import com.artificer.domain.model.Cerveja;
+import com.artificer.infrastructure.repository.filter.CervejaFilter;
+import com.artificer.infrastructure.repository.paginacao.Pagination;
+import com.artificer.application.services.FotoStorageService;
+
+public class CervejasRepositoryImpl implements CervejasQueries {
+
+    @PersistenceContext
+    private EntityManager manager;
+
+    @Autowired
+    private Pagination pagination;
+
+    @Autowired
+    private FotoStorageService storageService;
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Page<Cerveja> filtrar(CervejaFilter filter, Pageable pageable) {
+
+        CriteriaBuilder builder = manager.getCriteriaBuilder();
+        CriteriaQuery<Cerveja> criteria = builder.createQuery(Cerveja.class);
+        Root<Cerveja> root = criteria.from(Cerveja.class);
+
+        var predicate = addFilters(builder, filter, root);
+
+        criteria.where(predicate.toArray(new Predicate[predicate.size()]));
+        TypedQuery<Cerveja> query = (TypedQuery<Cerveja>) pagination.prepararOrdem(criteria, root, pageable);
+        query = (TypedQuery<Cerveja>) pagination.prepararIntervalo(query, pageable);
+
+        return new PageImpl<>(query.getResultList(), pageable, total(filter));
+    }
+
+    private Long total(CervejaFilter filter) {
+        CriteriaBuilder criteriaBuilder = manager.getCriteriaBuilder();
+        CriteriaQuery<Long> query = criteriaBuilder.createQuery(Long.class);
+        Root<Cerveja> cervejaEntity = query.from(Cerveja.class);
+
+        query.select(criteriaBuilder.count(cervejaEntity));
+        var predicates = addFilters(criteriaBuilder, filter, cervejaEntity);
+        query.where(predicates.toArray(new Predicate[predicates.size()]));
+
+        return manager.createQuery(query).getSingleResult();
+    }
+
+    private List<Predicate> addFilters(CriteriaBuilder builder, CervejaFilter filter, Root<Cerveja> root) {
+        var predicate = new ArrayList<Predicate>();
+
+        if (filter != null) {
+            if (StringUtils.hasText(filter.getSku())) {
+                predicate.add(builder.equal(root.get("sku"), filter.getSku()));
+            }
+
+            if (StringUtils.hasText(filter.getNome())) {
+                predicate.add(builder.like(root.get("nome"), "%" + filter.getNome() + "%"));
+            }
+
+            if (isEstiloPresente(filter)) {
+                predicate.add(builder.equal(root.get("estilo"), filter.getEstilo().getId()));
+            }
+
+            if (filter.getSabor() != null) {
+                predicate.add(builder.equal(root.get("sabor"), filter.getSabor()));
+            }
+
+            if (filter.getOrigem() != null) {
+                predicate.add(builder.equal(root.get("origem"), filter.getOrigem()));
+            }
+
+            if (filter.getValorDe() != null) {
+                predicate.add(builder.greaterThanOrEqualTo(root.get("valor"), filter.getValorDe()));
+            }
+
+            if (filter.getValorAte() != null) {
+                predicate.add(builder.lessThanOrEqualTo(root.get("valor"), filter.getValorAte()));
+            }
+        }
+        return predicate;
+    }
+
+    private boolean isEstiloPresente(CervejaFilter filtro) {
+        return filtro.getEstilo() != null && filtro.getEstilo().getId() != null;
+    }
+
+}

@@ -51,7 +51,7 @@
 	<sql-result-set-mapping
 		name="totalPorMesMapping">
 		<constructor-result
-			target-class="com.artificer.output.VendaMes"	>
+			target-class="com.artificer.domain.output.VendaMes"	>
 			<column name="mes" class="java.lang.String" />
 			<column name="total" class="java.lang.Integer" />
 		</constructor-result>
@@ -59,7 +59,7 @@
 	
 	
 		<sql-result-set-mapping name="porOrigemMapping">
-		<constructor-result target-class="com.artificer.output.VendaOrigem">
+		<constructor-result target-class="com.artificer.domain.output.VendaOrigem">
 			<column name="mes" class="java.lang.String"/>
 			<column name="total_nacional" class="java.lang.Integer"/>
 			<column name="total_internacional" class="java.lang.Integer"/>
